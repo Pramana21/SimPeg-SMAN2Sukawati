@@ -19,4 +19,9 @@ class Pegawai extends Model
         'no_hp',
         'email'
     ];
+
+    public function dokumen()
+    {
+        return $this->hasMany(DokumenPegawai::class);
+    }
 }
