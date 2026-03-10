@@ -42,7 +42,17 @@
 
 <!-- CONTENT -->
 
-<div class="flex-1 p-6">
+<div class="flex-1">
+
+@include('components.navbar')
+
+<div class="p-6">
+
+@yield('content')
+
+</div>
+
+</div>
 
 @yield('content')
 
