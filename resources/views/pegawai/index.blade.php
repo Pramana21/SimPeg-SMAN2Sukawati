@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
 <h1>Data Pegawai</h1>
 
 <a href="{{ route('pegawai.create') }}">
@@ -42,3 +45,4 @@
 @endforeach
 
 </table>
+@endsection

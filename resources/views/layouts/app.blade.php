@@ -1,36 +1,54 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html>
+<head>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<title>SIMPEG SMAN 2 Sukawati</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+</head>
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+<body class="bg-gray-100">
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
+<div class="flex">
+
+<!-- SIDEBAR -->
+
+<div class="w-64 bg-blue-900 text-white min-h-screen p-5">
+
+<h2 class="text-xl font-bold mb-6">SIMPEG</h2>
+
+<ul>
+
+<li class="mb-3">
+<a href="/dashboard">Dashboard</a>
+</li>
+
+<li class="mb-3">
+<a href="/pegawai">Pegawai</a>
+</li>
+
+<li class="mb-3">
+<a href="#">Inventaris</a>
+</li>
+
+<li class="mb-3">
+<a href="#">Dokumen</a>
+</li>
+
+</ul>
+
+</div>
+
+<!-- CONTENT -->
+
+<div class="flex-1 p-6">
+
+@yield('content')
+
+</div>
+
+</div>
+
+</body>
 </html>
