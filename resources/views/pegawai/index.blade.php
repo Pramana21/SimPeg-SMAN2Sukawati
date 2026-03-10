@@ -1,48 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Data Pegawai</h1>
+
+<h1 class="text-2xl font-bold mb-4">Data Pegawai</h1>
 
 <a href="{{ route('pegawai.create') }}">
-    <button>Tambah Pegawai</button>
+<button class="bg-blue-500 text-white px-4 py-2 rounded mb-4">
+Tambah Pegawai
+</button>
 </a>
 
-<table border="1">
+<div class="bg-white shadow rounded-lg p-6">
+
+<table class="min-w-full border border-gray-200">
+
+<thead class="bg-gray-100">
 <tr>
-<th>NIP</th>
-<th>Nama</th>
-<th>Jabatan</th>
-<th>Unit Kerja</th>
-<th>Aksi</th>
+<th class="px-4 py-2 border">NIP</th>
+<th class="px-4 py-2 border">Nama</th>
+<th class="px-4 py-2 border">Jabatan</th>
+<th class="px-4 py-2 border">Unit Kerja</th>
+<th class="px-4 py-2 border">Aksi</th>
 </tr>
+</thead>
+
+<tbody>
 
 @foreach ($pegawai as $p)
-<tr>
 
-<td>{{ $p->nip }}</td>
-<td>{{ $p->nama }}</td>
-<td>{{ $p->jabatan }}</td>
-<td>{{ $p->unit_kerja }}</td>
+<tr class="hover:bg-gray-50">
 
-<td>
+<td class="px-4 py-2 border">{{ $p->nip }}</td>
+<td class="px-4 py-2 border">{{ $p->nama }}</td>
+<td class="px-4 py-2 border">{{ $p->jabatan }}</td>
+<td class="px-4 py-2 border">{{ $p->unit_kerja }}</td>
 
-<a href="{{ route('pegawai.edit', $p->id) }}">
-<button>Edit</button>
+<td class="px-4 py-2 border">
+
+<a href="{{ route('pegawai.edit',$p->id) }}"
+class="bg-yellow-500 text-white px-3 py-1 rounded">
+
+Edit
+
 </a>
 
-<form action="{{ route('pegawai.destroy', $p->id) }}" method="POST" style="display:inline">
+<form action="{{ route('pegawai.destroy',$p->id) }}"
+method="POST"
+class="inline">
 
 @csrf
 @method('DELETE')
 
-<button type="submit">Delete</button>
+<button class="bg-red-500 text-white px-3 py-1 rounded">
+
+Delete
+
+</button>
 
 </form>
 
 </td>
 
 </tr>
+
 @endforeach
 
+</tbody>
+
 </table>
+
+</div>
+
 @endsection

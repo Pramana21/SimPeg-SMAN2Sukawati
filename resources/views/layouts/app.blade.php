@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<title>SIMPEG SMAN 2 Sukawati</title>
+<title>SIMPEG</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 
@@ -40,7 +39,7 @@
 
 </div>
 
-<!-- CONTENT -->
+<!-- MAIN CONTENT -->
 
 <div class="flex-1">
 
@@ -51,10 +50,6 @@
 @yield('content')
 
 </div>
-
-</div>
-
-@yield('content')
 
 </div>
 
