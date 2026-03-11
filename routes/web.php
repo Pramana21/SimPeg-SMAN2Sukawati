@@ -3,17 +3,18 @@ use App\Http\Controllers\DokumenPegawaiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PegawaiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InventarisController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-use App\Http\Controllers\DashboardController;
-
 Route::get('/dashboard', [DashboardController::class, 'index'])
 ->middleware(['auth', 'verified'])
 ->name('dashboard');
 
+Route::resource('inventaris', InventarisController::class);
 
 Route::middleware('auth')->group(function () {
 
