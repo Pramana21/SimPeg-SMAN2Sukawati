@@ -8,7 +8,12 @@ use App\Models\DokumenPegawai;
 
 class DokumenPegawaiController extends Controller
 {
+    public function index()
+{
+    $dokumen = DokumenPegawai::with('pegawai')->get();
 
+    return view('dokumen.index', compact('dokumen'));
+}
     public function create()
     {
         $pegawai = Pegawai::all();
@@ -40,5 +45,16 @@ class DokumenPegawaiController extends Controller
     return redirect('/dashboard');
 
 }
+    public function destroy($id)
+{
 
+    $dokumen = DokumenPegawai::findOrFail($id);
+
+    unlink(public_path('dokumen/'.$dokumen->file_dokumen));
+
+    $dokumen->delete();
+
+    return redirect('/dokumen');
+
+}
 }

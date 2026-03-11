@@ -44,8 +44,8 @@ Inventaris
 
 
 <li class="mb-3">
-<a href="#"
-class="p-2 block">
+<a href="/dokumen"
+class="{{ request()->is('dokumen*') ? 'bg-blue-700 p-2 block rounded' : 'p-2 block' }}">
 Dokumen
 </a>
 </li>
