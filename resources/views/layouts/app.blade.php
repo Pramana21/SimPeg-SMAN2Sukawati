@@ -20,19 +20,34 @@
 <ul>
 
 <li class="mb-3">
-<a href="/dashboard">Dashboard</a>
+<a href="/dashboard"
+class="{{ request()->is('dashboard') ? 'bg-blue-700 p-2 block rounded' : 'p-2 block' }}">
+Dashboard
+</a>
 </li>
 
-<li class="mb-3">
-<a href="/pegawai">Pegawai</a>
-</li>
 
 <li class="mb-3">
-<a href="#">Inventaris</a>
+<a href="/pegawai"
+class="{{ request()->is('pegawai*') ? 'bg-blue-700 p-2 block rounded' : 'p-2 block' }}">
+Pegawai
+</a>
 </li>
 
+
 <li class="mb-3">
-<a href="#">Dokumen</a>
+<a href="#"
+class="p-2 block">
+Inventaris
+</a>
+</li>
+
+
+<li class="mb-3">
+<a href="#"
+class="p-2 block">
+Dokumen
+</a>
 </li>
 
 </ul>
