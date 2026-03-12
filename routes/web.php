@@ -32,3 +32,22 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+/*Route::middleware(['auth'])->group(function () {
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
+Route::resource('role', RoleController::class);
+Route::resource('user', UserController::class);
+Route::resource('audit-log', AuditLogController::class);
+
+Route::resource('penyuratan', PenyuratanController::class);
+Route::resource('keuangan', KeuanganController::class);
+Route::resource('inventaris', InventarisController::class);
+
+Route::resource('siswa', SiswaController::class);
+Route::resource('kelas', KelasController::class);
+
+Route::resource('administrasi', AdministrasiController::class);
+
+});*/
