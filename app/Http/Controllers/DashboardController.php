@@ -4,16 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use App\Models\Siswa;
+use App\Models\Auditlog;
+
 class DashboardController extends Controller
 {
 
     public function index()
     {
 
-        // sementara gunakan data dummy dulu
-        $totalUser = 0;
+        // $totalUser = User::count();
+
+        // $totalDokumen = 0; // sementara
+
+        // $totalStaff = User::count();
+
+        // $totalSiswa = Siswa::count();
+
+        // $auditLogs = Auditlog::latest()
+        //                 ->take(10)
+        //                 ->get();
+        $totalUser = User::count();
+
         $totalDokumen = 0;
-        $totalStaff = 0;
+
+        $totalStaff = User::count();
+
         $totalSiswa = 0;
 
         $auditLogs = [];
