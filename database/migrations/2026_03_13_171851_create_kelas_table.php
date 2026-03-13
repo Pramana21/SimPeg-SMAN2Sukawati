@@ -10,24 +10,29 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('inventaris', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama_barang');
-        $table->string('kode_barang')->unique();
-        $table->integer('jumlah');
-        $table->string('kondisi');
-        $table->string('lokasi');
-        $table->date('tanggal_input')->nullable();
+    {
+        Schema::create('kelas', function (Blueprint $table) {
+
+        $table->increments('id_kelas');
+
+        $table->smallInteger('tingkat');
+        $table->char('fase',1);
+        $table->smallInteger('rombel');
+
+        $table->char('peminatan',3)->default('P');
+
+        $table->string('nama_kelas',20)->unique();
+
         $table->timestamps();
+
     });
-}
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventaris');
+        Schema::dropIfExists('kelas');
     }
 };
