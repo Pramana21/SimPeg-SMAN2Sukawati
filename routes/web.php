@@ -15,8 +15,8 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\KelasController;
 
 use App\Http\Controllers\AdministrasiController;
-
 use App\Http\Controllers\ProfileController;
+
 
 
 Route::get('/', function () {
@@ -24,30 +24,66 @@ Route::get('/', function () {
 });
 
 
+/*
+|--------------------------------------------------------------------------
+| ROUTE YANG HARUS LOGIN
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth'])->group(function () {
 
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Manajemen Sistem
-    Route::resource('role', RoleController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('audit-log', AuditLogController::class);
 
-    // Dokumen
-    Route::resource('penyuratan', PenyuratanController::class);
-    Route::resource('keuangan', KeuanganController::class);
-    Route::resource('inventaris', InventarisController::class);
+    /*
+    |--------------------------------------------------------------------------
+    | SUPER ADMIN ONLY
+    |--------------------------------------------------------------------------
+    */
 
-    // Data Center
-    Route::resource('siswa', SiswaController::class);
-    Route::resource('kelas', KelasController::class);
+    Route::middleware(['role:Super Admin'])->group(function () {
 
-    // Administrasi
-    Route::resource('administrasi', AdministrasiController::class);
+        Route::resource('role', RoleController::class);
+        Route::resource('user', UserController::class);
+        Route::resource('audit-log', AuditLogController::class);
 
-    // Profile
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN + SUPER ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(['role:Super Admin,Admin'])->group(function () {
+
+        // Dokumen
+        Route::resource('penyuratan', PenyuratanController::class);
+        Route::resource('keuangan', KeuanganController::class);
+        Route::resource('inventaris', InventarisController::class);
+
+        // Data Center
+        Route::resource('siswa', SiswaController::class);
+        Route::resource('kelas', KelasController::class);
+
+        // Administrasi
+        Route::resource('administrasi', AdministrasiController::class);
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 });
