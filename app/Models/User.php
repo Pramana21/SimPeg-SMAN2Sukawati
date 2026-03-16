@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,6 +9,10 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    protected $primaryKey = 'id_user';
+
+    protected $keyType = 'int';
 
     protected $fillable = [
         'username',
@@ -29,6 +32,11 @@ class User extends Authenticatable
         return $this->password_hash;
     }
 
+    public function getAuthIdentifierName()
+    {
+        return 'username';
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'id_role', 'id_role');
@@ -37,9 +45,5 @@ class User extends Authenticatable
     public function pegawai()
     {
         return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
-    }
-    public function getAuthIdentifierName()
-    {
-        return 'username';
     }
 }

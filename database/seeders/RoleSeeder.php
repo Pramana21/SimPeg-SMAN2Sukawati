@@ -11,22 +11,30 @@ class RoleSeeder extends Seeder
     {
         Role::create([
             'role_name' => 'Super Admin',
-            'description' => 'Akses penuh ke seluruh sistem'
+            'description' => 'Akses penuh ke seluruh sistem',
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
 
         Role::create([
             'role_name' => 'Admin Kepegawaian',
-            'description' => 'Mengelola data pegawai dan dokumen'
+            'description' => 'Mengelola data pegawai dan dokumen',
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
 
         Role::create([
             'role_name' => 'Tamu',
-            'description' => 'Hanya dapat melihat dokumen'
+            'description' => 'Hanya dapat melihat dokumen',
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
 
         Role::create([
             'role_name' => 'Siswa',
-            'description' => 'Akses terbatas untuk siswa'
+            'description' => 'Akses terbatas untuk siswa',
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
     }
 }

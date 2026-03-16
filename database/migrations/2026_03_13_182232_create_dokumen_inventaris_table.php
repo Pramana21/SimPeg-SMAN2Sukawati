@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('dokumen_inventaris', function (Blueprint $table) {
 
-        $table->increments('id_dokumen_inventaris');
+        $table->id('id_dokumen_inventaris');
 
-        $table->integer('id_user')->unsigned();
+        $table->unsignedBigInteger('id_user');
 
         $table->string('nama_dokumen',150);
 

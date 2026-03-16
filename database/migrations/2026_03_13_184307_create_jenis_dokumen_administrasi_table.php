@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('jenis_dokumen_administrasi', function (Blueprint $table) {
 
-        $table->increments('id_jenis_dokumen_administrasi');
+        $table->id('id_jenis_dokumen_administrasi');
 
-        $table->integer('id_kategori_administrasi')->unsigned();
+        $table->unsignedBigInteger('id_kategori_administrasi');
 
         $table->string('nama_jenis',80);
 

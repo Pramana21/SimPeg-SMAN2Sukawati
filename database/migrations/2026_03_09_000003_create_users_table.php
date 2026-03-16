@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
 
-        $table->increments('id_user');
+        $table->id('id_user');
 
         $table->string('username',60)->unique();
         $table->string('password_hash',255);
 
-        $table->integer('id_role')->unsigned();
-        $table->integer('id_pegawai')->unsigned()->nullable()->unique();
+        $table->unsignedBigInteger('id_role');
+        $table->unsignedBigInteger('id_pegawai')->nullable()->unique();
 
         $table->boolean('is_active')->default(true);
 

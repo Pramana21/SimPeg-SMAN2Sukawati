@@ -13,19 +13,19 @@ return new class extends Migration
     {
         Schema::create('audit_log', function (Blueprint $table) {
 
-        $table->increments('id_audit_log');
+        $table->id('id_audit_log');
 
-        $table->integer('id_user')->unsigned();
+        $table->unsignedBigInteger('id_user');
 
         $table->string('action',20);
         $table->string('module',50);
 
         $table->string('entity',50)->nullable();
-        $table->integer('entity_id')->nullable();
+        $table->unsignedBigInteger('entity_id')->nullable();
 
         $table->string('description',255)->nullable();
 
-        $table->timestamp('created_at');
+        $table->timestamps();
 
         $table->foreign('id_user')
             ->references('id_user')

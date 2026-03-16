@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
 
-        $table->increments('id_kelas');
+        $table->id('id_kelas');
 
         $table->smallInteger('tingkat');
         $table->char('fase',1);
         $table->smallInteger('rombel');
-
+        $table->unique(['tingkat','fase','peminatan','rombel']);
         $table->char('peminatan',3)->default('P');
 
         $table->string('nama_kelas',20)->unique();

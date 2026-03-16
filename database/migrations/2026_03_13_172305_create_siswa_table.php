@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('siswa', function (Blueprint $table) {
 
-        $table->increments('id_siswa');
+        $table->id('id_siswa');
 
         $table->string('nis',30)->unique();
         $table->string('nisn',30)->nullable()->unique();
@@ -31,7 +31,7 @@ return new class extends Migration
 
         $table->string('foto_path',255)->nullable();
 
-        $table->integer('id_kelas')->unsigned()->nullable();
+        $table->unsignedBigInteger('id_kelas')->nullable();
 
         $table->boolean('is_active')->default(true);
 

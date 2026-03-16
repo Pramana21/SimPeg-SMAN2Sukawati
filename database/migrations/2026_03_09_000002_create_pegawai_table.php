@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('pegawai', function (Blueprint $table) {
 
-        $table->increments('id_pegawai');
+        $table->id('id_pegawai');
 
         $table->string('nip_nippk',40)->unique()->nullable();
         $table->string('nik',30)->unique()->nullable();

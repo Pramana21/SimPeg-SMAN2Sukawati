@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('dokumen_administrasi', function (Blueprint $table) {
 
-        $table->increments('id_dokumen_administrasi');
+        $table->id('id_dokumen_administrasi');
 
-        $table->integer('id_user')->unsigned();
+        $table->unsignedBigInteger('id_user');
 
         $table->string('nama_dokumen',150);
 
         $table->date('tanggal_dokumen');
 
-        $table->integer('id_jenis_dokumen_administrasi')->unsigned();
+        $table->unsignedBigInteger('id_jenis_dokumen_administrasi');
 
-        $table->integer('id_kelas')->unsigned()->nullable();
+        $table->unsignedBigInteger('id_kelas')->nullable();
 
         $table->string('file_path',255);
 

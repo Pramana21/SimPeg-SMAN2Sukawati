@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('dokumen_penyuratan', function (Blueprint $table) {
 
-        $table->increments('id_dokumen_penyuratan');
+        $table->id('id_dokumen_penyuratan');
 
-        $table->integer('id_user')->unsigned();
+        $table->unsignedBigInteger('id_user');
 
         $table->string('nama_dokumen',150);
         $table->string('no_surat',60)->unique();
 
         $table->date('tanggal_dokumen');
 
-        $table->integer('id_jenis_surat')->unsigned();
+        $table->unsignedBigInteger('id_jenis_surat');
 
         $table->string('nama_pengirim_penerima',120)->nullable();
 
