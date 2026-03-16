@@ -23,7 +23,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['auth'])->group(function () {
 
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+
+});
 /*
 |--------------------------------------------------------------------------
 | ROUTE YANG HARUS LOGIN

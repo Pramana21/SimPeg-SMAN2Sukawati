@@ -15,13 +15,18 @@ class RoleSeeder extends Seeder
         ]);
 
         Role::create([
-            'role_name' => 'Admin',
-            'description' => 'Mengelola data dan dokumen'
+            'role_name' => 'Admin Kepegawaian',
+            'description' => 'Mengelola data pegawai dan dokumen'
         ]);
 
         Role::create([
-            'role_name' => 'Viewer',
+            'role_name' => 'Tamu',
             'description' => 'Hanya dapat melihat dokumen'
+        ]);
+
+        Role::create([
+            'role_name' => 'Siswa',
+            'description' => 'Akses terbatas untuk siswa'
         ]);
     }
 }
