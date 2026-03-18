@@ -46,4 +46,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
     }
+    public function hasPermission($module, $action)
+{
+    return \DB::table('role_permissions')
+        ->join('permissions', 'permissions.id_permission', '=', 'role_permissions.id_permission')
+        ->where('role_permissions.id_role', $this->id_role)
+        ->where('permissions.module', $module)
+        ->where('permissions.action', $action)
+        ->exists();
+}
 }

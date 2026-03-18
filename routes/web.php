@@ -19,22 +19,20 @@ use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\ProfileController;
 
 
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::middleware(['auth'])->group(function () {
-
-    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-
-});
-Route::get('/login',[LoginController::class,'showLogin']);
-Route::post('/login',[LoginController::class,'login']);
-Route::get('/logout',[LoginController::class,'logout']);
 /*
 |--------------------------------------------------------------------------
-| ROUTE YANG HARUS LOGIN
+| AUTH
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/login',[LoginController::class,'showLogin'])->name('login');
+Route::post('/login',[LoginController::class,'login']);
+Route::get('/logout',[LoginController::class,'logout']);
+
+
+/*
+|--------------------------------------------------------------------------
+| HARUS LOGIN
 |--------------------------------------------------------------------------
 */
 
@@ -46,40 +44,50 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | SUPER ADMIN ONLY
+    | ROLE & USER MANAGEMENT (SUPER ADMIN)
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(['role:Super Admin'])->group(function () {
+    Route::resource('role', RoleController::class)
+        ->middleware('permission:role,view');
 
-        Route::resource('role', RoleController::class);
-        Route::resource('user', UserController::class);
-        Route::resource('audit-log', AuditLogController::class);
+    Route::resource('user', UserController::class)
+        ->middleware('permission:user,view');
 
-    });
+    Route::resource('audit-log', AuditLogController::class)
+        ->middleware('permission:user,view');
 
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN + SUPER ADMIN
+    | PEGAWAI & DATA
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(['role:Super Admin,Admin'])->group(function () {
+    Route::resource('siswa', SiswaController::class)
+        ->middleware('permission:siswa,view');
 
-        // Dokumen
-        Route::resource('penyuratan', PenyuratanController::class);
-        Route::resource('keuangan', KeuanganController::class);
-        Route::resource('inventaris', InventarisController::class);
+    Route::resource('kelas', KelasController::class)
+        ->middleware('permission:kelas,view');
 
-        // Data Center
-        Route::resource('siswa', SiswaController::class);
-        Route::resource('kelas', KelasController::class);
 
-        // Administrasi
-        Route::resource('administrasi', AdministrasiController::class);
+    /*
+    |--------------------------------------------------------------------------
+    | DOKUMEN
+    |--------------------------------------------------------------------------
+    */
 
-    });
+    Route::resource('penyuratan', PenyuratanController::class)
+        ->middleware('permission:penyuratan,view');
+
+    Route::resource('keuangan', KeuanganController::class)
+        ->middleware('permission:keuangan,view');
+
+    Route::resource('inventaris', InventarisController::class)
+        ->middleware('permission:inventaris,view');
+
+    Route::resource('administrasi', AdministrasiController::class)
+        ->middleware('permission:administrasi,view');
 
 
     /*
@@ -94,7 +102,5 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    
 });
-
-
-require __DIR__.'/auth.php';

@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
         ]);
 
     })
@@ -24,4 +25,4 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
 
-->create();
+    ->create();
