@@ -40,7 +40,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+    
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
 
     /*
     |--------------------------------------------------------------------------
@@ -56,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('audit-log', AuditLogController::class)
         ->middleware('permission:user,view');
+
 
 
     /*
