@@ -9,17 +9,40 @@
     <p class="text-gray-500 mb-6">Catatan aktivitas pengguna di sistem.</p>
 
     <!-- FILTER -->
-    <div class="flex items-center gap-3 mb-4">
+    <form method="GET" class="flex gap-3 mb-4">
 
-        <button class="bg-blue-500 text-white px-4 py-2 rounded">
-            Januari
+        <!-- BULAN -->
+        <select name="bulan" class="px-4 py-2 rounded bg-blue-500 text-white">
+
+            <option value="">Semua Bulan</option>
+
+            @for ($i = 1; $i <= 12; $i++)
+                <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>
+                    {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                </option>
+            @endfor
+
+        </select>
+
+        <!-- TAHUN -->
+        <select name="tahun" class="px-4 py-2 rounded bg-blue-500 text-white">
+
+            <option value="">Semua Tahun</option>
+
+            @for ($y = 2024; $y <= 2026; $y++)
+                <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>
+                    {{ $y }}
+                </option>
+            @endfor
+
+        </select>
+
+        <!-- BUTTON -->
+        <button class="bg-gray-700 text-white px-4 py-2 rounded">
+            Filter
         </button>
 
-        <button class="bg-blue-500 text-white px-4 py-2 rounded">
-            2025
-        </button>
-
-    </div>
+    </form>
 
     <!-- ACTION BUTTON -->
     <div class="flex justify-end gap-2 mb-4">
@@ -71,7 +94,9 @@
                         <input type="checkbox" class="rowCheckbox" value="{{ $index }}">
                     </td>
 
-                    <td class="p-2">{{ $log['tanggal'] }}</td>
+                    <td class="p-2">
+                        {{ \Carbon\Carbon::parse($log['tanggal'])->format('d-m-Y') }}
+                    </td>
                     <td class="p-2">{{ $log['user'] }}</td>
                     <td class="p-2">{{ $log['modul'] }}</td>
                     <td class="p-2">{{ $log['aksi'] }}</td>
