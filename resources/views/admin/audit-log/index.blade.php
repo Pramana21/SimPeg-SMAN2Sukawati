@@ -29,11 +29,15 @@
             Unduh
         </button>
 
-        <button class="bg-red-500 text-white px-4 py-2 rounded flex items-center gap-2">
+        <button onclick="deleteSelected()" class="bg-red-500 text-white px-4 py-2 rounded flex items-center gap-2">
             <i data-feather="trash"></i>
             Hapus
         </button>
 
+    </div>
+
+    <div id="successAlert" class="hidden mb-4 bg-green-100 text-green-700 px-4 py-3 rounded">
+        Data berhasil dihapus
     </div>
 
     <!-- TABLE -->
@@ -47,7 +51,9 @@
 
             <thead>
                 <tr class="border-b">
-                    <th class="p-2"></th>
+                    <th class="p-2">
+                        <input type="checkbox" id="checkAll">
+                    </th>
                     <th class="p-2 text-left">Waktu</th>
                     <th class="p-2 text-left">Pengguna</th>
                     <th class="p-2 text-left">Modul</th>
@@ -58,11 +64,11 @@
 
             <tbody>
 
-                @foreach($logs as $log)
+                @foreach($logs as $index => $log)
                 <tr class="border-b hover:bg-gray-50">
 
                     <td class="p-2">
-                        <input type="checkbox">
+                        <input type="checkbox" class="rowCheckbox" value="{{ $index }}">
                     </td>
 
                     <td class="p-2">{{ $log['tanggal'] }}</td>
@@ -82,4 +88,33 @@
 
 </div>
 
+<script>
+
+    // SELECT ALL
+    document.getElementById('checkAll').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.rowCheckbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    // DELETE SIMULASI
+    function deleteSelected() {
+
+        let selected = document.querySelectorAll('.rowCheckbox:checked');
+
+        if (selected.length === 0) {
+            alert("Pilih data terlebih dahulu!");
+            return;
+        }
+
+        // hapus dari UI (sementara)
+        selected.forEach(cb => {
+            cb.closest('tr').remove();
+        });
+
+        // tampilkan alert
+        document.getElementById('successAlert').classList.remove('hidden');
+
+    }
+
+</script>
 @endsection
