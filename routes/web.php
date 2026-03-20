@@ -45,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/audit-log', [AuditLogController::class, 'index']);
 
+    Route::get('/audit-log/export', [AuditLogController::class, 'export']);
+
     /*
     |--------------------------------------------------------------------------
     | ROLE & USER MANAGEMENT (SUPER ADMIN)

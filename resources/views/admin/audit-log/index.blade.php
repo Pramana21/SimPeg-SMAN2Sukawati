@@ -47,10 +47,13 @@
     <!-- ACTION BUTTON -->
     <div class="flex justify-end gap-2 mb-4">
 
-        <button class="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2">
-            <i data-feather="download"></i>
-            Unduh
-        </button>
+        <a href="{{ url('/audit-log/export?bulan='.$bulan.'&tahun='.$tahun) }}"
+            class="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2">
+
+                <i data-feather="download"></i>
+                Unduh
+
+        </a>
 
         <button onclick="deleteSelected()" class="bg-red-500 text-white px-4 py-2 rounded flex items-center gap-2">
             <i data-feather="trash"></i>
