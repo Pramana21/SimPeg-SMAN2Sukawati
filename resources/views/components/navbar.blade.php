@@ -1,31 +1,37 @@
-<div class="bg-white shadow p-4 flex justify-between items-center">
+<div class="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
 
-<div class="text-lg font-bold">
+    <!-- TITLE -->
+    <h1 class="text-xl font-semibold text-gray-800">
+        Welcome Back
+    </h1>
 
-SIMPEG SMAN 2 SUKAWATI
+    <!-- RIGHT SECTION -->
+    <div class="flex items-center gap-4">
 
-</div>
+        <!-- SEARCH -->
+        <div class="relative">
+            <input type="text"
+                placeholder="Search..."
+                class="w-64 pl-10 pr-4 py-2 rounded-md bg-blue-500 text-white placeholder-white focus:outline-none">
 
-<div>
+            <i data-feather="search"
+               class="absolute left-3 top-2.5 w-4 h-4 text-white"></i>
+        </div>
 
-<span class="mr-4">
+        <!-- NOTIFICATION -->
+        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
+            <i data-feather="bell"></i>
+        </div>
 
-{{ Auth::user()->name }}
+        <!-- SETTINGS -->
+        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
+            <i data-feather="settings"></i>
+        </div>
 
-</span>
+        <!-- PROFILE -->
+        <img src="{{ asset('profile.jpg') }}"
+             class="w-10 h-10 rounded-full object-cover border-2 border-white shadow">
 
-<form method="POST" action="{{ route('logout') }}" style="display:inline">
-
-@csrf
-
-<button class="bg-red-500 text-white px-3 py-1 rounded">
-
-Logout
-
-</button>
-
-</form>
-
-</div>
+    </div>
 
 </div>

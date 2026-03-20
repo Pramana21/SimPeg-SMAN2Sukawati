@@ -84,7 +84,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="text-center p-4 text-gray-400">
+                <td colspan="5" class="text-center p-6 text-gray-400">
                     Belum ada aktivitas
                 </td>
             </tr>
