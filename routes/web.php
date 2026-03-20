@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/{id?}', [RoleController::class, 'index'])->name('roles.index');
 
     /*
     |--------------------------------------------------------------------------

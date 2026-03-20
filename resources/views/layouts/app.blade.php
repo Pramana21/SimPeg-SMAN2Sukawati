@@ -44,8 +44,11 @@
 
         <div class="space-y-2 text-gray-700">
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="shield"></i> Role Akses
+            <a href="{{ url('/roles') }}"
+                class="{{ request()->is('roles*') ? 'bg-blue-500 text-white' : '' }} p-2 flex items-center gap-2 rounded">
+
+                    <i data-feather="shield"></i>
+                    Role Akses
             </a>
 
             <a class="flex gap-3 items-center p-2">

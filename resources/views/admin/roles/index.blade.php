@@ -4,124 +4,104 @@
 
 <div class="p-6">
 
-    <!-- Title -->
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold">Role & Hak Akses</h1>
-        <p class="text-gray-500">Kelola peran dan hak akses pengguna</p>
-    </div>
+    <!-- TITLE -->
+    <h1 class="text-2xl font-semibold text-gray-800 mb-1">
+        Role & Hak Akses
+    </h1>
+    <p class="text-gray-500 mb-6">
+        Kelola peran dan hak akses pengguna
+    </p>
 
     <div class="grid grid-cols-3 gap-6">
 
-        <!-- List Role -->
-        <div class="bg-white rounded-lg shadow">
+        <!-- LEFT: LIST ROLE -->
+        <div class="bg-white rounded-xl shadow p-4">
 
-            <div class="p-4 border-b font-semibold">
-                List Role
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-semibold">List Role</h2>
+                <i data-feather="chevron-down"></i>
             </div>
 
-            <ul>
+            <div class="space-y-2">
 
                 @foreach($roles as $role)
 
-                <li class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b">
+                    <a href="{{ url('/roles/'.$role->id_role) }}">
 
-                    {{ $role->role_name }}
+                        <div class="p-2 rounded cursor-pointer
+                            {{ $selectedRole && $selectedRole->id_role == $role->id_role 
+                                ? 'bg-blue-100 border-l-4 border-blue-500 text-blue-600' 
+                                : 'hover:bg-gray-100' }}">
 
-                </li>
+                            {{ $role->role_name }}
+
+                        </div>
+
+                    </a>
 
                 @endforeach
 
-            </ul>
+            </div>
 
         </div>
 
+        <!-- RIGHT: DETAIL -->
+        <div class="col-span-2 bg-white rounded-xl shadow p-6">
 
-        <!-- Hak Akses -->
-        <div class="col-span-2 bg-white rounded-lg shadow">
-
-            <div class="p-4 border-b flex justify-between items-center">
+            <div class="flex justify-between items-start mb-4">
 
                 <div>
                     <h2 class="text-xl font-semibold">
-                        Hak Akses
+                        Hak Akses: {{ $selectedRole->role_name }}
                     </h2>
+
                     <p class="text-gray-500 text-sm">
-                        Mengelola akses modul
+                        {{ $selectedRole->description }}
                     </p>
                 </div>
 
-                <button class="bg-blue-500 text-white px-4 py-2 rounded">
-                    Edit Informasi Role
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                    <i data-feather="edit"></i>
+                    Edit Informan Role
                 </button>
 
             </div>
 
-            <div class="p-6">
+            <!-- MODUL -->
+            <div class="mb-6">
 
-                <!-- Modul -->
-                <h3 class="font-semibold mb-3">
-                    Modul yang dapat diakses
-                </h3>
+                <h3 class="font-semibold mb-3">Modul yang dapat diakses</h3>
 
                 <div class="grid grid-cols-2 gap-3">
 
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" checked>
-                        Dashboard
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" checked>
-                        Penyuratan
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" checked>
-                        Keuangan
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" checked>
-                        Inventaris
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" checked>
-                        Data Center
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" checked>
-                        Administrasi Umum
-                    </label>
+                    @foreach($rolePermissions['modules'] as $module)
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                                ✔
+                            </div>
+                            {{ $module }}
+                        </div>
+                    @endforeach
 
                 </div>
 
-                <!-- Akses -->
-                <div class="mt-6">
+            </div>
 
-                    <h3 class="font-semibold mb-3">
-                        Akses yang diizinkan
-                    </h3>
+            <!-- AKSES -->
+            <div>
 
-                    <div class="space-y-2">
+                <h3 class="font-semibold mb-3">Akses yang diizinkan</h3>
 
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" checked>
-                            Kelola data (Tambah/Ubah/Hapus)
-                        </label>
+                <div class="space-y-2">
 
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" checked>
-                            Lihat detail
-                        </label>
-
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" checked>
-                            Unduh dokumen
-                        </label>
-
-                    </div>
+                    @foreach($rolePermissions['actions'] as $action)
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                                ✔
+                            </div>
+                            {{ $action }}
+                        </div>
+                    @endforeach
 
                 </div>
 
