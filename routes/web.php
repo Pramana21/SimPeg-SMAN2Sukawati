@@ -43,6 +43,8 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/roles/{id?}', [RoleController::class, 'index'])->name('roles.index');
 
+    Route::get('/audit-log', [AuditLogController::class, 'index']);
+
     /*
     |--------------------------------------------------------------------------
     | ROLE & USER MANAGEMENT (SUPER ADMIN)

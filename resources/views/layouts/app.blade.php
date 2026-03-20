@@ -55,8 +55,12 @@
                 <i data-feather="users"></i> Manajemen User
             </a>
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="clock"></i> Audit Log
+            <a href="{{ url('/audit-log') }}"
+                class="{{ request()->is('audit-log') ? 'bg-blue-500 text-white' : '' }} p-2 flex items-center gap-2 rounded">
+
+                    <i data-feather="rotate-ccw"></i>
+                    Audit Log
+
             </a>
 
         </div>
