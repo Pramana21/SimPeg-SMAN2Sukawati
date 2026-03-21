@@ -70,8 +70,11 @@
 
         <div class="space-y-2 text-gray-700">
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="file-text"></i> Penyuratan
+            <a href="{{ url('/penyuratan') }}"
+                class="{{ request()->is('penyuratan*') ? 'bg-blue-500 text-white' : '' }} p-2 flex items-center gap-2 rounded">
+
+                <i data-feather="file-text"></i>
+                Penyuratan
             </a>
 
             <a class="flex gap-3 items-center p-2">

@@ -6,9 +6,10 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\AuditLogController;
 
-use App\Http\Controllers\PenyuratanController;
+use App\Http\Controllers\SuratController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\InventarisController;
 
@@ -47,6 +48,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/audit-log/export', [AuditLogController::class, 'export']);
 
+    // Route::get('/users', [UserManagementController::class, 'index']);
+
+    Route::get('/penyuratan', [SuratController::class, 'index']);
+    Route::get('/penyuratan/create', [SuratController::class, 'create']);
+
+
     /*
     |--------------------------------------------------------------------------
     | ROLE & USER MANAGEMENT (SUPER ADMIN)
@@ -83,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::resource('penyuratan', PenyuratanController::class)
+    Route::resource('penyuratan', SuratController::class)
         ->middleware('permission:penyuratan,view');
 
     Route::resource('keuangan', KeuanganController::class)
