@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -15,9 +14,9 @@
 
         <!-- LEFT -->
         <div class="flex gap-2">
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">All</button>
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Masuk</button>
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Keluar</button>
+            <a href="/penyuratan" class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">All</a>
+            <a href="/penyuratan?jenis=masuk" class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Masuk</a>
+            <a href="/penyuratan?jenis=keluar" class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Keluar</a>
         </div>
 
         <!-- RIGHT -->
@@ -61,27 +60,27 @@
                         <input type="checkbox">
                     </td>
 
-                    <td class="p-4">{{ $s['no'] }}</td>
-                    <td class="p-4">{{ $s['nama'] }}</td>
-                    <td class="p-4">{{ $s['jenis'] }}</td>
-                    <td class="p-4">{{ $s['pengirim'] }}</td>
-                    <td class="p-4">{{ $s['tanggal'] }}</td>
+                    <td class="p-4">{{ $s->no_surat }}</td>
+                    <td class="p-4">{{ $s->nama_dokumen }}</td>
+                    <td class="p-4">{{ $s->jenis->nama_jenis_surat }}</td>
+                    <td class="p-4">{{ $s->nama_pengirim_penerima }}</td>
+                    <td class="p-4">
+                        {{ \Carbon\Carbon::parse($s->tanggal_dokumen)->format('d/m/Y') }}
+                    </td>
 
                     <!-- AKSI -->
                     <td class="p-4">
                         <div class="flex justify-center gap-2">
 
-                            <!-- EDIT -->
                             <button class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">
                                 ✏️
                             </button>
 
-                            <!-- VIEW -->
-                            <button class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
+                            <a href="{{ asset('storage/'.$s->file_path) }}" target="_blank"
+                               class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
                                 👁
-                            </button>
+                            </a>
 
-                            <!-- DELETE -->
                             <button class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
                                 🗑
                             </button>
