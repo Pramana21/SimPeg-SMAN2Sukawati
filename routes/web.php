@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/penyuratan', [SuratController::class, 'index']);
     Route::get('/penyuratan/create', [SuratController::class, 'create']);
     Route::post('/penyuratan/store', [SuratController::class, 'store']);
+    Route::delete('/penyuratan/{id}', [SuratController::class, 'destroy']);
 
     /*
     |--------------------------------------------------------------------------

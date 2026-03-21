@@ -14,9 +14,20 @@
 
         <!-- LEFT -->
         <div class="flex gap-2">
-            <a href="/penyuratan" class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">All</a>
-            <a href="/penyuratan?jenis=masuk" class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Masuk</a>
-            <a href="/penyuratan?jenis=keluar" class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Keluar</a>
+            <a href="/penyuratan"
+            class="px-4 py-1.5 {{ !request('jenis') ? 'bg-blue-600' : 'bg-blue-500' }} text-white rounded-md text-sm">
+                All
+            </a>
+
+            <a href="/penyuratan?jenis=masuk"
+            class="px-4 py-1.5 {{ request('jenis') == 'masuk' ? 'bg-blue-600' : 'bg-blue-500' }} text-white rounded-md text-sm">
+                Masuk
+            </a>
+
+            <a href="/penyuratan?jenis=keluar"
+            class="px-4 py-1.5 {{ request('jenis') == 'keluar' ? 'bg-blue-600' : 'bg-blue-500' }} text-white rounded-md text-sm">
+                Keluar
+            </a>
         </div>
 
         <!-- RIGHT -->
@@ -72,18 +83,27 @@
                     <td class="p-4">
                         <div class="flex justify-center gap-2">
 
+                            <!-- EDIT -->
                             <button class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">
                                 ✏️
                             </button>
 
+                            <!-- VIEW -->
                             <a href="{{ asset('storage/'.$s->file_path) }}" target="_blank"
-                               class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
+                            class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
                                 👁
                             </a>
 
-                            <button class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
-                                🗑
-                            </button>
+                            <!-- DELETE -->
+                            <form action="/penyuratan/{{ $s->id_dokumen_penyuratan }}" method="POST"
+                                onsubmit="return confirm('Yakin hapus data?')">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
+                                    🗑
+                                </button>
+                            </form>
 
                         </div>
                     </td>

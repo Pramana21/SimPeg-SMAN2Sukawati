@@ -9,9 +9,24 @@ use Illuminate\Support\Facades\Auth;
 
 class SuratController extends Controller
 {
-    public function index()
-    {
-        $surat = DokumenPenyuratan::with('jenis')->latest()->get();
+    public function index(Request $request)
+{
+    $query = DokumenPenyuratan::with('jenis');
+
+        // FILTER JENIS
+        if ($request->jenis == 'masuk') {
+            $query->whereHas('jenis', function ($q) {
+                $q->where('nama_jenis_surat', 'Masuk');
+            });
+        }
+
+        if ($request->jenis == 'keluar') {
+            $query->whereHas('jenis', function ($q) {
+                $q->where('nama_jenis_surat', 'Keluar');
+            });
+        }
+
+        $surat = $query->latest()->get();
 
         return view('admin.penyuratan.index', compact('surat'));
     }
@@ -21,6 +36,20 @@ class SuratController extends Controller
         $jenis = JenisSurat::all();
 
         return view('admin.penyuratan.create', compact('jenis'));
+    }
+    
+    public function destroy($id)
+    {
+        $data = DokumenPenyuratan::findOrFail($id);
+
+        // hapus file
+        if ($data->file_path && \Storage::disk('public')->exists($data->file_path)) {
+            \Storage::disk('public')->delete($data->file_path);
+        }
+
+        $data->delete();
+
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
 
     public function store(Request $request)
