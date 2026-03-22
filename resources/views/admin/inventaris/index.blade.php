@@ -2,55 +2,98 @@
 
 @section('content')
 
-<h1 class="text-2xl font-bold mb-4">
-Data Inventaris
-</h1>
+<div class="p-6">
 
-<a href="/inventaris/create"
-class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">
+    <!-- TITLE -->
+    <h1 class="text-2xl font-semibold text-gray-800 mb-4">
+        Inventaris
+    </h1>
 
-Tambah Inventaris
+    <!-- FILTER -->
+    <div class="flex justify-between items-center mb-4">
 
-</a>
+        <!-- LEFT -->
+        <div class="flex gap-2">
+            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm flex items-center gap-2">
+                Januari <i data-feather="chevron-down"></i>
+            </button>
 
-<table class="w-full border">
+            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm flex items-center gap-2">
+                2025 <i data-feather="chevron-down"></i>
+            </button>
+        </div>
 
-<thead class="bg-gray-200">
+        <!-- RIGHT -->
+        <a href="/inventaris/create"
+           class="flex items-center gap-2 px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
+            <i data-feather="plus"></i> Tambah
+        </a>
 
-<tr>
+    </div>
 
-<th class="p-2">Nama Barang</th>
-<th class="p-2">Jumlah</th>
-<th class="p-2">Kondisi</th>
+    <!-- TABLE -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
 
-</tr>
+        <h2 class="text-lg font-semibold p-4 border-b">
+            Dokumen terbaru
+        </h2>
 
-</thead>
+        <table class="w-full text-sm">
 
-<tbody>
+            <thead class="bg-gray-50 text-gray-700">
+                <tr>
+                    <th class="p-4 w-10">
+                        <input type="checkbox">
+                    </th>
+                    <th class="p-4">No</th>
+                    <th class="p-4">Nama Dokumen</th>
+                    <th class="p-4">Tanggal</th>
+                    <th class="p-4">Di-upload oleh</th>
+                    <th class="p-4 text-center">Aksi</th>
+                </tr>
+            </thead>
 
-@foreach($inventaris as $i)
+            <tbody>
 
-<tr class="border">
+                @for ($i = 1; $i <= 5; $i++)
+                <tr class="border-t">
 
-<td class="p-2">
-{{ $i->nama_barang }}
-</td>
+                    <td class="p-4">
+                        <input type="checkbox">
+                    </td>
 
-<td class="p-2">
-{{ $i->jumlah }}
-</td>
+                    <td class="p-4">0{{ $i }}</td>
+                    <td class="p-4">Inventaris barang</td>
+                    <td class="p-4">01/{{ $i }}/2025</td>
+                    <td class="p-4">Ni Luh Surya</td>
 
-<td class="p-2">
-{{ $i->kondisi }}
-</td>
+                    <td class="p-4">
+                        <div class="flex justify-center gap-2">
 
-</tr>
+                            <button class="bg-green-500 text-white p-2 rounded">
+                                <i data-feather="edit"></i>
+                            </button>
 
-@endforeach
+                            <button class="bg-blue-500 text-white p-2 rounded">
+                                <i data-feather="eye"></i>
+                            </button>
 
-</tbody>
+                            <button class="bg-red-500 text-white p-2 rounded">
+                                <i data-feather="trash-2"></i>
+                            </button>
 
-</table>
+                        </div>
+                    </td>
+
+                </tr>
+                @endfor
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 
 @endsection
