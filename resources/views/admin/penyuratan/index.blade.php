@@ -39,6 +39,11 @@
                class="flex items-center gap-2 px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
                 <span class="text-lg">+</span> Tambah
             </a>
+
+            <a href="/penyuratan/export/pdf"
+             class="px-4 py-2 bg-green-500 text-white rounded-md text-sm">
+                Export PDF
+            </a>
         </div>
 
     </div>
@@ -90,10 +95,10 @@
                             </a>
 
                             <!-- VIEW -->
-                            <a href="{{ asset('storage/'.$s->file_path) }}" target="_blank"
-                            class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
+                            <button onclick="previewFile('{{ asset('storage/'.$s->file_path) }}')"
+                                class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
                                 👁
-                            </a>
+                            </button>
 
                             <!-- DELETE -->
                             <form action="/penyuratan/{{ $s->id_dokumen_penyuratan }}" method="POST"
@@ -118,6 +123,46 @@
 
     </div>
 
+        <div id="previewModal"
+         class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+
+        <div class="bg-white w-3/4 h-3/4 rounded-lg overflow-hidden relative">
+
+            <button onclick="closePreview()"
+                    class="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded">
+                X
+            </button>
+
+            <iframe id="previewFrame" class="w-full h-full"></iframe>
+
+        </div>
+    </div>
+
 </div>
+
+<div class="p-4 flex justify-between items-center">
+
+    <div class="text-sm text-gray-500">
+        Menampilkan {{ $surat->firstItem() }} - {{ $surat->lastItem() }} 
+        dari {{ $surat->total() }} data
+    </div>
+
+    <div>
+        {{ $surat->links() }}
+    </div>
+
+</div>
+
+<script>
+    function previewFile(url) {
+        document.getElementById('previewFrame').src = url;
+        document.getElementById('previewModal').classList.remove('hidden');
+    }
+
+    function closePreview() {
+        document.getElementById('previewModal').classList.add('hidden');
+        document.getElementById('previewFrame').src = '';
+    }
+</script>
 
 @endsection

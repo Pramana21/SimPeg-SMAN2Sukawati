@@ -50,11 +50,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Route::get('/users', [UserManagementController::class, 'index']);
 
-    Route::get('/penyuratan', [SuratController::class, 'index']);
-    Route::get('/penyuratan/create', [SuratController::class, 'create']);
-    Route::post('/penyuratan/store', [SuratController::class, 'store']);
-    Route::delete('/penyuratan/{id}', [SuratController::class, 'destroy']);
-
     /*
     |--------------------------------------------------------------------------
     | ROLE & USER MANAGEMENT (SUPER ADMIN)
@@ -93,6 +88,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('penyuratan', SuratController::class)
         ->middleware('permission:penyuratan,view');
+    Route::get('/penyuratan', [SuratController::class, 'index']);
+    Route::get('/penyuratan/create', [SuratController::class, 'create']);
+    Route::post('/penyuratan/store', [SuratController::class, 'store']);
+    Route::delete('/penyuratan/{id}', [SuratController::class, 'destroy']);
+    Route::get('/penyuratan/{id}/edit', [SuratController::class, 'edit']);
+    Route::put('/penyuratan/{id}', [SuratController::class, 'update']);
+    Route::get('/penyuratan/export/pdf', [SuratController::class, 'exportPdf']);
 
     Route::resource('keuangan', KeuanganController::class)
         ->middleware('permission:keuangan,view');
