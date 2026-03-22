@@ -13,15 +13,41 @@
     <div class="flex justify-between items-center mb-4">
 
         <!-- LEFT -->
-        <div class="flex gap-2">
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm flex items-center gap-2">
-                Januari <i data-feather="chevron-down"></i>
-            </button>
+        <form method="GET" class="flex gap-2">
 
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm flex items-center gap-2">
-                2025 <i data-feather="chevron-down"></i>
-            </button>
-        </div>
+            <!-- BULAN -->
+            <select name="bulan"
+                    onchange="this.form.submit()"
+                    class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
+
+                <option value="">Semua Bulan</option>
+
+                @for($i=1; $i<=12; $i++)
+                    <option value="{{ $i }}"
+                        {{ request('bulan') == $i ? 'selected' : '' }}>
+                        {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                    </option>
+                @endfor
+
+            </select>
+
+            <!-- TAHUN -->
+            <select name="tahun"
+                    onchange="this.form.submit()"
+                    class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
+
+                <option value="">Semua Tahun</option>
+
+                @for($y = date('Y'); $y >= 2020; $y--)
+                    <option value="{{ $y }}"
+                        {{ request('tahun') == $y ? 'selected' : '' }}>
+                        {{ $y }}
+                    </option>
+                @endfor
+
+            </select>
+
+        </form>
 
         <!-- RIGHT -->
         <a href="/inventaris/create"
@@ -55,42 +81,76 @@
 
             <tbody>
 
-                @for ($i = 1; $i <= 5; $i++)
+                @forelse($data as $item)
                 <tr class="border-t">
 
                     <td class="p-4">
                         <input type="checkbox">
                     </td>
 
-                    <td class="p-4">0{{ $i }}</td>
-                    <td class="p-4">Inventaris barang</td>
-                    <td class="p-4">01/{{ $i }}/2025</td>
-                    <td class="p-4">Ni Luh Surya</td>
+                    <td class="p-4">
+                        {{ $loop->iteration }}
+                    </td>
+
+                    <td class="p-4">
+                        {{ $item->nama_dokumen }}
+                    </td>
+
+                    <td class="p-4">
+                        {{ \Carbon\Carbon::parse($item->tanggal_dokumen)->format('d/m/Y') }}
+                    </td>
+
+                    <td class="p-4">
+                        {{ $item->created_by }}
+                    </td>
 
                     <td class="p-4">
                         <div class="flex justify-center gap-2">
 
-                            <button class="bg-green-500 text-white p-2 rounded">
+                            <!-- EDIT -->
+                            <a href="/inventaris/edit/{{ $item->id_dokumen_inventaris }}"
+                               class="bg-green-500 text-white p-2 rounded">
                                 <i data-feather="edit"></i>
-                            </button>
+                            </a>
 
-                            <button class="bg-blue-500 text-white p-2 rounded">
+                            <!-- PREVIEW -->
+                            <a href="{{ asset('storage/'.$item->file_path) }}"
+                               target="_blank"
+                               class="bg-blue-500 text-white p-2 rounded">
                                 <i data-feather="eye"></i>
-                            </button>
+                            </a>
 
-                            <button class="bg-red-500 text-white p-2 rounded">
-                                <i data-feather="trash-2"></i>
-                            </button>
+                            <!-- DELETE -->
+                            <form action="/inventaris/{{ $item->id_dokumen_inventaris }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="bg-red-500 text-white p-2 rounded">
+                                    <i data-feather="trash-2"></i>
+                                </button>
+                            </form>
 
                         </div>
                     </td>
 
                 </tr>
-                @endfor
+
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center p-6 text-gray-500">
+                        Data belum ada
+                    </td>
+                </tr>
+                @endforelse
 
             </tbody>
 
         </table>
+
+        <!-- PAGINATION -->
+        <div class="p-4">
+            {{ $data->appends(request()->query())->links() }}
+        </div>
 
     </div>
 

@@ -32,9 +32,9 @@ class User extends Authenticatable
         return $this->password_hash;
     }
 
-    public function getAuthIdentifierName()
+    public function getAuthIdentifier()
     {
-        return 'username';
+        return $this->id_user;
     }
 
     public function role()

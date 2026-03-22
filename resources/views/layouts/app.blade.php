@@ -81,8 +81,12 @@
                 <i data-feather="dollar-sign"></i> Keuangan
             </a>
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="archive"></i> Inventaris
+            <a href="/inventaris"
+                class="flex items-center gap-2 px-4 py-2 rounded-md
+                {{ request()->is('inventaris*') ? 'bg-blue-500 text-white' : 'text-gray-600' }}">
+                    
+                    <i data-feather="box"></i>
+                    Inventaris
             </a>
 
             <a class="flex gap-3 items-center p-2">

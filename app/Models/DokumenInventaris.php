@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class DokumenInventaris extends Model
 {
     protected $table = 'dokumen_inventaris';
+
     protected $primaryKey = 'id_dokumen_inventaris';
+
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'id_user',
@@ -19,8 +23,15 @@ class DokumenInventaris extends Model
         'tahun'
     ];
 
+    protected $casts = [
+        'tanggal_dokumen' => 'date',
+        'bulan' => 'integer',
+        'tahun' => 'integer',
+    ];
+
+    // 🔥 RELASI KE USER (FIX PENTING)
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 }

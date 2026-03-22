@@ -85,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     | DOKUMEN
     |--------------------------------------------------------------------------
     */
-
+    //penyuratan
     Route::resource('penyuratan', SuratController::class)
         ->middleware('permission:penyuratan,view');
     Route::get('/penyuratan', [SuratController::class, 'index']);
@@ -96,12 +96,25 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/penyuratan/{id}', [SuratController::class, 'update']);
     Route::get('/penyuratan/export/pdf', [SuratController::class, 'exportPdf']);
 
+    //keuangan
     Route::resource('keuangan', KeuanganController::class)
         ->middleware('permission:keuangan,view');
 
+    //inventaris
     Route::resource('inventaris', InventarisController::class)
         ->middleware('permission:inventaris,view');
+    Route::get('/inventaris', function () {
+        return view('admin.inventaris.index');
+    });
+    Route::get('/inventaris/create', function () {
+        return view('admin.inventaris.create');
+    });
+    Route::get('/inventaris', [InventarisController::class, 'index']);
+    Route::get('/inventaris/create', [InventarisController::class, 'create']);
+    Route::post('/inventaris/store', [InventarisController::class, 'store']);
+    Route::delete('/inventaris/{id}', [InventarisController::class, 'destroy']);
 
+    //administrasi
     Route::resource('administrasi', AdministrasiController::class)
         ->middleware('permission:administrasi,view');
 

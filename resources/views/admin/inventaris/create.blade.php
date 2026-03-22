@@ -2,98 +2,83 @@
 
 @section('content')
 
-<div class="p-6">
+<div class="p-6 max-w-3xl">
 
-    <!-- TITLE -->
-    <h1 class="text-2xl font-semibold text-gray-800 mb-4">
-        Inventaris
-    </h1>
+    <!-- BACK + TITLE -->
+    <div class="flex items-center gap-3 mb-6">
 
-    <!-- FILTER -->
-    <div class="flex justify-between items-center mb-4">
+        <a href="/inventaris"
+           class="w-10 h-10 flex items-center justify-center rounded-full border text-lg">
+            ←
+        </a>
 
-        <!-- LEFT -->
-        <div class="flex gap-2">
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm flex items-center gap-2">
-                Januari <i data-feather="chevron-down"></i>
-            </button>
+        <h1 class="text-2xl font-semibold">Tambah Dokumen</h1>
 
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm flex items-center gap-2">
-                2025 <i data-feather="chevron-down"></i>
+    </div>
+
+    <!-- FORM -->
+    <form action="/inventaris/store" method="POST" enctype="multipart/form-data" class="space-y-5">
+        @csrf
+
+        <!-- NAMA -->
+        <div>
+            <label class="text-sm">Nama Dokumen</label>
+            <input type="text" name="nama_dokumen"
+                   class="w-full mt-1 p-3 border rounded-lg" required>
+        </div>
+
+        <!-- TANGGAL -->
+        <div>
+            <label class="text-sm">Date</label>
+            <input type="date" name="tanggal_dokumen"
+                   class="w-full mt-1 p-3 border rounded-lg" required>
+        </div>
+
+        <!-- UPLOADER -->
+        <div>
+            <label class="text-sm">Di-upload</label>
+            <input type="text" name="created_by"
+                   class="w-full mt-1 p-3 border rounded-lg"
+                   placeholder="Contoh: Budi">
+        </div>
+
+        <!-- UPLOAD -->
+        <div>
+            <label class="text-sm">Upload Surat</label>
+
+            <div class="mt-2 border rounded-xl h-40 flex flex-col items-center justify-center gap-2">
+
+                <input type="file" name="file_surat" id="fileInput" class="hidden" required>
+
+                <label for="fileInput"
+                       class="w-12 h-12 bg-blue-500 text-white rounded-lg flex items-center justify-center text-xl cursor-pointer">
+                    +
+                </label>
+
+                <span id="fileName" class="text-sm text-gray-500">
+                    Upload file
+                </span>
+
+            </div>
+        </div>
+
+        <!-- BUTTON -->
+        <div class="flex justify-center">
+            <button class="bg-blue-500 text-white px-6 py-2 rounded-lg">
+                Upload
             </button>
         </div>
 
-        <!-- RIGHT -->
-        <a href="/inventaris/create"
-           class="flex items-center gap-2 px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
-            <i data-feather="plus"></i> Tambah
-        </a>
-
-    </div>
-
-    <!-- TABLE -->
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-
-        <h2 class="text-lg font-semibold p-4 border-b">
-            Dokumen terbaru
-        </h2>
-
-        <table class="w-full text-sm">
-
-            <thead class="bg-gray-50 text-gray-700">
-                <tr>
-                    <th class="p-4 w-10">
-                        <input type="checkbox">
-                    </th>
-                    <th class="p-4">No</th>
-                    <th class="p-4">Nama Dokumen</th>
-                    <th class="p-4">Tanggal</th>
-                    <th class="p-4">Di-upload oleh</th>
-                    <th class="p-4 text-center">Aksi</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                @for ($i = 1; $i <= 5; $i++)
-                <tr class="border-t">
-
-                    <td class="p-4">
-                        <input type="checkbox">
-                    </td>
-
-                    <td class="p-4">0{{ $i }}</td>
-                    <td class="p-4">Inventaris barang</td>
-                    <td class="p-4">01/{{ $i }}/2025</td>
-                    <td class="p-4">Ni Luh Surya</td>
-
-                    <td class="p-4">
-                        <div class="flex justify-center gap-2">
-
-                            <button class="bg-green-500 text-white p-2 rounded">
-                                <i data-feather="edit"></i>
-                            </button>
-
-                            <button class="bg-blue-500 text-white p-2 rounded">
-                                <i data-feather="eye"></i>
-                            </button>
-
-                            <button class="bg-red-500 text-white p-2 rounded">
-                                <i data-feather="trash-2"></i>
-                            </button>
-
-                        </div>
-                    </td>
-
-                </tr>
-                @endfor
-
-            </tbody>
-
-        </table>
-
-    </div>
+    </form>
 
 </div>
+
+<!-- SCRIPT TAMPILKAN NAMA FILE -->
+<script>
+    document.getElementById('fileInput').addEventListener('change', function() {
+        const fileName = this.files[0]?.name || "Upload file";
+        document.getElementById('fileName').innerText = fileName;
+    });
+</script>
 
 @endsection
