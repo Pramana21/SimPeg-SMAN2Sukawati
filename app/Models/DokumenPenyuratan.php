@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DokumenPenyuratan extends Model
 {
     protected $table = 'dokumen_penyuratan';
+
     protected $primaryKey = 'id_dokumen_penyuratan';
 
     protected $fillable = [
@@ -22,13 +23,19 @@ class DokumenPenyuratan extends Model
         'tahun'
     ];
 
-    public function user()
+    /**
+     * 🔥 RELASI KE JENIS SURAT
+     */
+    public function jenis()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(JenisSurat::class, 'id_jenis_surat', 'id_jenis_surat');
     }
 
-    public function jenisSurat()
+    /**
+     * 🔥 OPTIONAL (BAGUS UNTUK NEXT)
+     */
+    public function user()
     {
-        return $this->belongsTo(JenisSurat::class, 'id_jenis_surat');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 }

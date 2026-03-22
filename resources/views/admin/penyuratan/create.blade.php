@@ -63,16 +63,24 @@
         <div>
             <label class="text-sm">Upload Surat</label>
 
-            <div class="mt-2 border rounded-xl h-40 flex items-center justify-center flex-col gap-2">
-                <input type="file" name="file_surat" class="hidden" id="fileInput" required>
+            <div class="mt-2 border rounded-xl h-40 flex flex-col items-center justify-center gap-2">
 
+                <!-- HIDDEN INPUT -->
+                <input type="file" name="file_surat" id="fileInput" class="hidden" required>
+
+                <!-- BUTTON -->
                 <button type="button"
-                        onclick="document.getElementById('fileInput').click()"
-                        class="w-12 h-12 bg-blue-500 text-white rounded-lg text-xl">
+                    onclick="document.getElementById('fileInput').click()"
+                    class="w-12 h-12 bg-blue-500 text-white rounded-lg text-xl">
                     +
                 </button>
 
-                <span class="text-xs text-gray-400">Upload file</span>
+                <!-- TEXT -->
+                <p class="text-sm text-gray-500">Upload file</p>
+
+                <!-- FILE NAME -->
+                <p id="fileName" class="text-sm text-blue-600"></p>
+
             </div>
         </div>
 
@@ -86,5 +94,15 @@
     </form>
 
 </div>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', function() {
+    let fileName = this.files[0]?.name;
+
+    if (fileName) {
+        document.getElementById('fileName').innerText = fileName;
+    }
+});
+</script>
 
 @endsection

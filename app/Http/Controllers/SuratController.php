@@ -64,7 +64,7 @@ class SuratController extends Controller
         $surat = DokumenPenyuratan::findOrFail($id);
         $jenis = JenisSurat::all();
 
-        return view('admin.surat.edit', compact('surat', 'jenis'));
+        return view('admin.penyuratan.edit', compact('surat', 'jenis'));
     }
 
     public function update(Request $request, $id)
@@ -113,22 +113,28 @@ class SuratController extends Controller
             'nama_dokumen' => 'required',
             'tanggal_dokumen' => 'required|date',
             'id_jenis_surat' => 'required',
-            'file_surat' => 'required|file|mimes:pdf,doc,docx'
+            'file_surat' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048'
         ]);
 
-        // upload file
+        // 🔥 ambil user login (AMAN)
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403, 'User belum login');
+        }
+
         $file = $request->file('file_surat');
         $path = $file->store('surat', 'public');
 
         DokumenPenyuratan::create([
-            'id_user' => Auth::id(),
+            'id_user' => $user->id_user, // ✅ FIX TOTAL
             'nama_dokumen' => $request->nama_dokumen,
             'no_surat' => $request->no_surat,
             'tanggal_dokumen' => $request->tanggal_dokumen,
             'id_jenis_surat' => $request->id_jenis_surat,
             'nama_pengirim_penerima' => $request->nama_pengirim_penerima,
             'file_path' => $path,
-            'created_by' => Auth::user()->name ?? 'Admin',
+            'created_by' => $user->username, // ✅ sesuai DB kamu
             'bulan' => date('m', strtotime($request->tanggal_dokumen)),
             'tahun' => date('Y', strtotime($request->tanggal_dokumen)),
         ]);
