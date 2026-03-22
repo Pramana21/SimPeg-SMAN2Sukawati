@@ -84,9 +84,10 @@
                         <div class="flex justify-center gap-2">
 
                             <!-- EDIT -->
-                            <button class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">
-                                ✏️
-                            </button>
+                            <a href="/penyuratan/{{ $s->id_dokumen_penyuratan }}/edit"
+                                class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">
+                                    ✏️
+                            </a>
 
                             <!-- VIEW -->
                             <a href="{{ asset('storage/'.$s->file_path) }}" target="_blank"
