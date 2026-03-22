@@ -11,23 +11,27 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class SuratController extends Controller
 {
     public function index(Request $request)
-{
-    $query = DokumenPenyuratan::with('jenis');
+    {
+        $query = DokumenPenyuratan::with('jenis');
 
-        // FILTER JENIS
-        if ($request->jenis == 'masuk') {
-            $query->whereHas('jenis', function ($q) {
-                $q->where('nama_jenis_surat', 'Masuk');
+        // 🔹 FILTER JENIS
+        if ($request->jenis) {
+            $query->whereHas('jenis', function ($q) use ($request) {
+                $q->where('nama_jenis_surat', ucfirst($request->jenis));
             });
         }
 
-        if ($request->jenis == 'keluar') {
-            $query->whereHas('jenis', function ($q) {
-                $q->where('nama_jenis_surat', 'Keluar');
-            });
+        // 🔹 FILTER BULAN
+        if ($request->bulan) {
+            $query->whereMonth('tanggal_dokumen', $request->bulan);
         }
 
-        $surat = DokumenPenyuratan::with('jenis')
+        // 🔹 FILTER TAHUN
+        if ($request->tahun) {
+            $query->whereYear('tanggal_dokumen', $request->tahun);
+        }
+        
+        $surat = $query
             ->latest()
             ->paginate(10);
 

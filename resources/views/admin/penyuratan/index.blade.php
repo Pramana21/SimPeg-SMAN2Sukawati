@@ -32,11 +32,34 @@
 
         <!-- RIGHT -->
         <div class="flex gap-2 items-center">
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">Januari</button>
-            <button class="px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">2025</button>
 
+            <!-- BULAN -->
+            <select onchange="filterData()" id="bulan"
+                class="px-3 py-1.5 border rounded-md text-sm">
+
+                <option value="">Bulan</option>
+                @for($i=1; $i<=12; $i++)
+                    <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
+                        {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                    </option>
+                @endfor
+            </select>
+
+            <!-- TAHUN -->
+            <select onchange="filterData()" id="tahun"
+                class="px-3 py-1.5 border rounded-md text-sm">
+
+                <option value="">Tahun</option>
+                @for($i=2023; $i<=date('Y'); $i++)
+                    <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
+                        {{ $i }}
+                    </option>
+                @endfor
+            </select>
+
+            <!-- BUTTON TAMBAH -->
             <a href="/penyuratan/create"
-               class="flex items-center gap-2 px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
+            class="flex items-center gap-2 px-4 py-1.5 bg-blue-500 text-white rounded-md text-sm">
                 <span class="text-lg">+</span> Tambah
             </a>
 
@@ -162,6 +185,20 @@
     function closePreview() {
         document.getElementById('previewModal').classList.add('hidden');
         document.getElementById('previewFrame').src = '';
+    }
+</script>
+
+<script>
+    function filterData() {
+        let bulan = document.getElementById('bulan').value;
+        let tahun = document.getElementById('tahun').value;
+
+        let url = '/penyuratan?';
+
+        if (bulan) url += 'bulan=' + bulan + '&';
+        if (tahun) url += 'tahun=' + tahun + '&';
+
+        window.location.href = url;
     }
 </script>
 
