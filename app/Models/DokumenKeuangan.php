@@ -27,6 +27,6 @@ class DokumenKeuangan extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(KategoriKeuangan::class, 'id_kategori_keuangan');
+        return $this->belongsTo(KategoriKeuangan::class, 'id_kategori_keuangan', 'id_kategori_keuangan');
     }
 }

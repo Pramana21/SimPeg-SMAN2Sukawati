@@ -16,16 +16,32 @@
         </a>
     </div>
 
-    {{-- FILTER --}}
-    <div class="flex gap-3 mb-4">
-        <select class="bg-blue-500 text-white px-4 py-2 rounded-lg">
-            <option>Januari</option>
+    {{-- 🔥 FILTER REAL --}}
+    <form method="GET" class="flex gap-3 mb-4">
+
+        <select name="bulan" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+            <option value="">Semua Bulan</option>
+            @foreach(range(1,12) as $b)
+                <option value="{{ $b }}" {{ request('bulan') == $b ? 'selected' : '' }}>
+                    {{ date('F', mktime(0,0,0,$b,1)) }}
+                </option>
+            @endforeach
         </select>
 
-        <select class="bg-blue-500 text-white px-4 py-2 rounded-lg">
-            <option>2025</option>
+        <select name="tahun" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+            <option value="">Semua Tahun</option>
+            @foreach(range(date('Y'), 2020) as $t)
+                <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>
+                    {{ $t }}
+                </option>
+            @endforeach
         </select>
-    </div>
+
+        <button class="bg-gray-700 text-white px-4 rounded-lg">
+            Filter
+        </button>
+
+    </form>
 
     {{-- CARD --}}
     <div class="bg-white rounded-xl shadow p-4">

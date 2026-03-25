@@ -51,7 +51,7 @@
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500">
             </div>
 
-            {{-- 🔥 DI-UPLOAD (INPUT MANUAL) --}}
+            {{-- DI-UPLOAD --}}
             <div class="mb-5">
                 <label class="block text-sm font-medium text-gray-600 mb-2">
                     Di-upload
@@ -61,14 +61,16 @@
                     placeholder="Contoh: Bongtomo">
             </div>
 
-            {{-- Upload Surat --}}
+            {{-- 🔥 UPLOAD SURAT (FIXED) --}}
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-600 mb-2">
                     Upload Surat
                 </label>
 
+                <!-- INPUT FILE -->
                 <input type="file" name="file" id="fileInput" class="hidden">
 
+                <!-- BOX -->
                 <label for="fileInput"
                     class="w-full h-40 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center cursor-pointer hover:border-blue-500 transition">
 
@@ -80,6 +82,11 @@
                     </div>
 
                 </label>
+
+                <!-- 🔥 NAMA FILE (INI YANG BARU) -->
+                <p id="fileName" class="text-sm text-gray-500 mt-2 italic">
+                    Belum ada file dipilih
+                </p>
             </div>
 
             {{-- BUTTON --}}
@@ -94,11 +101,15 @@
 
 </div>
 
+{{-- 🔥 SCRIPT FIX --}}
 <script>
 document.getElementById('fileInput').addEventListener('change', function(e) {
-    const fileName = e.target.files[0]?.name;
-    if(fileName){
-        alert("File dipilih: " + fileName);
+    const file = e.target.files[0];
+
+    if (file) {
+        document.getElementById('fileName').innerText = file.name;
+    } else {
+        document.getElementById('fileName').innerText = 'Belum ada file dipilih';
     }
 });
 </script>

@@ -101,21 +101,19 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('permission:keuangan,view')
         ->group(function () {
 
-        // halaman utama (overview)
-        Route::get('/', [KeuanganController::class, 'index'])
-            ->name('keuangan.index');
+        Route::get('/', [KeuanganController::class, 'index'])->name('keuangan.index');
 
-        // halaman berdasarkan kategori (INI YANG PALING PENTING)
-        Route::get('/{slug}', [KeuanganController::class, 'show'])
-            ->name('keuangan.show');
+        Route::get('/{slug}', [KeuanganController::class, 'show'])->name('keuangan.kategori');
 
-        // halaman create
-        Route::get('/{slug}/create', [KeuanganController::class, 'create'])
-            ->name('keuangan.create');
+        Route::get('/{slug}/create', [KeuanganController::class, 'create'])->name('keuangan.create');
+        Route::post('/{slug}', [KeuanganController::class, 'store'])->name('keuangan.store');
 
-        // proses store
-        Route::post('/{slug}', [KeuanganController::class, 'store'])
-            ->name('keuangan.store');
+        // 🔥 EDIT
+        Route::get('/{slug}/edit/{id}', [KeuanganController::class, 'edit'])->name('keuangan.edit');
+        Route::put('/{slug}/update/{id}', [KeuanganController::class, 'update'])->name('keuangan.update');
+
+        // 🔥 DELETE
+        Route::delete('/{slug}/delete/{id}', [KeuanganController::class, 'destroy'])->name('keuangan.delete');
 
     });
     

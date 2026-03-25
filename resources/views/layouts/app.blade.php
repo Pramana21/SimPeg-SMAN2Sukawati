@@ -91,25 +91,25 @@
 
             <div class="ml-6 mt-2 flex flex-col gap-1">
 
-                <a href="{{ route('keuangan.show', 'laporan') }}"
+                <a href="{{ route('keuangan.kategori', 'laporan') }}"
                     class="text-sm px-3 py-1 rounded hover:bg-blue-100
                     {{ request()->is('keuangan/laporan*') ? 'text-blue-500 font-semibold' : '' }}">
                     Laporan Keuangan
                 </a>
 
-                <a href="{{ route('keuangan.show', 'gaji-asn') }}"
+                <a href="{{ route('keuangan.kategori', 'gaji-asn') }}"
                     class="text-sm px-3 py-1 rounded hover:bg-blue-100
                     {{ request()->is('keuangan/gaji-asn*') ? 'text-blue-500 font-semibold' : '' }}">
                     Gaji ASN
                 </a>
 
-                <a href="{{ route('keuangan.show', 'tpp-asn') }}"
+                <a href="{{ route('keuangan.kategori', 'tpp-asn') }}"
                     class="text-sm px-3 py-1 rounded hover:bg-blue-100
                     {{ request()->is('keuangan/tpp-asn*') ? 'text-blue-500 font-semibold' : '' }}">
                     TPP ASN
                 </a>
 
-                <a href="{{ route('keuangan.show', 'tpg-guru') }}"
+                <a href="{{ route('keuangan.kategori', 'tpg-guru') }}"
                     class="text-sm px-3 py-1 rounded hover:bg-blue-100
                     {{ request()->is('keuangan/tpg-guru*') ? 'text-blue-500 font-semibold' : '' }}">
                     TPG Guru

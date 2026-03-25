@@ -18,6 +18,6 @@ class KategoriKeuangan extends Model
     
     public function dokumen()
 {
-    return $this->hasMany(DokumenKeuangan::class, 'id_kategori_keuangan');
+    return $this->hasMany(DokumenKeuangan::class, 'id_kategori_keuangan', 'id_kategori_keuangan');
 }
 }
