@@ -99,6 +99,17 @@ Route::middleware(['auth'])->group(function () {
     //keuangan
     Route::resource('keuangan', KeuanganController::class)
         ->middleware('permission:keuangan,view');
+    Route::prefix('keuangan')->group(function () {
+
+        Route::get('/', [KeuanganController::class, 'index'])->name('keuangan.index');
+
+        Route::get('/{slug}', [KeuanganController::class, 'byKategori'])->name('keuangan.kategori');
+
+        Route::get('/{slug}/create', [KeuanganController::class, 'create'])->name('keuangan.create');
+
+        Route::post('/{slug}', [KeuanganController::class, 'store'])->name('keuangan.store');
+
+    });
 
     //inventaris
     Route::resource('inventaris', InventarisController::class)

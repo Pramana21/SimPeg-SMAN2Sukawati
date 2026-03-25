@@ -12,6 +12,12 @@ class KategoriKeuangan extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nama_kategori'
+        'nama_kategori',
+        'slug'
     ];
+    
+    public function dokumen()
+{
+    return $this->hasMany(DokumenKeuangan::class, 'id_kategori_keuangan');
+}
 }
