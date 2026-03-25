@@ -12,7 +12,15 @@ class JenisDokumenAdministrasi extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_kategori_administrasi',
-        'nama_jenis'
+        'nama_jenis',
+        'id_kategori_administrasi'
     ];
+
+    public function kategori()
+    {
+        return $this->belongsTo(
+            KategoriAdministrasi::class,
+            'id_kategori_administrasi'
+        );
+    }
 }

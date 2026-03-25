@@ -9,6 +9,8 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
+    <script src="//unpkg.com/alpinejs" defer></script>
+
 </head>
 
 <body class="bg-gray-100">
@@ -93,9 +95,38 @@
                 <i data-feather="database"></i> Data Center
             </a>
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="check-square"></i> Administrasi Umum
-            </a>
+            <!-- Administrasi Umum -->
+            <div x-data="{ open: false }">
+
+                <button @click="open = !open"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded-lg hover:bg-blue-100">
+
+                    <div class="flex items-center gap-2">
+                        <i data-feather="check-square"></i>
+                        <span>Administrasi Umum</span>
+                    </div>
+
+                    <i data-feather="chevron-down"></i>
+                </button>
+
+                <!-- SUB MENU -->
+                <div x-show="open" class="ml-6 mt-2 flex flex-col gap-1">
+
+                    <!-- Pegawai -->
+                    <a href="/administrasi?kategori=Pegawai"
+                    class="px-3 py-1 text-sm hover:bg-blue-100 rounded">
+                        Pegawai
+                    </a>
+
+                    <!-- Siswa -->
+                    <a href="/administrasi?kategori=Siswa"
+                    class="px-3 py-1 text-sm hover:bg-blue-100 rounded">
+                        Siswa
+                    </a>
+
+                </div>
+
+            </div>
 
         </div>
          <!-- LOGOUT -->

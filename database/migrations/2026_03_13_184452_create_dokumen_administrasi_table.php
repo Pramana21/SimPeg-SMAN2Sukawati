@@ -16,9 +16,7 @@ return new class extends Migration
         $table->id('id_dokumen_administrasi');
 
         $table->unsignedBigInteger('id_user');
-
         $table->string('nama_dokumen',150);
-
         $table->date('tanggal_dokumen');
 
         $table->unsignedBigInteger('id_jenis_dokumen_administrasi');
@@ -26,7 +24,6 @@ return new class extends Migration
         $table->unsignedBigInteger('id_kelas')->nullable();
 
         $table->string('file_path',255);
-
         $table->string('created_by',100);
 
         $table->tinyInteger('bulan')->nullable();

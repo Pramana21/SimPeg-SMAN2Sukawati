@@ -117,7 +117,13 @@ Route::middleware(['auth'])->group(function () {
     //administrasi
     Route::resource('administrasi', AdministrasiController::class)
         ->middleware('permission:administrasi,view');
-
+    // halaman utama administrasi
+    Route::get('/administrasi', [AdministrasiController::class, 'index']);
+    // create
+    Route::get('/administrasi/create', [AdministrasiController::class, 'create']);
+    Route::post('/administrasi/store', [AdministrasiController::class, 'store']);
+    // delete
+    Route::delete('/administrasi/{id}', [AdministrasiController::class, 'destroy']);
 
     /*
     |--------------------------------------------------------------------------
@@ -131,5 +137,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/test', function () {
+        return 'OK';
+    });
     
 });

@@ -14,10 +14,22 @@ class DokumenAdministrasi extends Model
         'nama_dokumen',
         'tanggal_dokumen',
         'id_jenis_dokumen_administrasi',
-        'id_kelas',
         'file_path',
         'created_by',
         'bulan',
         'tahun'
     ];
+
+    public function jenis()
+    {
+        return $this->belongsTo(
+            JenisDokumenAdministrasi::class,
+            'id_jenis_dokumen_administrasi'
+        );
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
 }
