@@ -71,7 +71,8 @@ class KeuanganController extends Controller
         $request->validate([
             'nama_dokumen' => 'required',
             'tanggal_dokumen' => 'required|date',
-            'file' => 'required|file|mimes:pdf,jpg,jpeg,png'
+            'created_by' => 'required|string|max:255', // 🔥 WAJIB
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx'
         ]);
 
         $file = $request->file('file');
@@ -81,14 +82,19 @@ class KeuanganController extends Controller
             'nama_dokumen' => $request->nama_dokumen,
             'tanggal_dokumen' => $request->tanggal_dokumen,
             'id_kategori_keuangan' => $kategori->id,
+
+            // 🔥 FIX UTAMA
+            'created_by' => $request->created_by,
+
             'file_path' => $path,
-            'created_by' => auth()->user()->username,
             'bulan' => date('m', strtotime($request->tanggal_dokumen)),
             'tahun' => date('Y', strtotime($request->tanggal_dokumen)),
+
+            // optional (kalau masih dipakai)
             'id_user' => auth()->id()
         ]);
 
-        return redirect()->route('keuangan.show', $slug)
+        return redirect()->route('keuangan.kategori', $slug)
             ->with('success', 'Dokumen berhasil diupload');
     }
 }
