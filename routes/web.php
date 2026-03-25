@@ -96,21 +96,29 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/penyuratan/{id}', [SuratController::class, 'update']);
     Route::get('/penyuratan/export/pdf', [SuratController::class, 'exportPdf']);
 
-    //keuangan
-    Route::resource('keuangan', KeuanganController::class)
-        ->middleware('permission:keuangan,view');
-    Route::prefix('keuangan')->group(function () {
+    // KEUANGAN
+    Route::prefix('keuangan')
+        ->middleware('permission:keuangan,view')
+        ->group(function () {
 
-        Route::get('/', [KeuanganController::class, 'index'])->name('keuangan.index');
+        // halaman utama (overview)
+        Route::get('/', [KeuanganController::class, 'index'])
+            ->name('keuangan.index');
 
-        Route::get('/{slug}', [KeuanganController::class, 'byKategori'])->name('keuangan.kategori');
+        // halaman berdasarkan kategori (INI YANG PALING PENTING)
+        Route::get('/{slug}', [KeuanganController::class, 'show'])
+            ->name('keuangan.show');
 
-        Route::get('/{slug}/create', [KeuanganController::class, 'create'])->name('keuangan.create');
+        // halaman create
+        Route::get('/{slug}/create', [KeuanganController::class, 'create'])
+            ->name('keuangan.create');
 
-        Route::post('/{slug}', [KeuanganController::class, 'store'])->name('keuangan.store');
+        // proses store
+        Route::post('/{slug}', [KeuanganController::class, 'store'])
+            ->name('keuangan.store');
 
     });
-
+    
     //inventaris
     Route::resource('inventaris', InventarisController::class)
         ->middleware('permission:inventaris,view');

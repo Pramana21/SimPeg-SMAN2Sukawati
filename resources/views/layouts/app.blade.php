@@ -72,6 +72,7 @@
 
         <div class="space-y-2 text-gray-700">
 
+            <!-- Penyuratan --> 
             <a href="{{ url('/penyuratan') }}"
                 class="{{ request()->is('penyuratan*') ? 'bg-blue-500 text-white' : '' }} p-2 flex items-center gap-2 rounded">
 
@@ -79,10 +80,44 @@
                 Penyuratan
             </a>
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="dollar-sign"></i> Keuangan
+            <!-- Keuangan -->
+            <a href="{{ route('keuangan.index') }}"
+                class="flex gap-3 items-center p-2 rounded
+                {{ request()->is('keuangan*') ? 'bg-blue-500 text-white' : '' }}">
+
+                <i data-feather="dollar-sign"></i>
+                Keuangan
             </a>
 
+            <div class="ml-6 mt-2 flex flex-col gap-1">
+
+                <a href="{{ route('keuangan.show', 'laporan') }}"
+                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
+                    {{ request()->is('keuangan/laporan*') ? 'text-blue-500 font-semibold' : '' }}">
+                    Laporan Keuangan
+                </a>
+
+                <a href="{{ route('keuangan.show', 'gaji-asn') }}"
+                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
+                    {{ request()->is('keuangan/gaji-asn*') ? 'text-blue-500 font-semibold' : '' }}">
+                    Gaji ASN
+                </a>
+
+                <a href="{{ route('keuangan.show', 'tpp-asn') }}"
+                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
+                    {{ request()->is('keuangan/tpp-asn*') ? 'text-blue-500 font-semibold' : '' }}">
+                    TPP ASN
+                </a>
+
+                <a href="{{ route('keuangan.show', 'tpg-guru') }}"
+                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
+                    {{ request()->is('keuangan/tpg-guru*') ? 'text-blue-500 font-semibold' : '' }}">
+                    TPG Guru
+                </a>
+
+            </div>
+
+            <!-- Inventaris -->
             <a href="/inventaris"
                 class="flex items-center gap-2 px-4 py-2 rounded-md
                 {{ request()->is('inventaris*') ? 'bg-blue-500 text-white' : 'text-gray-600' }}">
