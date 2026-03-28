@@ -32,7 +32,7 @@
         </a>
 
         {{-- STAFF / GURU --}}
-        <a href="#"
+        <a href="{{ route('pegawai.index') }}"
            class="flex items-center gap-4 p-6 border border-blue-300 rounded-2xl hover:shadow-md hover:bg-blue-50 transition">
 
             <div class="w-14 h-14 flex items-center justify-center bg-blue-500 text-white rounded-full">

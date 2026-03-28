@@ -15,8 +15,7 @@ use App\Http\Controllers\InventarisController;
 
 use App\Http\Controllers\DataCenterController;
 use App\Http\Controllers\MuridController;
-use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\KelasController;
+use App\Http\Controllers\PegawaiController;
 
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\ProfileController;
@@ -136,22 +135,17 @@ Route::middleware(['auth'])->group(function () {
     //Data Center 
     Route::prefix('data-center')->group(function () {
 
-        Route::get('/', [DataCenterController::class, 'index'])
-            ->name('data-center.index');
-    });
-    Route::prefix('data-center/murid')->group(function () {
+    // 🔥 DASHBOARD DATA CENTER
+    Route::get('/', [DataCenterController::class, 'index'])
+        ->name('data-center.index');
 
-        Route::get('/', [MuridController::class, 'index'])->name('murid.index');
-        Route::get('/create', [MuridController::class, 'create'])->name('murid.create');
-        Route::post('/store', [MuridController::class, 'store'])->name('murid.store');
-        Route::resource('data-center/murid', MuridController::class);
+    // 🔥 MURID (FULL CRUD)
+    Route::resource('murid', MuridController::class);
 
-        // 🔥 NEW
-        Route::get('/{id}', [MuridController::class, 'show'])->name('murid.show');
-        Route::get('/{id}/edit', [MuridController::class, 'edit'])->name('murid.edit');
-        Route::put('/{id}', [MuridController::class, 'update'])->name('murid.update');
+    // 🔥 PEGAWAI (FULL CRUD)
+    Route::resource('pegawai', PegawaiController::class);
 
-    });
+});
 
     
     //administrasi
