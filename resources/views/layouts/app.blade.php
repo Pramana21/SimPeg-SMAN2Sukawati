@@ -126,8 +126,14 @@
                     Inventaris
             </a>
 
-            <a class="flex gap-3 items-center p-2">
-                <i data-feather="database"></i> Data Center
+            <!-- Data Center -->
+            <a href="{{ route('data-center.index') }}"
+                class="flex gap-3 items-center p-2 rounded
+                {{ request()->is('data-center*') ? 'bg-blue-500 text-white' : '' }}">
+
+                <i data-feather="database"></i>
+                Data Center
+
             </a>
 
             <!-- Administrasi Umum -->

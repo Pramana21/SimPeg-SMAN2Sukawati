@@ -13,6 +13,8 @@ use App\Http\Controllers\SuratController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\InventarisController;
 
+use App\Http\Controllers\DataCenterController;
+use App\Http\Controllers\MuridController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\KelasController;
 
@@ -131,6 +133,27 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/inventaris/store', [InventarisController::class, 'store']);
     Route::delete('/inventaris/{id}', [InventarisController::class, 'destroy']);
 
+    //Data Center 
+    Route::prefix('data-center')->group(function () {
+
+        Route::get('/', [DataCenterController::class, 'index'])
+            ->name('data-center.index');
+    });
+    Route::prefix('data-center/murid')->group(function () {
+
+        Route::get('/', [MuridController::class, 'index'])->name('murid.index');
+        Route::get('/create', [MuridController::class, 'create'])->name('murid.create');
+        Route::post('/store', [MuridController::class, 'store'])->name('murid.store');
+        Route::resource('data-center/murid', MuridController::class);
+
+        // 🔥 NEW
+        Route::get('/{id}', [MuridController::class, 'show'])->name('murid.show');
+        Route::get('/{id}/edit', [MuridController::class, 'edit'])->name('murid.edit');
+        Route::put('/{id}', [MuridController::class, 'update'])->name('murid.update');
+
+    });
+
+    
     //administrasi
     Route::resource('administrasi', AdministrasiController::class)
         ->middleware('permission:administrasi,view');
