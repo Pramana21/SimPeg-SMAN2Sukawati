@@ -8,8 +8,8 @@
             <i data-feather="arrow-left" class="h-7 w-7"></i>
         </a>
         <div>
-            <h1 class="text-4xl font-semibold text-slate-900">Tambah Dokumen</h1>
-            <p class="mt-1 text-sm text-slate-500">Lengkapi data inventaris dan unggah file dokumen yang diperlukan.</p>
+            <h1 class="text-4xl font-semibold text-slate-900">Edit Dokumen</h1>
+            <p class="mt-1 text-sm text-slate-500">Perbarui data inventaris dan ganti file jika diperlukan.</p>
         </div>
     </div>
 
@@ -19,8 +19,9 @@
         </div>
     @endif
 
-    <form action="{{ route('inventaris.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="{{ route('inventaris.update', $inventaris->id_dokumen_inventaris) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
+        @method('PUT')
 
         <div class="grid gap-5 md:grid-cols-2">
             <div class="md:col-span-2">
@@ -28,7 +29,7 @@
                 <input id="nama_dokumen"
                        type="text"
                        name="nama_dokumen"
-                       value="{{ old('nama_dokumen') }}"
+                       value="{{ old('nama_dokumen', $inventaris->nama_dokumen) }}"
                        placeholder="Nama"
                        class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                        required>
@@ -40,7 +41,7 @@
                     <input id="tanggal_dokumen"
                            type="date"
                            name="tanggal_dokumen"
-                           value="{{ old('tanggal_dokumen') }}"
+                           value="{{ old('tanggal_dokumen', \Illuminate\Support\Carbon::parse($inventaris->tanggal_dokumen)->format('Y-m-d')) }}"
                            class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 pr-12 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                            required>
                     <i data-feather="calendar" class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-blue-600"></i>
@@ -52,7 +53,7 @@
                 <input id="created_by"
                        type="text"
                        name="created_by"
-                       value="{{ old('created_by', auth()->user()->username ?? '') }}"
+                       value="{{ old('created_by', $inventaris->created_by) }}"
                        placeholder="Contoh: Budi"
                        class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
             </div>
@@ -66,22 +67,22 @@
                        type="file"
                        name="file_surat"
                        class="hidden"
-                       accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                       required>
+                       accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
 
                 <span class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
                     <i data-feather="plus" class="h-7 w-7"></i>
                 </span>
-                <span class="mt-4 text-base font-medium text-slate-700">Klik untuk memilih file inventaris</span>
-                <span class="mt-2 text-sm text-slate-400">Format: pdf, doc, docx, xls, xlsx, jpg, png. Maksimal 5 MB.</span>
-                <span id="file-name" class="mt-3 text-sm font-semibold text-blue-600"></span>
+                <span class="mt-4 text-base font-medium text-slate-700">Klik untuk mengganti file inventaris</span>
+                <span class="mt-2 text-sm text-slate-400">Biarkan kosong jika file lama tetap digunakan.</span>
+                <span class="mt-3 text-sm text-slate-500">File saat ini: {{ basename($inventaris->file_path) }}</span>
+                <span id="file-name" class="mt-2 text-sm font-semibold text-blue-600"></span>
             </label>
         </div>
 
         <div class="flex justify-center">
             <button type="submit"
                     class="inline-flex min-w-[120px] items-center justify-center rounded-xl bg-blue-600 px-8 py-3 text-xl font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                Upload
+                Update
             </button>
         </div>
     </form>

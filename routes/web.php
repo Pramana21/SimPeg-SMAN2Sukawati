@@ -87,15 +87,14 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     //penyuratan
+    Route::get('/penyuratan/export/pdf', [SuratController::class, 'exportPdf'])
+        ->name('penyuratan.export.pdf')
+        ->middleware('permission:penyuratan,view');
+    Route::post('/penyuratan/bulk-delete', [SuratController::class, 'bulkDelete'])
+        ->name('penyuratan.bulk-delete')
+        ->middleware('permission:penyuratan,view');
     Route::resource('penyuratan', SuratController::class)
         ->middleware('permission:penyuratan,view');
-    Route::get('/penyuratan', [SuratController::class, 'index']);
-    Route::get('/penyuratan/create', [SuratController::class, 'create']);
-    Route::post('/penyuratan/store', [SuratController::class, 'store']);
-    Route::delete('/penyuratan/{id}', [SuratController::class, 'destroy']);
-    Route::get('/penyuratan/{id}/edit', [SuratController::class, 'edit']);
-    Route::put('/penyuratan/{id}', [SuratController::class, 'update']);
-    Route::get('/penyuratan/export/pdf', [SuratController::class, 'exportPdf']);
 
     // KEUANGAN
     Route::prefix('keuangan')
@@ -119,18 +118,11 @@ Route::middleware(['auth'])->group(function () {
     });
     
     //inventaris
+    Route::post('/inventaris/bulk-delete', [InventarisController::class, 'bulkDelete'])
+        ->name('inventaris.bulk-delete')
+        ->middleware('permission:inventaris,view');
     Route::resource('inventaris', InventarisController::class)
         ->middleware('permission:inventaris,view');
-    Route::get('/inventaris', function () {
-        return view('admin.inventaris.index');
-    });
-    Route::get('/inventaris/create', function () {
-        return view('admin.inventaris.create');
-    });
-    Route::get('/inventaris', [InventarisController::class, 'index']);
-    Route::get('/inventaris/create', [InventarisController::class, 'create']);
-    Route::post('/inventaris/store', [InventarisController::class, 'store']);
-    Route::delete('/inventaris/{id}', [InventarisController::class, 'destroy']);
 
     //Data Center 
     Route::prefix('data-center')->group(function () {

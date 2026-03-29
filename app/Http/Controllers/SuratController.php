@@ -2,152 +2,282 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\DokumenPenyuratan;
 use App\Models\JenisSurat;
-use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class SuratController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $query = DokumenPenyuratan::with('jenis');
+        $selectedJenis = strtolower((string) $request->query('jenis', ''));
+        $selectedBulan = $request->filled('bulan') ? (int) $request->query('bulan') : null;
+        $selectedTahun = $request->filled('tahun') ? (int) $request->query('tahun') : null;
 
-        // 🔹 FILTER JENIS
-        if ($request->jenis) {
-            $query->whereHas('jenis', function ($q) use ($request) {
-                $q->where('nama_jenis_surat', ucfirst($request->jenis));
-            });
-        }
+        $surat = DokumenPenyuratan::with('jenis')
+            ->when(in_array($selectedJenis, ['masuk', 'keluar'], true), function ($query) use ($selectedJenis) {
+                $query->whereHas('jenis', function ($jenisQuery) use ($selectedJenis) {
+                    $jenisQuery->whereRaw('LOWER(nama_jenis_surat) = ?', [$selectedJenis]);
+                });
+            })
+            ->when($selectedBulan, function ($query) use ($selectedBulan) {
+                $query->whereMonth('tanggal_dokumen', $selectedBulan);
+            })
+            ->when($selectedTahun, function ($query) use ($selectedTahun) {
+                $query->whereYear('tanggal_dokumen', $selectedTahun);
+            })
+            ->orderByDesc('tanggal_dokumen')
+            ->orderByDesc('id_dokumen_penyuratan')
+            ->paginate(10)
+            ->withQueryString();
 
-        // 🔹 FILTER BULAN
-        if ($request->bulan) {
-            $query->whereMonth('tanggal_dokumen', $request->bulan);
-        }
-
-        // 🔹 FILTER TAHUN
-        if ($request->tahun) {
-            $query->whereYear('tanggal_dokumen', $request->tahun);
-        }
-        
-        $surat = $query
-            ->latest()
-            ->paginate(10);
-
-        return view('admin.penyuratan.index', compact('surat'));
-    }
-
-    public function create()
-    {
-        $jenis = JenisSurat::all();
-
-        return view('admin.penyuratan.create', compact('jenis'));
-    }
-    
-    public function destroy($id)
-    {
-        $data = DokumenPenyuratan::findOrFail($id);
-
-        // hapus file
-        if ($data->file_path && \Storage::disk('public')->exists($data->file_path)) {
-            \Storage::disk('public')->delete($data->file_path);
-        }
-
-        $data->delete();
-
-        return redirect()->back()->with('success', 'Data berhasil dihapus');
-    }
-
-        public function edit($id)
-    {
-        $surat = DokumenPenyuratan::findOrFail($id);
-        $jenis = JenisSurat::all();
-
-        return view('admin.penyuratan.edit', compact('surat', 'jenis'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $data = DokumenPenyuratan::findOrFail($id);
-
-        $request->validate([
-            'no_surat' => 'required|unique:dokumen_penyuratan,no_surat,' . $id . ',id_dokumen_penyuratan',
-            'nama_dokumen' => 'required',
-            'tanggal_dokumen' => 'required|date',
-            'id_jenis_surat' => 'required',
+        $months = collect([
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
         ]);
 
-        // cek kalau upload file baru
-        if ($request->hasFile('file_surat')) {
+        $currentYear = (int) now()->year;
+        $years = range($currentYear, $currentYear + 9);
 
-            // hapus file lama
-            if ($data->file_path && \Storage::disk('public')->exists($data->file_path)) {
-                \Storage::disk('public')->delete($data->file_path);
-            }
-
-            $file = $request->file('file_surat');
-            $path = $file->store('surat', 'public');
-
-            $data->file_path = $path;
-    }
-
-        // update data
-        $data->update([
-            'nama_dokumen' => $request->nama_dokumen,
-            'no_surat' => $request->no_surat,
-            'tanggal_dokumen' => $request->tanggal_dokumen,
-            'id_jenis_surat' => $request->id_jenis_surat,
-            'nama_pengirim_penerima' => $request->nama_pengirim_penerima,
-            'bulan' => date('m', strtotime($request->tanggal_dokumen)),
-            'tahun' => date('Y', strtotime($request->tanggal_dokumen)),
+        return view('admin.penyuratan.index', [
+            'surat' => $surat,
+            'months' => $months,
+            'years' => $years,
+            'selectedJenis' => $selectedJenis,
+            'selectedBulan' => $selectedBulan,
+            'selectedTahun' => $selectedTahun,
         ]);
-
-        return redirect('/penyuratan')->with('success', 'Data berhasil diupdate');
     }
-    
-    public function store(Request $request)
+
+    public function create(): View
     {
-        $request->validate([
-            'no_surat' => 'required|unique:dokumen_penyuratan,no_surat',
-            'nama_dokumen' => 'required',
-            'tanggal_dokumen' => 'required|date',
-            'id_jenis_surat' => 'required',
-            'file_surat' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048'
-        ]);
+        $jenis = JenisSurat::orderByRaw("
+                CASE
+                    WHEN LOWER(nama_jenis_surat) = 'masuk' THEN 1
+                    WHEN LOWER(nama_jenis_surat) = 'keluar' THEN 2
+                    ELSE 3
+                END
+            ")
+            ->orderBy('nama_jenis_surat')
+            ->get();
 
-        // 🔥 ambil user login (AMAN)
+        return view('admin.penyuratan.create', [
+            'jenis' => $jenis,
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'no_surat' => [
+                'required',
+                'string',
+                'max:60',
+                Rule::unique('dokumen_penyuratan', 'no_surat'),
+            ],
+            'nama_dokumen' => ['required', 'string', 'max:150'],
+            'tanggal_dokumen' => ['required', 'date'],
+            'jenis_surat' => ['required', 'in:masuk,keluar'],
+            'nama_pengirim_penerima' => ['required', 'string', 'max:120'],
+            'file_surat' => ['required', 'file', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png', 'max:5120'],
+        ]);
         $user = Auth::user();
+        $jenisSurat = $this->resolveJenisSurat($validated['jenis_surat']);
 
-        if (!$user) {
-            abort(403, 'User belum login');
-        }
+        abort_unless($user, 403, 'User belum login');
 
-        $file = $request->file('file_surat');
-        $path = $file->store('surat', 'public');
+        $path = $request->file('file_surat')->store('surat', 'public');
 
         DokumenPenyuratan::create([
-            'id_user' => $user->id_user, // ✅ FIX TOTAL
-            'nama_dokumen' => $request->nama_dokumen,
-            'no_surat' => $request->no_surat,
-            'tanggal_dokumen' => $request->tanggal_dokumen,
-            'id_jenis_surat' => $request->id_jenis_surat,
-            'nama_pengirim_penerima' => $request->nama_pengirim_penerima,
+            'id_user' => $user->id_user,
+            'nama_dokumen' => $validated['nama_dokumen'],
+            'no_surat' => $validated['no_surat'],
+            'tanggal_dokumen' => $validated['tanggal_dokumen'],
+            'id_jenis_surat' => $jenisSurat->id_jenis_surat,
+            'nama_pengirim_penerima' => $validated['nama_pengirim_penerima'],
             'file_path' => $path,
-            'created_by' => $user->username, // ✅ sesuai DB kamu
-            'bulan' => date('m', strtotime($request->tanggal_dokumen)),
-            'tahun' => date('Y', strtotime($request->tanggal_dokumen)),
+            'created_by' => $user->username ?? 'System',
+            'bulan' => Carbon::parse($validated['tanggal_dokumen'])->month,
+            'tahun' => Carbon::parse($validated['tanggal_dokumen'])->year,
         ]);
 
-        return redirect('/penyuratan')->with('success', 'Surat berhasil ditambahkan');
+        return redirect()
+            ->route('penyuratan.index')
+            ->with('success', 'Surat berhasil ditambahkan.');
     }
 
-    public function exportPdf()
+    public function show($id): View
     {
-        $surat = DokumenPenyuratan::with('jenis')->get();
+        $surat = DokumenPenyuratan::with('jenis')->findOrFail($id);
+        $extension = strtolower(pathinfo($surat->file_path ?? '', PATHINFO_EXTENSION));
+        $previewableExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
 
-        $pdf = Pdf::loadView('admin.surat.pdf', compact('surat'));
+        return view('admin.penyuratan.show', [
+            'surat' => $surat,
+            'isPreviewable' => in_array($extension, $previewableExtensions, true),
+            'fileUrl' => $surat->file_path ? asset('storage/' . $surat->file_path) : null,
+        ]);
+    }
 
-        return $pdf->download('laporan_surat.pdf');
+    public function edit($id): View
+    {
+        return view('admin.penyuratan.edit', [
+            'surat' => DokumenPenyuratan::findOrFail($id),
+            'jenis' => JenisSurat::orderBy('nama_jenis_surat')->get(),
+        ]);
+    }
+
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $surat = DokumenPenyuratan::findOrFail($id);
+        $validated = $request->validate([
+            'no_surat' => [
+                'required',
+                'string',
+                'max:60',
+                Rule::unique('dokumen_penyuratan', 'no_surat')->ignore($surat->id_dokumen_penyuratan, 'id_dokumen_penyuratan'),
+            ],
+            'nama_dokumen' => ['required', 'string', 'max:150'],
+            'tanggal_dokumen' => ['required', 'date'],
+            'jenis_surat' => ['required', 'in:masuk,keluar'],
+            'nama_pengirim_penerima' => ['required', 'string', 'max:120'],
+            'file_surat' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png', 'max:5120'],
+        ]);
+        $jenisSurat = $this->resolveJenisSurat($validated['jenis_surat']);
+
+        $payload = [
+            'nama_dokumen' => $validated['nama_dokumen'],
+            'no_surat' => $validated['no_surat'],
+            'tanggal_dokumen' => $validated['tanggal_dokumen'],
+            'id_jenis_surat' => $jenisSurat->id_jenis_surat,
+            'nama_pengirim_penerima' => $validated['nama_pengirim_penerima'],
+            'bulan' => Carbon::parse($validated['tanggal_dokumen'])->month,
+            'tahun' => Carbon::parse($validated['tanggal_dokumen'])->year,
+        ];
+
+        if ($request->hasFile('file_surat')) {
+            if ($surat->file_path && Storage::disk('public')->exists($surat->file_path)) {
+                Storage::disk('public')->delete($surat->file_path);
+            }
+
+            $payload['file_path'] = $request->file('file_surat')->store('surat', 'public');
+        }
+
+        $surat->update($payload);
+
+        return redirect()
+            ->route('penyuratan.index')
+            ->with('success', 'Surat berhasil diperbarui.');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $surat = DokumenPenyuratan::findOrFail($id);
+
+        $this->deleteStoredSurat($surat);
+        $surat->delete();
+
+        return redirect()
+            ->route('penyuratan.index')
+            ->with('success', 'Data surat berhasil dihapus.');
+    }
+
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:dokumen_penyuratan,id_dokumen_penyuratan'],
+        ]);
+
+        $documents = DokumenPenyuratan::whereIn('id_dokumen_penyuratan', $validated['ids'])->get();
+
+        foreach ($documents as $document) {
+            $this->deleteStoredSurat($document);
+            $document->delete();
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', count($validated['ids']) . ' data surat berhasil dihapus.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $surat = DokumenPenyuratan::with('jenis')
+            ->when($request->filled('jenis') && in_array(strtolower((string) $request->jenis), ['masuk', 'keluar'], true), function ($query) use ($request) {
+                $jenis = strtolower((string) $request->jenis);
+
+                $query->whereHas('jenis', function ($jenisQuery) use ($jenis) {
+                    $jenisQuery->whereRaw('LOWER(nama_jenis_surat) = ?', [$jenis]);
+                });
+            })
+            ->when($request->filled('bulan'), function ($query) use ($request) {
+                $query->whereMonth('tanggal_dokumen', (int) $request->bulan);
+            })
+            ->when($request->filled('tahun'), function ($query) use ($request) {
+                $query->whereYear('tanggal_dokumen', (int) $request->tahun);
+            })
+            ->orderByDesc('tanggal_dokumen')
+            ->get();
+
+        $pdf = Pdf::loadView('admin.penyuratan.pdf', compact('surat'));
+
+        return $pdf->download('laporan-penyuratan.pdf');
+    }
+
+    private function resolveJenisSurat(string $jenis): JenisSurat
+    {
+        $jenisName = ucfirst(strtolower($jenis));
+
+        return JenisSurat::firstOrCreate([
+            'nama_jenis_surat' => $jenisName,
+        ]);
+    }
+
+    private function deleteStoredSurat(DokumenPenyuratan $surat): void
+    {
+        if ($surat->file_path && Storage::disk('public')->exists($surat->file_path)) {
+            Storage::disk('public')->delete($surat->file_path);
+        }
+    }
+
+    private function rules(?int $id = null, bool $requireFile = true): array
+    {
+        $fileRules = ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png', 'max:5120'];
+
+        if ($requireFile) {
+            $fileRules[0] = 'required';
+        }
+
+        return [
+            'no_surat' => [
+                'required',
+                'string',
+                'max:60',
+                Rule::unique('dokumen_penyuratan', 'no_surat')->ignore($id, 'id_dokumen_penyuratan'),
+            ],
+            'nama_dokumen' => ['required', 'string', 'max:150'],
+            'tanggal_dokumen' => ['required', 'date'],
+            'id_jenis_surat' => ['required', 'exists:jenis_surat,id_jenis_surat'],
+            'nama_pengirim_penerima' => ['required', 'string', 'max:120'],
+            'file_surat' => $fileRules,
+        ];
     }
 }
