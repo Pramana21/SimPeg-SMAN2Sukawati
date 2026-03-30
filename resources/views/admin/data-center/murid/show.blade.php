@@ -49,7 +49,12 @@
 
                 <p class="text-sm text-gray-600">
                     Kelas :
-                    {{ $murid->kelas->nama_kelas ?? '-' }}
+                    {{ $murid->kelas ?? '-' }}
+                </p>
+
+                <p class="text-sm text-gray-600">
+                    Kategori :
+                    {{ $murid->kategori_kelas ?? '-' }}
                 </p>
             </div>
 
@@ -74,6 +79,16 @@
                     <div class="grid grid-cols-2">
                         <span>Jenis Kelamin</span>
                         <span>{{ $murid->jenis_kelamin }}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2">
+                        <span>Kelas</span>
+                        <span>{{ $murid->kelas ?? '-' }}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2">
+                        <span>Kategori Kelas</span>
+                        <span>{{ $murid->kategori_kelas ?? '-' }}</span>
                     </div>
 
                     <hr>

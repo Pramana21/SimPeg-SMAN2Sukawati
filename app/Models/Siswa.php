@@ -21,6 +21,8 @@ class Siswa extends Model
         'no_hp',
         'nama_ibu_kandung',
         'foto_path',
+        'kelas',
+        'kategori_kelas',
         'id_kelas',
         'is_active'
     ];

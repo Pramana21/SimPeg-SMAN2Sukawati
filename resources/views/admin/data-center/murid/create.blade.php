@@ -65,13 +65,15 @@
 
             </div>
 
-            {{-- JENIS KELAS --}}
+            {{-- NOMOR KATEGORI --}}
             <div class="mb-6 hidden" id="jenisKelasWrapper">
                 <label id="jenisLabel" class="block text-sm text-gray-600 mb-2"></label>
 
-                <select name="jenis_kelas" id="jenisKelas"
+                <select name="nomor_kelas" id="jenisKelas"
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500">
                 </select>
+
+                <p id="kategoriPreview" class="mt-2 text-sm font-medium text-blue-600"></p>
             </div>
 
             {{-- ALAMAT --}}
@@ -156,7 +158,7 @@ document.getElementById('kelas').addEventListener('change', function() {
         wrapper.classList.remove('hidden');
 
         for (let i = 1; i <= 10; i++) {
-            select.innerHTML += `<option value="E-${i}">E - ${i}</option>`;
+            select.innerHTML += `<option value="${i}">Nomor ${i}</option>`;
         }
 
     } else if (value === 'XI' || value === 'XII') {
@@ -164,13 +166,31 @@ document.getElementById('kelas').addEventListener('change', function() {
         wrapper.classList.remove('hidden');
 
         for (let i = 1; i <= 10; i++) {
-            select.innerHTML += `<option value="F-${i}">F - ${i}</option>`;
+            select.innerHTML += `<option value="${i}">Nomor ${i}</option>`;
         }
 
     } else {
         wrapper.classList.add('hidden');
     }
+
+    updateKategoriPreview();
 });
+
+function updateKategoriPreview() {
+    const kelas = document.getElementById('kelas').value;
+    const nomor = document.getElementById('jenisKelas').value;
+    const preview = document.getElementById('kategoriPreview');
+
+    if (!kelas || !nomor) {
+        preview.innerText = '';
+        return;
+    }
+
+    const prefix = kelas === 'X' ? 'E' : 'F';
+    preview.innerText = `Kategori otomatis: ${prefix} - ${nomor}`;
+}
+
+document.getElementById('jenisKelas').addEventListener('change', updateKategoriPreview);
 
 // 🔥 tampilkan nama file
 document.getElementById('fileInput').addEventListener('change', function(e) {

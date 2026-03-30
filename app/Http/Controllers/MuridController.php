@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Storage;
 
 class MuridController extends Controller
 {
+    private function buildKategoriKelas(?string $kelas, ?string $nomorKelas): ?string
+    {
+        if (!$kelas || !$nomorKelas) {
+            return null;
+        }
+
+        $prefix = $kelas === 'X' ? 'E' : 'F';
+
+        return $prefix . ' - ' . $nomorKelas;
+    }
+
     public function index()
     {
         $data = Siswa::latest()->get();
@@ -22,6 +33,7 @@ class MuridController extends Controller
     public function store(Request $request)
     {
         try {
+            $kategoriKelas = $this->buildKategoriKelas($request->kelas, $request->nomor_kelas);
 
             $fotoPath = null;
 
@@ -41,6 +53,8 @@ class MuridController extends Controller
                 'no_hp' => $request->no_hp,
                 'nama_ibu_kandung' => $request->nama_ibu_kandung,
                 'foto_path' => $fotoPath,
+                'kelas' => $request->kelas,
+                'kategori_kelas' => $kategoriKelas,
             ]);
 
             return redirect()->route('murid.index')->with('success', 'Data berhasil disimpan');
@@ -65,6 +79,7 @@ class MuridController extends Controller
     public function update(Request $request, $id)
     {
         $murid = Siswa::findOrFail($id);
+        $kategoriKelas = $this->buildKategoriKelas($request->kelas, $request->nomor_kelas);
 
         // upload foto baru (optional)
         if ($request->hasFile('foto')) {
@@ -83,6 +98,8 @@ class MuridController extends Controller
             'email' => $request->email,
             'no_hp' => $request->no_hp,
             'nama_ibu_kandung' => $request->nama_ibu_kandung,
+            'kelas' => $request->kelas,
+            'kategori_kelas' => $kategoriKelas,
         ]);
 
         return redirect()->route('murid.index')->with('success', 'Data berhasil diupdate');

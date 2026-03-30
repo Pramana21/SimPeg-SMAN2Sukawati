@@ -57,8 +57,26 @@
                     </option>
                 </select>
 
-                <input type="text" value="{{ $murid->id_kelas ?? '-' }}" disabled
-                    class="border px-3 py-2 rounded-lg bg-gray-100">
+                <select id="kelas" name="kelas" class="border px-3 py-2 rounded-lg">
+                    <option value="">Pilih Kelas</option>
+                    <option value="X" {{ $murid->kelas === 'X' ? 'selected' : '' }}>X</option>
+                    <option value="XI" {{ $murid->kelas === 'XI' ? 'selected' : '' }}>XI</option>
+                    <option value="XII" {{ $murid->kelas === 'XII' ? 'selected' : '' }}>XII</option>
+                </select>
+            </div>
+
+            @php
+                $existingNomorKelas = null;
+
+                if (!empty($murid->kategori_kelas) && preg_match('/(\d+)$/', $murid->kategori_kelas, $matches)) {
+                    $existingNomorKelas = $matches[1];
+                }
+            @endphp
+
+            <div class="mb-5" id="jenisKelasWrapper">
+                <label id="jenisLabel" class="block text-sm text-gray-600 mb-2">Kategori Kelas</label>
+                <select name="nomor_kelas" id="jenisKelas" class="w-full border px-3 py-2 rounded-lg"></select>
+                <p id="kategoriPreview" class="mt-2 text-sm font-medium text-blue-600"></p>
             </div>
 
             {{-- ALAMAT --}}
@@ -114,5 +132,61 @@
     </form>
 
 </div>
+
+<script>
+    const kelasSelect = document.getElementById('kelas');
+    const jenisKelasSelect = document.getElementById('jenisKelas');
+    const jenisLabel = document.getElementById('jenisLabel');
+    const kategoriPreview = document.getElementById('kategoriPreview');
+    const existingNomorKelas = @json($existingNomorKelas);
+
+    function populateKategoriOptions() {
+        const kelas = kelasSelect.value;
+        jenisKelasSelect.innerHTML = '';
+
+        if (!kelas) {
+            jenisLabel.innerText = 'Kategori Kelas';
+            kategoriPreview.innerText = '';
+            return;
+        }
+
+        const prefix = kelas === 'X' ? 'E' : 'F';
+        jenisLabel.innerText = `Kelas ${prefix}`;
+
+        for (let i = 1; i <= 10; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `Nomor ${i}`;
+
+            if (String(existingNomorKelas) === String(i)) {
+                option.selected = true;
+            }
+
+            jenisKelasSelect.appendChild(option);
+        }
+
+        updateKategoriPreview();
+    }
+
+    function updateKategoriPreview() {
+        const kelas = kelasSelect.value;
+        const nomor = jenisKelasSelect.value;
+
+        if (!kelas || !nomor) {
+            kategoriPreview.innerText = '';
+            return;
+        }
+
+        const prefix = kelas === 'X' ? 'E' : 'F';
+        kategoriPreview.innerText = `Kategori otomatis: ${prefix} - ${nomor}`;
+    }
+
+    kelasSelect.addEventListener('change', function () {
+        populateKategoriOptions();
+    });
+
+    jenisKelasSelect.addEventListener('change', updateKategoriPreview);
+    populateKategoriOptions();
+</script>
 
 @endsection

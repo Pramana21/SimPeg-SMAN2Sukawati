@@ -16,12 +16,28 @@ class PegawaiController extends Controller
 
     public function create()
     {
-        return view('admin.data-center.pegawai.create');
+        return view('admin.data-center.pegawai.create', [
+            'data' => null,
+        ]);
     }
 
     public function store(Request $request)
     {
         try {
+            $validated = $request->validate([
+                'nama_pegawai' => ['required', 'string', 'max:120'],
+                'nip' => ['nullable', 'string', 'max:40'],
+                'nik' => ['nullable', 'string', 'max:30'],
+                'nuptk' => ['nullable', 'string', 'max:40'],
+                'tanggal_lahir' => ['nullable', 'date'],
+                'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan'],
+                'status_pegawai' => ['required', 'in:Honor,PNS,PKKK,Kontrak Provinsi,OJTM'],
+                'pendidikan_terakhir' => ['nullable', 'string', 'max:120'],
+                'alamat' => ['nullable', 'string', 'max:255'],
+                'email' => ['nullable', 'email', 'max:120'],
+                'no_hp' => ['nullable', 'string', 'max:30'],
+                'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            ]);
 
             $fotoPath = null;
 
@@ -30,21 +46,21 @@ class PegawaiController extends Controller
             }
 
             Pegawai::create([
-                'nama_pegawai' => $request->nama_pegawai,
-                'nip' => $request->nip,
-                'nik' => $request->nik,
-                'nuptk' => $request->nuptk,
-                'tanggal_lahir' => $request->tanggal_lahir,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'status_pegawai' => $request->status_pegawai,
-                'pendidikan_terakhir' => $request->pendidikan,
-                'alamat' => $request->alamat,
-                'email' => $request->email,
-                'no_hp' => $request->no_hp,
+                'nama_pegawai' => $validated['nama_pegawai'],
+                'nip_nippk' => $validated['nip'] ?? null,
+                'nik' => $validated['nik'] ?? null,
+                'nuptk' => $validated['nuptk'] ?? null,
+                'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+                'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
+                'status_pegawai' => $validated['status_pegawai'] ?? null,
+                'pendidikan_terakhir' => $validated['pendidikan_terakhir'] ?? null,
+                'alamat' => $validated['alamat'] ?? null,
+                'email' => $validated['email'] ?? null,
+                'no_hp' => $validated['no_hp'] ?? null,
                 'foto_path' => $fotoPath,
             ]);
 
-            return redirect()->route('pegawai.index')->with('success', 'Data berhasil disimpan');
+            return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil disimpan');
 
         } catch (\Exception $e) {
             dd($e->getMessage());
@@ -60,14 +76,31 @@ class PegawaiController extends Controller
     public function edit($id)
     {
         $pegawai = Pegawai::findOrFail($id);
-        return view('admin.data-center.pegawai.edit', compact('pegawai'));
+        return view('admin.data-center.pegawai.create', [
+            'data' => $pegawai,
+        ]);
     }
 
     public function update(Request $request, $id)
     {
         $pegawai = Pegawai::findOrFail($id);
+        $validated = $request->validate([
+            'nama_pegawai' => ['required', 'string', 'max:120'],
+            'nip' => ['nullable', 'string', 'max:40'],
+            'nik' => ['nullable', 'string', 'max:30'],
+            'nuptk' => ['nullable', 'string', 'max:40'],
+            'tanggal_lahir' => ['nullable', 'date'],
+            'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan'],
+            'status_pegawai' => ['required', 'in:Honor,PNS,PKKK,Kontrak Provinsi,OJTM'],
+            'pendidikan_terakhir' => ['nullable', 'string', 'max:120'],
+            'alamat' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:120'],
+            'no_hp' => ['nullable', 'string', 'max:30'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+        ]);
 
         // upload foto baru
+        $fotoPath = $pegawai->foto_path;
         if ($request->hasFile('foto')) {
 
             // hapus foto lama
@@ -76,24 +109,24 @@ class PegawaiController extends Controller
             }
 
             $fotoPath = $request->file('foto')->store('pegawai', 'public');
-            $pegawai->foto_path = $fotoPath;
         }
 
         $pegawai->update([
-            'nama_pegawai' => $request->nama_pegawai,
-            'nip' => $request->nip,
-            'nik' => $request->nik,
-            'nuptk' => $request->nuptk,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'status_pegawai' => $request->status_pegawai,
-            'pendidikan_terakhir' => $request->pendidikan,
-            'alamat' => $request->alamat,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
+            'nama_pegawai' => $validated['nama_pegawai'],
+            'nip_nippk' => $validated['nip'] ?? null,
+            'nik' => $validated['nik'] ?? null,
+            'nuptk' => $validated['nuptk'] ?? null,
+            'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+            'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
+            'status_pegawai' => $validated['status_pegawai'] ?? null,
+            'pendidikan_terakhir' => $validated['pendidikan_terakhir'] ?? null,
+            'alamat' => $validated['alamat'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'no_hp' => $validated['no_hp'] ?? null,
+            'foto_path' => $fotoPath,
         ]);
 
-        return redirect()->route('pegawai.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diupdate');
     }
 
     public function destroy($id)
@@ -107,6 +140,6 @@ class PegawaiController extends Controller
 
         $pegawai->delete();
 
-        return redirect()->route('pegawai.index')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil dihapus');
     }
 }
