@@ -143,31 +143,29 @@
             </a>
 
             <!-- Administrasi Umum -->
-            <div x-data="{ open: false }">
+            <div x-data="{ open: {{ request()->is('administrasi*') ? 'true' : 'false' }} }">
 
-                <button @click="open = !open"
-                    class="flex items-center justify-between w-full px-4 py-2 rounded-lg hover:bg-blue-100">
-
-                    <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 rounded-lg {{ request()->is('administrasi*') ? 'bg-blue-500 text-white' : 'hover:bg-blue-100' }}">
+                    <a href="{{ route('administrasi.index') }}"
+                       class="flex flex-1 items-center gap-2 p-2">
                         <i data-feather="check-square"></i>
                         <span>Administrasi Umum</span>
-                    </div>
+                    </a>
 
-                    <i data-feather="chevron-down"></i>
-                </button>
+                    <button @click="open = !open"
+                        class="px-2 py-2">
+                        <i data-feather="chevron-down" :class="{ 'transform rotate-180': open }"></i>
+                    </button>
+                </div>
 
-                <!-- SUB MENU -->
                 <div x-show="open" class="ml-6 mt-2 flex flex-col gap-1">
-
-                    <!-- Pegawai -->
-                    <a href="/administrasi?kategori=Pegawai"
-                    class="px-3 py-1 text-sm hover:bg-blue-100 rounded">
+                    <a href="{{ route('administrasi.pegawai.index') }}"
+                    class="px-3 py-1 text-sm rounded hover:bg-blue-100 {{ request()->routeIs('administrasi.pegawai.*') ? 'text-blue-500 font-semibold' : '' }}">
                         Pegawai
                     </a>
 
-                    <!-- Siswa -->
-                    <a href="/administrasi?kategori=Siswa"
-                    class="px-3 py-1 text-sm hover:bg-blue-100 rounded">
+                    <a href="{{ route('administrasi.siswa.index') }}"
+                    class="px-3 py-1 text-sm rounded hover:bg-blue-100 {{ request()->routeIs('administrasi.siswa.*') ? 'text-blue-500 font-semibold' : '' }}">
                         Siswa
                     </a>
 

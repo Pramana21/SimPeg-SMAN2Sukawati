@@ -1,10 +1,7 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="space-y-6">
     <div>
         <h1 class="text-4xl font-semibold text-slate-900">{{ $title }}</h1>
-        <p class="mt-2 text-sm text-slate-500">Overview seluruh dokumen administrasi umum dengan filter kategori, bulan, dan tahun yang sinkron.</p>
+        <p class="mt-2 text-sm text-slate-500">Kelola dokumen administrasi {{ strtolower($selectedKategori) }} dengan filter bulan dan tahun yang konsisten.</p>
     </div>
 
     @if(session('success'))
@@ -22,21 +19,7 @@
     <div class="rounded-[28px] border border-slate-200 bg-white/90 p-5 shadow-sm">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div class="flex flex-wrap items-center gap-3">
-                <form method="GET" action="{{ route('administrasi.index') }}" class="flex flex-wrap items-center gap-3">
-                    <div class="relative">
-                        <select name="kategori"
-                                onchange="this.form.submit()"
-                                class="min-w-[180px] appearance-none rounded-lg border border-blue-200 bg-blue-500 px-4 py-2.5 pr-10 text-sm font-semibold text-white outline-none transition hover:bg-blue-600">
-                            <option value="">Kategori</option>
-                            @foreach($kategoriOptions as $option)
-                                <option value="{{ $option['value'] }}" {{ $selectedKategoriFilter === $option['value'] ? 'selected' : '' }}>
-                                    {{ $option['label'] }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
-                    </div>
-
+                <form method="GET" action="{{ route($selectedKategori === 'Pegawai' ? 'administrasi.pegawai.index' : 'administrasi.siswa.index') }}" class="flex flex-wrap items-center gap-3">
                     <div class="relative">
                         <select name="bulan"
                                 onchange="this.form.submit()"
@@ -65,8 +48,8 @@
                         <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
                     </div>
 
-                    @if($selectedKategoriFilter || $selectedBulan || $selectedTahun)
-                        <a href="{{ route('administrasi.index') }}"
+                    @if($selectedBulan || $selectedTahun)
+                        <a href="{{ route($selectedKategori === 'Pegawai' ? 'administrasi.pegawai.index' : 'administrasi.siswa.index') }}"
                            class="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800">
                             Reset
                         </a>
@@ -87,13 +70,18 @@
                     </svg>
                     Hapus Terpilih
                 </button>
+
+                <a href="{{ route($createRoute) }}"
+                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+                    <span class="text-lg leading-none">+</span>
+                    Tambah
+                </a>
             </div>
         </div>
 
         @include('admin.administrasi.partials.table', [
-            'tableId' => 'administrasiOverview',
-            'emptyMessage' => 'Data administrasi belum tersedia untuk filter yang dipilih.',
+            'tableId' => $tableId,
+            'emptyMessage' => $emptyMessage,
         ])
     </div>
 </div>
-@endsection

@@ -74,11 +74,17 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::resource('siswa', SiswaController::class)
-        ->middleware('permission:siswa,view');
+    // Legacy routes below referenced controllers that are not present in the codebase.
+    // Guard them so route registration and diagnostics stay healthy.
+    if (class_exists(\App\Http\Controllers\SiswaController::class)) {
+        Route::resource('siswa', \App\Http\Controllers\SiswaController::class)
+            ->middleware('permission:siswa,view');
+    }
 
-    Route::resource('kelas', KelasController::class)
-        ->middleware('permission:kelas,view');
+    if (class_exists(\App\Http\Controllers\KelasController::class)) {
+        Route::resource('kelas', \App\Http\Controllers\KelasController::class)
+            ->middleware('permission:kelas,view');
+    }
 
 
     /*
@@ -143,15 +149,57 @@ Route::middleware(['auth'])->group(function () {
 
     
     //administrasi
-    Route::resource('administrasi', AdministrasiController::class)
-        ->middleware('permission:administrasi,view');
-    // halaman utama administrasi
-    Route::get('/administrasi', [AdministrasiController::class, 'index']);
-    // create
-    Route::get('/administrasi/create', [AdministrasiController::class, 'create']);
-    Route::post('/administrasi/store', [AdministrasiController::class, 'store']);
-    // delete
-    Route::delete('/administrasi/{id}', [AdministrasiController::class, 'destroy']);
+    Route::prefix('administrasi')
+        ->name('administrasi.')
+        ->group(function () {
+            Route::get('/', [AdministrasiController::class, 'index'])
+                ->middleware('permission:administrasi,view')
+                ->name('index');
+
+            Route::post('/bulk-delete', [AdministrasiController::class, 'bulkDelete'])
+                ->middleware('permission:administrasi,delete')
+                ->name('bulk-delete');
+
+            Route::get('/pegawai', [AdministrasiController::class, 'pegawai'])
+                ->middleware('permission:administrasi,view')
+                ->name('pegawai.index');
+
+            Route::get('/siswa', [AdministrasiController::class, 'siswa'])
+                ->middleware('permission:administrasi,view')
+                ->name('siswa.index');
+
+            Route::get('/pegawai/create', [AdministrasiController::class, 'createPegawai'])
+                ->middleware('permission:administrasi,create')
+                ->name('pegawai.create');
+
+            Route::get('/siswa/create', [AdministrasiController::class, 'createSiswa'])
+                ->middleware('permission:administrasi,create')
+                ->name('siswa.create');
+
+            Route::post('/store', [AdministrasiController::class, 'store'])
+                ->middleware('permission:administrasi,create')
+                ->name('store');
+
+            Route::get('/{id}', [AdministrasiController::class, 'show'])
+                ->middleware('permission:administrasi,view')
+                ->whereNumber('id')
+                ->name('show');
+
+            Route::get('/{id}/edit', [AdministrasiController::class, 'edit'])
+                ->middleware('permission:administrasi,edit')
+                ->whereNumber('id')
+                ->name('edit');
+
+            Route::put('/{id}', [AdministrasiController::class, 'update'])
+                ->middleware('permission:administrasi,edit')
+                ->whereNumber('id')
+                ->name('update');
+
+            Route::delete('/{id}', [AdministrasiController::class, 'destroy'])
+                ->middleware('permission:administrasi,delete')
+                ->whereNumber('id')
+                ->name('destroy');
+        });
 
     /*
     |--------------------------------------------------------------------------
