@@ -102,7 +102,9 @@ Route::middleware(['auth'])->group(function () {
         ->group(function () {
 
         Route::get('/', [KeuanganController::class, 'index'])->name('keuangan.index');
+        Route::post('/bulk-delete', [KeuanganController::class, 'bulkDelete'])->name('keuangan.bulk-delete');
 
+        Route::get('/{slug}/preview/{id}', [KeuanganController::class, 'preview'])->name('keuangan.preview');
         Route::get('/{slug}', [KeuanganController::class, 'show'])->name('keuangan.kategori');
 
         Route::get('/{slug}/create', [KeuanganController::class, 'create'])->name('keuangan.create');

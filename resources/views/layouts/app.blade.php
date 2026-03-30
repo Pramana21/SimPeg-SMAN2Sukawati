@@ -81,39 +81,45 @@
             </a>
 
             <!-- Keuangan -->
-            <a href="{{ route('keuangan.index') }}"
-                class="flex gap-3 items-center p-2 rounded
-                {{ request()->is('keuangan*') ? 'bg-blue-500 text-white' : '' }}">
+            <div x-data="{ open: {{ request()->is('keuangan*') ? 'true' : 'false' }} }">
 
-                <i data-feather="dollar-sign"></i>
-                Keuangan
-            </a>
+                <button @click="open = !open"
+                    class="flex items-center justify-between w-full p-2 rounded-lg {{ request()->is('keuangan*') ? 'bg-blue-500 text-white' : 'hover:bg-blue-100' }}">
 
-            <div class="ml-6 mt-2 flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <i data-feather="dollar-sign"></i>
+                        <span>Keuangan</span>
+                    </div>
 
-                <a href="{{ route('keuangan.kategori', 'laporan') }}"
-                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
-                    {{ request()->is('keuangan/laporan*') ? 'text-blue-500 font-semibold' : '' }}">
-                    Laporan Keuangan
-                </a>
+                    <i data-feather="chevron-down" :class="{ 'transform rotate-180': open }"></i>
+                </button>
 
-                <a href="{{ route('keuangan.kategori', 'gaji-asn') }}"
-                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
-                    {{ request()->is('keuangan/gaji-asn*') ? 'text-blue-500 font-semibold' : '' }}">
-                    Gaji ASN
-                </a>
+                <div x-show="open" class="ml-6 mt-2 flex flex-col gap-1">
+                    <a href="{{ route('keuangan.index') }}"
+                        class="text-sm px-3 py-1 rounded hover:bg-blue-100 {{ request()->routeIs('keuangan.index') ? 'text-blue-500 font-semibold' : '' }}">
+                        Dashboard Keuangan
+                    </a>
 
-                <a href="{{ route('keuangan.kategori', 'tpp-asn') }}"
-                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
-                    {{ request()->is('keuangan/tpp-asn*') ? 'text-blue-500 font-semibold' : '' }}">
-                    TPP ASN
-                </a>
+                    <a href="{{ route('keuangan.kategori', 'laporan') }}"
+                        class="text-sm px-3 py-1 rounded hover:bg-blue-100 {{ request()->is('keuangan/laporan*') ? 'text-blue-500 font-semibold' : '' }}">
+                        Laporan Keuangan
+                    </a>
 
-                <a href="{{ route('keuangan.kategori', 'tpg-guru') }}"
-                    class="text-sm px-3 py-1 rounded hover:bg-blue-100
-                    {{ request()->is('keuangan/tpg-guru*') ? 'text-blue-500 font-semibold' : '' }}">
-                    TPG Guru
-                </a>
+                    <a href="{{ route('keuangan.kategori', 'gaji-asn') }}"
+                        class="text-sm px-3 py-1 rounded hover:bg-blue-100 {{ request()->is('keuangan/gaji-asn*') ? 'text-blue-500 font-semibold' : '' }}">
+                        Gaji ASN
+                    </a>
+
+                    <a href="{{ route('keuangan.kategori', 'tpp-asn') }}"
+                        class="text-sm px-3 py-1 rounded hover:bg-blue-100 {{ request()->is('keuangan/tpp-asn*') ? 'text-blue-500 font-semibold' : '' }}">
+                        TPP ASN
+                    </a>
+
+                    <a href="{{ route('keuangan.kategori', 'tpg-guru') }}"
+                        class="text-sm px-3 py-1 rounded hover:bg-blue-100 {{ request()->is('keuangan/tpg-guru*') ? 'text-blue-500 font-semibold' : '' }}">
+                        TPG Guru
+                    </a>
+                </div>
 
             </div>
 
