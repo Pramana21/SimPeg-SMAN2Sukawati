@@ -10,13 +10,15 @@ class AdminUserSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('users')->insert([
-            'username' => 'admin',
-            'password_hash' => Hash::make('admin123'),
-            'id_role' => 1,
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        DB::table('users')->updateOrInsert(
+            ['username' => 'admin'],
+            [
+                'password_hash' => Hash::make('admin123'),
+                'id_role' => 1,
+                'is_active' => true,
+                'updated_at' => now(),
+                'created_at' => now(),
+            ]
+        );
     }
 }

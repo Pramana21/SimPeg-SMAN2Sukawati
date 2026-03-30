@@ -34,12 +34,16 @@ class PermissionSeeder extends Seeder
 
         foreach ($modules as $module) {
             foreach ($actions as $action) {
-                DB::table('permissions')->insert([
-                    'module' => $module,
-                    'action' => $action,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
+                DB::table('permissions')->updateOrInsert(
+                    [
+                        'module' => $module,
+                        'action' => $action,
+                    ],
+                    [
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]
+                );
             }
         }
     }

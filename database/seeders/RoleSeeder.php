@@ -9,32 +9,30 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        Role::create([
-            'role_name' => 'Super Admin',
-            'description' => 'Akses penuh ke seluruh sistem',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $roles = [
+            [
+                'role_name' => 'Super Admin',
+                'description' => 'Akses penuh ke seluruh sistem',
+            ],
+            [
+                'role_name' => 'Admin Kepegawaian',
+                'description' => 'Mengelola data pegawai dan dokumen',
+            ],
+            [
+                'role_name' => 'Tamu',
+                'description' => 'Hanya dapat melihat dokumen',
+            ],
+            [
+                'role_name' => 'Siswa',
+                'description' => 'Akses terbatas untuk siswa',
+            ],
+        ];
 
-        Role::create([
-            'role_name' => 'Admin Kepegawaian',
-            'description' => 'Mengelola data pegawai dan dokumen',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Role::create([
-            'role_name' => 'Tamu',
-            'description' => 'Hanya dapat melihat dokumen',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Role::create([
-            'role_name' => 'Siswa',
-            'description' => 'Akses terbatas untuk siswa',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        foreach ($roles as $role) {
+            Role::updateOrCreate(
+                ['role_name' => $role['role_name']],
+                ['description' => $role['description']]
+            );
+        }
     }
 }

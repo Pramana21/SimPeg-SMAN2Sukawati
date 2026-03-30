@@ -18,12 +18,16 @@ class RolePermissionSeeder extends Seeder
 
                 // Super Admin → semua akses
                 if ($role->role_name == 'Super Admin') {
-                    DB::table('role_permissions')->insert([
-                        'id_role' => $role->id_role,
-                        'id_permission' => $permission->id_permission,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
+                    DB::table('role_permissions')->updateOrInsert(
+                        [
+                            'id_role' => $role->id_role,
+                            'id_permission' => $permission->id_permission,
+                        ],
+                        [
+                            'updated_at' => now(),
+                            'created_at' => now(),
+                        ]
+                    );
                 }
 
                 // Admin Kepegawaian → hanya pegawai & dokumen
@@ -31,36 +35,48 @@ class RolePermissionSeeder extends Seeder
                     if (in_array($permission->module, [
                         'pegawai','penyuratan','keuangan','inventaris','administrasi'
                     ])) {
-                        DB::table('role_permissions')->insert([
-                            'id_role' => $role->id_role,
-                            'id_permission' => $permission->id_permission,
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
+                        DB::table('role_permissions')->updateOrInsert(
+                            [
+                                'id_role' => $role->id_role,
+                                'id_permission' => $permission->id_permission,
+                            ],
+                            [
+                                'updated_at' => now(),
+                                'created_at' => now(),
+                            ]
+                        );
                     }
                 }
 
                 // Tamu → hanya view
                 if ($role->role_name == 'Tamu') {
                     if ($permission->action == 'view') {
-                        DB::table('role_permissions')->insert([
-                            'id_role' => $role->id_role,
-                            'id_permission' => $permission->id_permission,
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
+                        DB::table('role_permissions')->updateOrInsert(
+                            [
+                                'id_role' => $role->id_role,
+                                'id_permission' => $permission->id_permission,
+                            ],
+                            [
+                                'updated_at' => now(),
+                                'created_at' => now(),
+                            ]
+                        );
                     }
                 }
 
                 // Siswa → view siswa saja
                 if ($role->role_name == 'Siswa') {
                     if ($permission->module == 'siswa' && $permission->action == 'view') {
-                        DB::table('role_permissions')->insert([
-                            'id_role' => $role->id_role,
-                            'id_permission' => $permission->id_permission,
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
+                        DB::table('role_permissions')->updateOrInsert(
+                            [
+                                'id_role' => $role->id_role,
+                                'id_permission' => $permission->id_permission,
+                            ],
+                            [
+                                'updated_at' => now(),
+                                'created_at' => now(),
+                            ]
+                        );
                     }
                 }
             }
