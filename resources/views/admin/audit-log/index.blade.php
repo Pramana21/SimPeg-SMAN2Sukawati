@@ -1,148 +1,168 @@
 @extends('layouts.app')
 
 @section('content')
-
-<div class="p-6">
-
-    <!-- TITLE -->
-    <h1 class="text-2xl font-semibold mb-1">Audit Log</h1>
-    <p class="text-gray-500 mb-6">Catatan aktivitas pengguna di sistem.</p>
-
-    <!-- FILTER -->
-    <form method="GET" class="flex gap-3 mb-4">
-
-        <!-- BULAN -->
-        <select name="bulan" class="px-4 py-2 rounded bg-blue-500 text-white">
-
-            <option value="">Semua Bulan</option>
-
-            @for ($i = 1; $i <= 12; $i++)
-                <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>
-                    {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
-                </option>
-            @endfor
-
-        </select>
-
-        <!-- TAHUN -->
-        <select name="tahun" class="px-4 py-2 rounded bg-blue-500 text-white">
-
-            <option value="">Semua Tahun</option>
-
-            @for ($y = 2024; $y <= 2026; $y++)
-                <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>
-                    {{ $y }}
-                </option>
-            @endfor
-
-        </select>
-
-        <!-- BUTTON -->
-        <button class="bg-gray-700 text-white px-4 py-2 rounded">
-            Filter
-        </button>
-
-    </form>
-
-    <!-- ACTION BUTTON -->
-    <div class="flex justify-end gap-2 mb-4">
-
-        <a href="{{ url('/audit-log/export?bulan='.$bulan.'&tahun='.$tahun) }}"
-            class="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2">
-
-                <i data-feather="download"></i>
-                Unduh
-
-        </a>
-
-        <button onclick="deleteSelected()" class="bg-red-500 text-white px-4 py-2 rounded flex items-center gap-2">
-            <i data-feather="trash"></i>
-            Hapus
-        </button>
-
+<div class="space-y-6">
+    <div>
+        <h1 class="text-4xl font-semibold text-slate-900">Audit Log</h1>
+        <p class="mt-2 text-sm text-slate-500">Catatan aktivitas pengguna di sistem untuk memantau perubahan data terbaru.</p>
     </div>
 
-    <div id="successAlert" class="hidden mb-4 bg-green-100 text-green-700 px-4 py-3 rounded">
-        Data berhasil dihapus
+    <div class="rounded-[28px] border border-slate-200 bg-white/90 p-5 shadow-sm">
+        <div class="flex justify-between items-center mb-6">
+            <form method="GET" action="{{ url('/audit-log') }}" class="flex gap-3 items-center">
+                <div class="relative">
+                    <select name="bulan"
+                            class="min-w-[170px] appearance-none rounded-lg border border-blue-200 bg-blue-500 px-4 py-2.5 pr-10 text-sm font-semibold text-white outline-none transition hover:bg-blue-600">
+                        <option value="">Semua Bulan</option>
+                        @foreach($months as $monthValue => $monthLabel)
+                            <option value="{{ $monthValue }}" {{ $selectedBulan === $monthValue ? 'selected' : '' }}>
+                                {{ $monthLabel }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
+                </div>
+
+                <div class="relative">
+                    <select name="tahun"
+                            class="min-w-[140px] appearance-none rounded-lg border border-blue-200 bg-blue-500 px-4 py-2.5 pr-10 text-sm font-semibold text-white outline-none transition hover:bg-blue-600">
+                        <option value="">Semua Tahun</option>
+                        @foreach($years as $year)
+                            <option value="{{ $year }}" {{ $selectedTahun === $year ? 'selected' : '' }}>
+                                {{ $year }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
+                </div>
+
+                <button type="submit"
+                        class="inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+                    Filter
+                </button>
+            </form>
+
+            <div class="flex items-center">
+                <button type="submit"
+                        id="deleteSelectedButton"
+                        form="auditLogBulkDeleteForm"
+                        onclick="return confirm('Apakah Anda yakin ingin menghapus data yang dipilih?')"
+                        class="self-center inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600">
+                    <i data-feather="trash-2" class="h-4 w-4"></i>
+                    Hapus
+                </button>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ route('audit-log.bulk-delete') }}" id="auditLogBulkDeleteForm">
+            @csrf
+            @method('DELETE')
+
+            <div class="overflow-hidden rounded-[24px] border border-slate-200">
+                <div class="border-b border-slate-200 bg-white px-5 py-4">
+                    <h2 class="text-[2rem] font-semibold leading-none text-slate-900">Aktivitas Terakhir (Audit Log)</h2>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-4 text-left font-semibold text-slate-800">
+                                    <input type="checkbox" id="checkAll" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                </th>
+                                <th class="px-4 py-4 text-left font-semibold text-slate-800">Waktu</th>
+                                <th class="px-4 py-4 text-left font-semibold text-slate-800">Pengguna</th>
+                                <th class="px-4 py-4 text-left font-semibold text-slate-800">Modul</th>
+                                <th class="px-4 py-4 text-left font-semibold text-slate-800">Aktivitas</th>
+                                <th class="px-4 py-4 text-left font-semibold text-slate-800">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            @forelse($logs as $log)
+                                <tr class="transition hover:bg-slate-50">
+                                    <td class="px-4 py-4 align-top">
+                                        <input type="checkbox"
+                                               name="selected_ids[]"
+                                               value="{{ $log->id }}"
+                                               class="rowCheckbox h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    </td>
+                                    <td class="px-4 py-4 font-medium text-slate-900">{{ $log->created_at?->format('d-m-Y') ?? '-' }}</td>
+                                    <td class="px-4 py-4">{{ $log->user?->pegawai?->nama_pegawai ?? $log->user?->username ?? $log->nama_pengguna ?? '-' }}</td>
+                                    <td class="px-4 py-4">{{ $log->modul }}</td>
+                                    <td class="px-4 py-4">{{ $log->aktivitas }}</td>
+                                    <td class="px-4 py-4">{{ $log->keterangan ?? '-' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-12 text-center text-sm text-slate-500">
+                                        Belum ada data audit log untuk filter yang dipilih.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="border-t border-slate-200 bg-white px-5 py-4">
+                    <div class="flex flex-col gap-3 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            @if($logs->count())
+                                Menampilkan {{ $logs->firstItem() }} - {{ $logs->lastItem() }} dari {{ $logs->total() }} data
+                            @else
+                                Menampilkan 0 data
+                            @endif
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div>Panjang per halaman 10</div>
+                            <div>{{ $logs->onEachSide(1)->links() }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
-
-    <!-- TABLE -->
-    <div class="bg-white rounded-xl shadow p-4">
-
-        <h2 class="text-lg font-semibold mb-4">
-            Aktivitas Terakhir (Audit Log)
-        </h2>
-
-        <table class="w-full text-sm">
-
-            <thead>
-                <tr class="border-b">
-                    <th class="p-2">
-                        <input type="checkbox" id="checkAll">
-                    </th>
-                    <th class="p-2 text-left">Waktu</th>
-                    <th class="p-2 text-left">Pengguna</th>
-                    <th class="p-2 text-left">Modul</th>
-                    <th class="p-2 text-left">Aktivitas</th>
-                    <th class="p-2 text-left">Keterangan</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                @foreach($logs as $index => $log)
-                <tr class="border-b hover:bg-gray-50">
-
-                    <td class="p-2">
-                        <input type="checkbox" class="rowCheckbox" value="{{ $index }}">
-                    </td>
-
-                    <td class="p-2">
-                        {{ \Carbon\Carbon::parse($log['tanggal'])->format('d-m-Y') }}
-                    </td>
-                    <td class="p-2">{{ $log['user'] }}</td>
-                    <td class="p-2">{{ $log['modul'] }}</td>
-                    <td class="p-2">{{ $log['aksi'] }}</td>
-                    <td class="p-2">{{ $log['keterangan'] }}</td>
-
-                </tr>
-                @endforeach
-
-            </tbody>
-
-        </table>
-
-    </div>
-
 </div>
 
 <script>
+    const checkAll = document.getElementById('checkAll');
+    const rowCheckboxes = Array.from(document.querySelectorAll('.rowCheckbox'));
+    const deleteSelectedButton = document.getElementById('deleteSelectedButton');
 
-    // SELECT ALL
-    document.getElementById('checkAll').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('.rowCheckbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-
-    // DELETE SIMULASI
-    function deleteSelected() {
-
-        let selected = document.querySelectorAll('.rowCheckbox:checked');
-
-        if (selected.length === 0) {
-            alert("Pilih data terlebih dahulu!");
+    function syncHeaderCheckbox() {
+        if (!checkAll) {
             return;
         }
 
-        // hapus dari UI (sementara)
-        selected.forEach(cb => {
-            cb.closest('tr').remove();
-        });
-
-        // tampilkan alert
-        document.getElementById('successAlert').classList.remove('hidden');
-
+        const checkedCount = rowCheckboxes.filter((checkbox) => checkbox.checked).length;
+        checkAll.checked = rowCheckboxes.length > 0 && checkedCount === rowCheckboxes.length;
+        checkAll.indeterminate = checkedCount > 0 && checkedCount < rowCheckboxes.length;
     }
 
+    if (checkAll) {
+        checkAll.addEventListener('change', function () {
+            rowCheckboxes.forEach((checkbox) => {
+                checkbox.checked = this.checked;
+            });
+
+            syncHeaderCheckbox();
+        });
+    }
+
+    rowCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener('change', syncHeaderCheckbox);
+    });
+
+    if (deleteSelectedButton) {
+        deleteSelectedButton.addEventListener('click', function (event) {
+            const checkedCount = rowCheckboxes.filter((checkbox) => checkbox.checked).length;
+
+            if (checkedCount === 0) {
+                event.preventDefault();
+                alert('Pilih minimal satu data audit log.');
+                return;
+            }
+        });
+    }
 </script>
 @endsection

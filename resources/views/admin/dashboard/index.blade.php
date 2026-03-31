@@ -67,20 +67,20 @@
                 <th class="p-3 text-left">User</th>
                 <th class="p-3 text-left">Aksi</th>
                 <th class="p-3 text-left">Modul</th>
-                <th class="p-3 text-left">Entity/ID</th>
+                <th class="p-3 text-left">Keterangan</th>
                 <th class="p-3 text-left">Waktu</th>
             </tr>
         </thead>
 
         <tbody>
 
-        @forelse($logs ?? [] as $log)
+        @forelse($logs as $log)
             <tr class="border-b">
-                <td class="p-3">{{ $log->user->username ?? '-' }}</td>
-                <td class="p-3">{{ $log->action }}</td>
-                <td class="p-3">{{ $log->module }}</td>
-                <td class="p-3">{{ $log->entity_id }}</td>
-                <td class="p-3">{{ $log->created_at->format('H:i') }}</td>
+                <td class="p-3">{{ $log->user?->username ?? $log->nama_pengguna ?? '-' }}</td>
+                <td class="p-3">{{ $log->aktivitas ?? '-' }}</td>
+                <td class="p-3">{{ $log->modul ?? '-' }}</td>
+                <td class="p-3">{{ $log->keterangan ?? '-' }}</td>
+                <td class="p-3">{{ $log->created_at ? $log->created_at->format('d-m-Y H:i') : '-' }}</td>
             </tr>
         @empty
             <tr>

@@ -77,7 +77,7 @@ class AdministrasiController extends Controller
         $jenis = $this->resolveJenisDokumen($validated['jenis_dokumen']);
         $path = $request->file('file_surat')->store('administrasi', 'public');
 
-        DokumenAdministrasi::create([
+        $dokumen = DokumenAdministrasi::create([
             'id_user' => Auth::id(),
             'nama_dokumen' => $validated['nama_dokumen'],
             'tanggal_dokumen' => $validated['tanggal_dokumen'],
@@ -87,6 +87,12 @@ class AdministrasiController extends Controller
             'bulan' => date('m', strtotime($validated['tanggal_dokumen'])),
             'tahun' => date('Y', strtotime($validated['tanggal_dokumen'])),
         ]);
+
+        $this->logActivity(
+            'Administrasi',
+            'Tambah Data',
+            'Menambahkan dokumen administrasi: ' . $dokumen->nama_dokumen
+        );
 
         return redirect()
             ->route($this->submoduleRouteName($validated['selected_kategori'] ?? ($jenis->kategori->nama_kategori ?? 'Pegawai')))
@@ -158,6 +164,12 @@ class AdministrasiController extends Controller
         $data->tahun = date('Y', strtotime($validated['tanggal_dokumen']));
         $data->save();
 
+        $this->logActivity(
+            'Administrasi',
+            'Edit Data',
+            'Memperbarui dokumen administrasi: ' . $data->nama_dokumen
+        );
+
         return redirect()
             ->route($this->submoduleRouteName($jenis->kategori->nama_kategori ?? 'Pegawai'))
             ->with('success', 'Dokumen administrasi berhasil diperbarui.');
@@ -166,12 +178,19 @@ class AdministrasiController extends Controller
     public function destroy($id): RedirectResponse
     {
         $data = DokumenAdministrasi::findOrFail($id);
+        $namaDokumen = $data->nama_dokumen;
 
         if ($data->file_path && Storage::disk('public')->exists($data->file_path)) {
             Storage::disk('public')->delete($data->file_path);
         }
 
         $data->delete();
+
+        $this->logActivity(
+            'Administrasi',
+            'Hapus Data',
+            'Menghapus dokumen administrasi: ' . $namaDokumen
+        );
 
         return redirect()->back()->with('success', 'Dokumen administrasi berhasil dihapus.');
     }
@@ -192,6 +211,12 @@ class AdministrasiController extends Controller
 
             $document->delete();
         }
+
+        $this->logActivity(
+            'Administrasi',
+            'Hapus Data',
+            'Menghapus ' . count($validated['ids']) . ' dokumen administrasi sekaligus'
+        );
 
         return redirect()->back()->with('success', count($validated['ids']) . ' dokumen administrasi berhasil dihapus.');
     }

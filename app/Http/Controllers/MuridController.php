@@ -41,7 +41,7 @@ class MuridController extends Controller
                 $fotoPath = $request->file('foto')->store('siswa', 'public');
             }
 
-            Siswa::create([
+            $murid = Siswa::create([
                 'nama_siswa' => $request->nama_siswa,
                 'nis' => $request->nis,
                 'nisn' => $request->nisn,
@@ -56,6 +56,12 @@ class MuridController extends Controller
                 'kelas' => $request->kelas,
                 'kategori_kelas' => $kategoriKelas,
             ]);
+
+            $this->logActivity(
+                'Murid',
+                'Tambah Data',
+                'Menambahkan data murid: ' . $murid->nama_siswa
+            );
 
             return redirect()->route('murid.index')->with('success', 'Data berhasil disimpan');
 
@@ -102,12 +108,19 @@ class MuridController extends Controller
             'kategori_kelas' => $kategoriKelas,
         ]);
 
+        $this->logActivity(
+            'Murid',
+            'Edit Data',
+            'Memperbarui data murid: ' . $murid->nama_siswa
+        );
+
         return redirect()->route('murid.index')->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy($id)
     {
         $murid = Siswa::findOrFail($id);
+        $namaMurid = $murid->nama_siswa;
 
         // hapus foto jika ada
         if ($murid->foto_path && Storage::disk('public')->exists($murid->foto_path)) {
@@ -116,6 +129,12 @@ class MuridController extends Controller
 
         // hapus data
         $murid->delete();
+
+        $this->logActivity(
+            'Murid',
+            'Hapus Data',
+            'Menghapus data murid: ' . $namaMurid
+        );
 
         return redirect()->route('murid.index')->with('success', 'Data berhasil dihapus');
     }

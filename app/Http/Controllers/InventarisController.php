@@ -70,7 +70,7 @@ class InventarisController extends Controller
 
         $path = $request->file('file_surat')->store('inventaris', 'public');
 
-        DokumenInventaris::create([
+        $dokumen = DokumenInventaris::create([
             'id_user' => $user->id_user,
             'nama_dokumen' => $validated['nama_dokumen'],
             'tanggal_dokumen' => $validated['tanggal_dokumen'],
@@ -79,6 +79,12 @@ class InventarisController extends Controller
             'bulan' => Carbon::parse($validated['tanggal_dokumen'])->month,
             'tahun' => Carbon::parse($validated['tanggal_dokumen'])->year,
         ]);
+
+        $this->logActivity(
+            'Inventaris',
+            'Tambah Data',
+            'Menambahkan dokumen inventaris: ' . $dokumen->nama_dokumen
+        );
 
         return redirect()
             ->route('inventaris.index')
@@ -128,6 +134,12 @@ class InventarisController extends Controller
 
         $inventaris->update($payload);
 
+        $this->logActivity(
+            'Inventaris',
+            'Edit Data',
+            'Memperbarui dokumen inventaris: ' . $inventaris->nama_dokumen
+        );
+
         return redirect()
             ->route('inventaris.index')
             ->with('success', 'Dokumen inventaris berhasil diperbarui.');
@@ -136,9 +148,16 @@ class InventarisController extends Controller
     public function destroy($id): RedirectResponse
     {
         $inventaris = DokumenInventaris::findOrFail($id);
+        $namaDokumen = $inventaris->nama_dokumen;
 
         $this->deleteStoredInventaris($inventaris);
         $inventaris->delete();
+
+        $this->logActivity(
+            'Inventaris',
+            'Hapus Data',
+            'Menghapus dokumen inventaris: ' . $namaDokumen
+        );
 
         return redirect()
             ->route('inventaris.index')
@@ -158,6 +177,12 @@ class InventarisController extends Controller
             $this->deleteStoredInventaris($document);
             $document->delete();
         }
+
+        $this->logActivity(
+            'Inventaris',
+            'Hapus Data',
+            'Menghapus ' . count($validated['ids']) . ' dokumen inventaris sekaligus'
+        );
 
         return redirect()
             ->back()

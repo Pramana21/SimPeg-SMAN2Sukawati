@@ -105,7 +105,7 @@ class SuratController extends Controller
 
         $path = $request->file('file_surat')->store('surat', 'public');
 
-        DokumenPenyuratan::create([
+        $surat = DokumenPenyuratan::create([
             'id_user' => $user->id_user,
             'nama_dokumen' => $validated['nama_dokumen'],
             'no_surat' => $validated['no_surat'],
@@ -117,6 +117,12 @@ class SuratController extends Controller
             'bulan' => Carbon::parse($validated['tanggal_dokumen'])->month,
             'tahun' => Carbon::parse($validated['tanggal_dokumen'])->year,
         ]);
+
+        $this->logActivity(
+            'Penyuratan',
+            'Tambah Data',
+            'Menambahkan surat: ' . $surat->nama_dokumen . ' (' . $surat->no_surat . ')'
+        );
 
         return redirect()
             ->route('penyuratan.index')
@@ -182,6 +188,12 @@ class SuratController extends Controller
 
         $surat->update($payload);
 
+        $this->logActivity(
+            'Penyuratan',
+            'Edit Data',
+            'Memperbarui surat: ' . $surat->nama_dokumen . ' (' . $surat->no_surat . ')'
+        );
+
         return redirect()
             ->route('penyuratan.index')
             ->with('success', 'Surat berhasil diperbarui.');
@@ -190,9 +202,17 @@ class SuratController extends Controller
     public function destroy($id): RedirectResponse
     {
         $surat = DokumenPenyuratan::findOrFail($id);
+        $namaDokumen = $surat->nama_dokumen;
+        $nomorSurat = $surat->no_surat;
 
         $this->deleteStoredSurat($surat);
         $surat->delete();
+
+        $this->logActivity(
+            'Penyuratan',
+            'Hapus Data',
+            'Menghapus surat: ' . $namaDokumen . ' (' . $nomorSurat . ')'
+        );
 
         return redirect()
             ->route('penyuratan.index')
@@ -212,6 +232,12 @@ class SuratController extends Controller
             $this->deleteStoredSurat($document);
             $document->delete();
         }
+
+        $this->logActivity(
+            'Penyuratan',
+            'Hapus Data',
+            'Menghapus ' . count($validated['ids']) . ' data surat sekaligus'
+        );
 
         return redirect()
             ->back()

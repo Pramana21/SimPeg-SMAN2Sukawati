@@ -84,7 +84,7 @@ class KeuanganController extends Controller
 
         $path = $request->file('file')->store('keuangan', 'public');
 
-        DokumenKeuangan::create([
+        $dokumen = DokumenKeuangan::create([
             'id_user' => $user->id_user ?? $user->id ?? null,
             'nama_dokumen' => $validated['nama_dokumen'],
             'tanggal_dokumen' => $validated['tanggal_dokumen'],
@@ -94,6 +94,12 @@ class KeuanganController extends Controller
             'bulan' => Carbon::parse($validated['tanggal_dokumen'])->month,
             'tahun' => Carbon::parse($validated['tanggal_dokumen'])->year,
         ]);
+
+        $this->logActivity(
+            'Keuangan',
+            'Tambah Data',
+            'Menambahkan dokumen keuangan: ' . $dokumen->nama_dokumen
+        );
 
         return redirect()
             ->route('keuangan.kategori', $slug)
@@ -157,6 +163,12 @@ class KeuanganController extends Controller
 
         $data->update($payload);
 
+        $this->logActivity(
+            'Keuangan',
+            'Edit Data',
+            'Memperbarui dokumen keuangan: ' . $data->nama_dokumen
+        );
+
         return redirect()
             ->route('keuangan.kategori', $slug)
             ->with('success', 'Dokumen keuangan berhasil diperbarui.');
@@ -167,9 +179,16 @@ class KeuanganController extends Controller
         $kategori = KategoriKeuangan::where('slug', $slug)->firstOrFail();
         $data = DokumenKeuangan::where('id_kategori_keuangan', $kategori->id_kategori_keuangan)
             ->findOrFail($id);
+        $namaDokumen = $data->nama_dokumen;
 
         $this->deleteStoredFile($data);
         $data->delete();
+
+        $this->logActivity(
+            'Keuangan',
+            'Hapus Data',
+            'Menghapus dokumen keuangan: ' . $namaDokumen
+        );
 
         return redirect()
             ->back()
@@ -189,6 +208,12 @@ class KeuanganController extends Controller
             $this->deleteStoredFile($document);
             $document->delete();
         }
+
+        $this->logActivity(
+            'Keuangan',
+            'Hapus Data',
+            'Menghapus ' . count($validated['ids']) . ' dokumen keuangan sekaligus'
+        );
 
         return redirect()
             ->back()

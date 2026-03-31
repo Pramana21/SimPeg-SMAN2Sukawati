@@ -45,7 +45,7 @@ class PegawaiController extends Controller
                 $fotoPath = $request->file('foto')->store('pegawai', 'public');
             }
 
-            Pegawai::create([
+            $pegawai = Pegawai::create([
                 'nama_pegawai' => $validated['nama_pegawai'],
                 'nip_nippk' => $validated['nip'] ?? null,
                 'nik' => $validated['nik'] ?? null,
@@ -59,6 +59,12 @@ class PegawaiController extends Controller
                 'no_hp' => $validated['no_hp'] ?? null,
                 'foto_path' => $fotoPath,
             ]);
+
+            $this->logActivity(
+                'Pegawai',
+                'Tambah Data',
+                'Menambahkan data pegawai: ' . $pegawai->nama_pegawai
+            );
 
             return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil disimpan');
 
@@ -126,12 +132,19 @@ class PegawaiController extends Controller
             'foto_path' => $fotoPath,
         ]);
 
+        $this->logActivity(
+            'Pegawai',
+            'Edit Data',
+            'Memperbarui data pegawai: ' . $pegawai->nama_pegawai
+        );
+
         return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diupdate');
     }
 
     public function destroy($id)
     {
         $pegawai = Pegawai::findOrFail($id);
+        $namaPegawai = $pegawai->nama_pegawai;
 
         // hapus foto
         if ($pegawai->foto_path && Storage::disk('public')->exists($pegawai->foto_path)) {
@@ -139,6 +152,12 @@ class PegawaiController extends Controller
         }
 
         $pegawai->delete();
+
+        $this->logActivity(
+            'Pegawai',
+            'Hapus Data',
+            'Menghapus data pegawai: ' . $namaPegawai
+        );
 
         return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil dihapus');
     }

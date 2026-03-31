@@ -49,6 +49,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/audit-log/export', [AuditLogController::class, 'export']);
 
+    Route::delete('/audit-log/bulk-delete', [AuditLogController::class, 'bulkDelete'])
+        ->name('audit-log.bulk-delete')
+        ->middleware('permission:user,view');
+
     // Route::get('/users', [UserManagementController::class, 'index']);
 
     /*
