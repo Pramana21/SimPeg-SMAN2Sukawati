@@ -2,18 +2,11 @@
 
 @section('content')
 <div x-data="{ openModal: @js($errors->any()), activeStatus: @js(old('status', '1') === '1'), showPassword: false }" class="space-y-6">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div>
         <div>
             <h1 class="text-4xl font-semibold text-slate-900">Manajemen User</h1>
             <p class="mt-2 text-sm text-slate-500">Kelola akun pengguna, role, dan status akses</p>
         </div>
-
-        <button type="button"
-                @click="openModal = true"
-                class="inline-flex items-center gap-2 self-start rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100">
-            <i data-feather="plus" class="h-4 w-4"></i>
-            Tambah Pengguna
-        </button>
     </div>
 
     @if(session('success'))
@@ -35,6 +28,17 @@
     @endif
 
     <div class="rounded-[28px] border border-slate-200 bg-white/90 p-5 shadow-sm">
+        <div class="mb-5">
+            <button type="button"
+                    @click="openModal = true"
+                    class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold leading-none text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 4a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5A.75.75 0 0110 4z" clip-rule="evenodd" />
+                </svg>
+                Tambah Pengguna
+            </button>
+        </div>
+
         <div class="overflow-hidden rounded-[24px] border border-slate-200">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700">
@@ -53,7 +57,7 @@
                                 <td class="px-5 py-4 text-slate-700">{{ $user->role->role_name ?? '-' }}</td>
                                 <td class="px-5 py-4">
                                     @if($user->is_active)
-                                        <span class="inline-flex items-center rounded-lg bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                                        <span class="inline-flex items-center rounded-lg bg-green-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
                                             Aktif
                                         </span>
                                     @else
@@ -65,8 +69,11 @@
                                 <td class="px-5 py-4">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <a href="{{ route('users.edit', $user->id_user) }}"
-                                           class="inline-flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-600">
-                                            <i data-feather="edit-2" class="h-4 w-4"></i>
+                                           class="inline-flex items-center gap-1.5 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition hover:bg-blue-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path d="M5 13.75V16h2.25l6.28-6.28-2.25-2.25L5 13.75z" />
+                                                <path d="M14.71 6.04a1 1 0 000-1.41L13.37 3.3a1 1 0 00-1.41 0l-.88.88 2.25 2.25.88-.39z" />
+                                            </svg>
                                             Edit
                                         </a>
 
@@ -74,8 +81,16 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit"
-                                                    class="inline-flex items-center gap-2 rounded-lg {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600' }} px-3 py-2 text-xs font-semibold text-white shadow-sm transition">
-                                                <i data-feather="{{ $user->is_active ? 'x-circle' : 'check-circle' }}" class="h-4 w-4"></i>
+                                                    class="inline-flex items-center gap-1.5 rounded-lg {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600' }} px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition">
+                                                @if($user->is_active)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.03-10.97a.75.75 0 10-1.06-1.06L10 7.94 8.03 5.97a.75.75 0 10-1.06 1.06L8.94 9l-1.97 1.97a.75.75 0 101.06 1.06L10 10.06l1.97 1.97a.75.75 0 001.06-1.06L11.06 9l1.97-1.97z" clip-rule="evenodd" />
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.36-9.97a.75.75 0 10-1.22-.86l-2.8 3.96-1.48-1.48a.75.75 0 10-1.06 1.06l2.1 2.1a.75.75 0 001.14-.09l3.32-4.7z" clip-rule="evenodd" />
+                                                    </svg>
+                                                @endif
                                                 {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                             </button>
                                         </form>
@@ -107,18 +122,20 @@
          @keydown.escape.window="openModal = false"
          class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div @click.away="openModal = false"
-             class="w-full max-w-xl rounded-3xl border border-slate-200 bg-white shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
+             class="relative w-full max-w-xl rounded-3xl border border-slate-200 bg-white shadow-2xl">
+            <button type="button"
+                    @click="openModal = false"
+                    class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="border-b border-slate-200 px-6 py-5 pr-20">
                 <div>
                     <h2 class="text-2xl font-semibold text-slate-900">Tambah Pengguna</h2>
                     <p class="mt-1 text-sm text-slate-500">Lengkapi data akun pengguna baru.</p>
                 </div>
-
-                <button type="button"
-                        @click="openModal = false"
-                        class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700">
-                    <i data-feather="x" class="h-5 w-5"></i>
-                </button>
             </div>
 
             <form method="POST" action="{{ route('users.store') }}" class="space-y-5 px-6 py-6">
@@ -153,11 +170,11 @@
                 <div class="space-y-3">
                     <span class="text-sm font-semibold text-slate-700">Status</span>
                     <input type="hidden" name="status" :value="activeStatus ? '1' : '0'">
-                    <div class="flex flex-wrap items-center gap-6">
+                    <div class="flex flex-wrap items-center gap-3">
                         <button type="button"
                                 @click="activeStatus = true"
-                                :class="activeStatus ? 'text-slate-900' : 'text-slate-400'"
-                                class="inline-flex items-center gap-3 text-sm font-medium transition">
+                                :class="activeStatus ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700'"
+                                class="inline-flex items-center gap-3 rounded-xl border px-4 py-2 text-sm font-medium transition">
                             <span class="relative inline-flex h-6 w-11 items-center rounded-full transition"
                                   :class="activeStatus ? 'bg-blue-500' : 'bg-slate-200'">
                                 <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition"
@@ -168,8 +185,8 @@
 
                         <button type="button"
                                 @click="activeStatus = false"
-                                :class="!activeStatus ? 'text-slate-900' : 'text-slate-400'"
-                                class="inline-flex items-center gap-3 text-sm font-medium transition">
+                                :class="!activeStatus ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700'"
+                                class="inline-flex items-center gap-3 rounded-xl border px-4 py-2 text-sm font-medium transition">
                             <span class="relative inline-flex h-6 w-11 items-center rounded-full transition"
                                   :class="!activeStatus ? 'bg-blue-500' : 'bg-slate-200'">
                                 <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition"
@@ -187,12 +204,19 @@
                                name="password"
                                :type="showPassword ? 'text' : 'password'"
                                placeholder="Masukkan password"
-                               class="w-full rounded-xl border border-slate-300 px-4 py-3 pr-11 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                               class="w-full rounded-xl border border-slate-300 px-4 py-3 pr-12 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                         <button type="button"
                                 @click="showPassword = !showPassword"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600">
-                            <i x-show="!showPassword" data-feather="eye" class="h-4 w-4"></i>
-                            <i x-show="showPassword" data-feather="eye-off" class="h-4 w-4"></i>
+                                class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-600">
+                            <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15.5A3.5 3.5 0 1012 8.5a3.5 3.5 0 000 7z" />
+                            </svg>
+                            <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 3l18 18" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.584 10.587A2 2 0 0013.414 13.4" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.88 5.09A9.77 9.77 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.784 9.784 0 01-4.207 5.145M6.228 6.226A9.777 9.777 0 002.458 12c1.274 4.057 5.065 7 9.542 7a9.77 9.77 0 005.09-1.426" />
+                            </svg>
                         </button>
                     </div>
                 </div>

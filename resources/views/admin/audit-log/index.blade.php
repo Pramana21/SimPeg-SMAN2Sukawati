@@ -20,7 +20,11 @@
                             </option>
                         @endforeach
                     </select>
-                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
+                    <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </span>
                 </div>
 
                 <div class="relative">
@@ -33,12 +37,19 @@
                             </option>
                         @endforeach
                     </select>
-                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
+                    <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </span>
                 </div>
 
                 <button type="submit"
-                        class="inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                    Filter
+                        class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2l-7 7v5l-4-2v-3L3 6V4z" />
+                    </svg>
+                    <span>Filter</span>
                 </button>
             </form>
 
@@ -48,8 +59,10 @@
                         form="auditLogBulkDeleteForm"
                         onclick="return confirm('Apakah Anda yakin ingin menghapus data yang dipilih?')"
                         class="self-center inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600">
-                    <i data-feather="trash-2" class="h-4 w-4"></i>
-                    Hapus
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12M9 7V4h6v3m-7 0v13m4-13v13m4-13v13M5 7h14" />
+                    </svg>
+                    <span>Hapus</span>
                 </button>
             </div>
         </div>
