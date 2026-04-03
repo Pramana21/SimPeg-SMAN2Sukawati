@@ -48,7 +48,7 @@
         <!-- RIGHT: DETAIL -->
         <div class="col-span-2 bg-white rounded-xl shadow p-6">
 
-            <div class="flex justify-between items-start mb-4">
+            <div class="mb-4">
 
                 <div>
                     <h2 class="text-xl font-semibold">
@@ -59,11 +59,6 @@
                         {{ $selectedRole->description }}
                     </p>
                 </div>
-
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                    <i data-feather="edit"></i>
-                    Edit Informan Role
-                </button>
 
             </div>
 

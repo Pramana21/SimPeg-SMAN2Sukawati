@@ -64,8 +64,18 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('role', RoleController::class)
         ->middleware('permission:role,view');
 
-    Route::resource('user', UserController::class)
-        ->middleware('permission:user,view');
+    Route::prefix('user')
+        ->middleware('permission:user,view')
+        ->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('users.index');
+            Route::post('/', [UserController::class, 'store'])->name('users.store');
+            Route::get('/create', [UserController::class, 'create'])->name('users.create');
+            Route::get('/{id}/edit', [UserController::class, 'edit'])->whereNumber('id')->name('users.edit');
+            Route::put('/{id}', [UserController::class, 'update'])->whereNumber('id')->name('users.update');
+            Route::delete('/{id}', [UserController::class, 'destroy'])->whereNumber('id')->name('users.destroy');
+            Route::get('/{id}', [UserController::class, 'show'])->whereNumber('id')->name('users.show');
+            Route::patch('/{id}/toggle-status', [UserController::class, 'toggleStatus'])->whereNumber('id')->name('users.toggle-status');
+        });
 
     Route::resource('audit-log', AuditLogController::class)
         ->middleware('permission:user,view');

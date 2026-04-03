@@ -53,7 +53,8 @@
                     Role Akses
             </a>
 
-            <a class="flex gap-3 items-center p-2">
+            <a href="{{ route('users.index') }}"
+                class="{{ request()->routeIs('users.*') || request()->routeIs('user.*') ? 'bg-blue-500 text-white' : '' }} p-2 flex items-center gap-2 rounded">
                 <i data-feather="users"></i> Manajemen User
             </a>
 
