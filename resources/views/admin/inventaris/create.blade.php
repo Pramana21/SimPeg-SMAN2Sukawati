@@ -2,10 +2,12 @@
 
 @section('content')
 <div class="max-w-4xl space-y-6">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3">
         <a href="{{ route('inventaris.index') }}"
-           class="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-900 text-slate-900 transition hover:bg-slate-900 hover:text-white">
-            <i data-feather="arrow-left" class="h-7 w-7"></i>
+           class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
         <div>
             <h1 class="text-4xl font-semibold text-slate-900">Tambah Dokumen</h1>
@@ -70,7 +72,9 @@
                        required>
 
                 <span class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
-                    <i data-feather="plus" class="h-7 w-7"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                 </span>
                 <span class="mt-4 text-base font-medium text-slate-700">Klik untuk memilih file inventaris</span>
                 <span class="mt-2 text-sm text-slate-400">Format: pdf, doc, docx, xls, xlsx, jpg, png. Maksimal 5 MB.</span>

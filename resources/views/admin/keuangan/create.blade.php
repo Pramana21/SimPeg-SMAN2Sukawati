@@ -2,10 +2,12 @@
 
 @section('content')
 <div class="max-w-4xl space-y-6">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3">
         <a href="{{ route('keuangan.kategori', $slug) }}"
-           class="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-900 text-slate-900 transition hover:bg-slate-900 hover:text-white">
-            <i data-feather="arrow-left" class="h-7 w-7"></i>
+           class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
         <div>
             <h1 class="text-4xl font-semibold text-slate-900">Tambah Dokumen</h1>

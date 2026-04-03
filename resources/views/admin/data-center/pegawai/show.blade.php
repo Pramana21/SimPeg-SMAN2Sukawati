@@ -4,8 +4,10 @@
 <div class="p-6">
     <div class="flex items-center gap-3 mb-6">
         <a href="{{ route('pegawai.index') }}"
-           class="w-10 h-10 flex items-center justify-center rounded-full border hover:bg-gray-100">
-            <i data-feather="arrow-left" class="h-4 w-4"></i>
+           class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
 
         <div>

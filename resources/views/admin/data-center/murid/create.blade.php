@@ -5,10 +5,12 @@
 <div class="p-6">
 
     {{-- HEADER --}}
-    <div class="flex items-center gap-3 mb-6">
+    <div class="mb-6 flex items-center gap-3">
         <a href="{{ route('murid.index') }}"
-           class="w-10 h-10 flex items-center justify-center rounded-full border hover:bg-gray-100">
-            ←
+           class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
 
         <h1 class="text-2xl font-semibold text-gray-800">
@@ -20,18 +22,18 @@
         @csrf
 
         {{-- CARD --}}
-        <div class="bg-white p-8 rounded-2xl shadow max-w-4xl">
+        <div class="max-w-4xl rounded-2xl bg-white p-8 shadow">
 
             {{-- NAMA --}}
             <div class="mb-6">
-                <label class="block text-sm text-gray-600 mb-2">Nama Siswa</label>
+                <label class="mb-2 block text-sm text-gray-600">Nama Siswa</label>
                 <input type="text" name="nama_siswa"
-                    class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Contoh: Dika">
             </div>
 
             {{-- NIS NIK NISN --}}
-            <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="mb-6 grid grid-cols-3 gap-4">
                 <input type="text" name="nis" placeholder="NIS"
                     class="rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500">
 
@@ -43,7 +45,7 @@
             </div>
 
             {{-- TANGGAL + GENDER + KELAS --}}
-            <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="mb-6 grid grid-cols-3 gap-4">
 
                 <input type="date" name="tanggal_lahir"
                     class="rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500">
@@ -67,7 +69,7 @@
 
             {{-- NOMOR KATEGORI --}}
             <div class="mb-6 hidden" id="jenisKelasWrapper">
-                <label id="jenisLabel" class="block text-sm text-gray-600 mb-2"></label>
+                <label id="jenisLabel" class="mb-2 block text-sm text-gray-600"></label>
 
                 <select name="nomor_kelas" id="jenisKelas"
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500">
@@ -78,7 +80,7 @@
 
             {{-- ALAMAT --}}
             <div class="mb-6">
-                <label class="block text-sm text-gray-600 mb-2">Alamat Siswa</label>
+                <label class="mb-2 block text-sm text-gray-600">Alamat Siswa</label>
                 <input type="text" name="alamat"
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500"
                     placeholder="Contoh: Jalan ...">
@@ -86,7 +88,7 @@
 
             {{-- EMAIL --}}
             <div class="mb-6">
-                <label class="block text-sm text-gray-600 mb-2">Email Siswa</label>
+                <label class="mb-2 block text-sm text-gray-600">Email Siswa</label>
                 <input type="email" name="email"
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500"
                     placeholder="Contoh: nama@sma.sch.id">
@@ -94,7 +96,7 @@
 
             {{-- HP --}}
             <div class="mb-6">
-                <label class="block text-sm text-gray-600 mb-2">No HP Siswa</label>
+                <label class="mb-2 block text-sm text-gray-600">No HP Siswa</label>
                 <input type="text" name="no_hp"
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500"
                     placeholder="Contoh: +628...">
@@ -102,24 +104,26 @@
 
             {{-- IBU --}}
             <div class="mb-6">
-                <label class="block text-sm text-gray-600 mb-2">Nama Ibu Kandung</label>
+                <label class="mb-2 block text-sm text-gray-600">Nama Ibu Kandung</label>
                 <input type="text" name="nama_ibu_kandung"
                     class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500"
                     placeholder="Contoh: Ni Luh...">
             </div>
 
-            {{-- 🔥 UPLOAD FOTO (FIX UI) --}}
+            {{-- UPLOAD FOTO --}}
             <div class="mb-8">
-                <label class="block text-sm text-gray-600 mb-2">Upload Foto Siswa</label>
+                <label class="mb-2 block text-sm text-gray-600">Upload Foto Siswa</label>
 
                 <input type="file" name="foto" id="fileInput" class="hidden">
 
                 <label for="fileInput"
-                    class="w-full h-40 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center cursor-pointer hover:border-blue-500 transition">
+                    class="flex h-40 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 transition hover:border-blue-500">
 
                     <div class="text-center">
-                        <div class="w-12 h-12 bg-blue-500 text-white flex items-center justify-center rounded-lg text-2xl mx-auto mb-2">
-                            +
+                        <div class="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
                         </div>
                         <p id="fileName" class="text-sm text-gray-500">
                             Klik untuk upload foto
@@ -132,7 +136,7 @@
             {{-- BUTTON --}}
             <div class="text-center">
                 <button
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow">
+                    class="rounded-lg bg-blue-600 px-8 py-3 text-white shadow hover:bg-blue-700">
                     Simpan data
                 </button>
             </div>
@@ -192,7 +196,6 @@ function updateKategoriPreview() {
 
 document.getElementById('jenisKelas').addEventListener('change', updateKategoriPreview);
 
-// 🔥 tampilkan nama file
 document.getElementById('fileInput').addEventListener('change', function(e) {
     let fileName = e.target.files[0]?.name;
     if (fileName) {

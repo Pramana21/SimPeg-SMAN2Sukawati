@@ -31,7 +31,11 @@
                                 </option>
                             @endforeach
                         </select>
-                        <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
+                        <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </span>
                     </div>
 
                     <div class="relative">
@@ -45,7 +49,11 @@
                                 </option>
                             @endforeach
                         </select>
-                        <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white"></i>
+                        <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </span>
                     </div>
 
                     @if($selectedBulan || $selectedTahun)
@@ -73,7 +81,9 @@
 
                 <a href="{{ route($createRoute) }}"
                    class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                    <span class="text-lg leading-none">+</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                     Tambah
                 </a>
             </div>

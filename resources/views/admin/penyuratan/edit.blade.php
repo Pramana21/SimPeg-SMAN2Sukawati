@@ -6,10 +6,12 @@
 @endphp
 
 <div class="max-w-4xl space-y-6">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3">
         <a href="{{ route('penyuratan.index') }}"
-           class="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-900 text-slate-900 transition hover:bg-slate-900 hover:text-white">
-            <i data-feather="arrow-left" class="h-7 w-7"></i>
+           class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
         <div>
             <h1 class="text-4xl font-semibold text-slate-900">Edit Surat</h1>
@@ -79,7 +81,11 @@
                            value="{{ old('tanggal_dokumen', \Illuminate\Support\Carbon::parse($surat->tanggal_dokumen)->format('Y-m-d')) }}"
                            class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 pr-12 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                            required>
-                    <i data-feather="calendar" class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-blue-600"></i>
+                    <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10m-12 9h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z"/>
+                        </svg>
+                    </span>
                 </div>
             </div>
 
@@ -106,7 +112,9 @@
                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
 
                 <span class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
-                    <i data-feather="plus" class="h-7 w-7"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                 </span>
                 <span class="mt-4 text-base font-medium text-slate-700">Klik untuk mengganti file surat</span>
                 <span class="mt-2 text-sm text-slate-400">Biarkan kosong jika file lama tetap digunakan.</span>

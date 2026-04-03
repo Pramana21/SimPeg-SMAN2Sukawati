@@ -59,10 +59,12 @@
 @endphp
 
 <div class="space-y-6">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3">
         <a href="{{ route('data-center.index') }}"
-           class="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-900 text-slate-900 transition hover:bg-slate-900 hover:text-white">
-            <i data-feather="arrow-left" class="h-7 w-7"></i>
+           class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
         <div>
             <h1 class="text-4xl font-semibold text-slate-900">Data Murid</h1>
@@ -93,7 +95,11 @@
                         <option value="XI" {{ $selectedKelas === 'XI' ? 'selected' : '' }}>Kelas XI</option>
                         <option value="XII" {{ $selectedKelas === 'XII' ? 'selected' : '' }}>Kelas XII</option>
                     </select>
-                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+                    <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </span>
                 </div>
 
                 <div class="relative">
@@ -103,7 +109,11 @@
                         <option value="E" {{ $selectedKategori === 'E' ? 'selected' : '' }}>Kelas E (X)</option>
                         <option value="F" {{ $selectedKategori === 'F' ? 'selected' : '' }}>Kelas F (XI & XII)</option>
                     </select>
-                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+                    <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </span>
                 </div>
 
                 <div class="relative">
@@ -117,12 +127,18 @@
                             </option>
                         @endfor
                     </select>
-                    <i data-feather="chevron-down" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+                    <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </span>
                 </div>
 
                 <button type="submit"
                         class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                    <i data-feather="filter" class="h-4 w-4"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2l-7 7v5l-4-2v-3L3 6V4z"/>
+                    </svg>
                     Filter
                 </button>
 
@@ -136,7 +152,9 @@
 
             <a href="{{ route('murid.create') }}"
                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                <span class="text-lg leading-none">+</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
                 Tambah
             </a>
         </div>

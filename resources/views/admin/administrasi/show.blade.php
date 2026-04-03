@@ -5,8 +5,10 @@
     <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div class="flex items-center gap-4">
             <a href="{{ route($backRoute) }}"
-               class="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-900 text-slate-900 transition hover:bg-slate-900 hover:text-white">
-                <i data-feather="arrow-left" class="h-7 w-7"></i>
+               class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 text-slate-800 transition hover:bg-slate-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
             </a>
             <div>
                 <h1 class="text-4xl font-semibold text-slate-900">Preview Administrasi</h1>
@@ -79,7 +81,9 @@
                     @endif
                 @else
                     <div class="flex h-[620px] flex-col items-center justify-center px-8 text-center">
-                        <i data-feather="file-text" class="h-12 w-12 text-slate-300"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586A2 2 0 0114 3.586l3.414 3.414A2 2 0 0118 8.414V19a2 2 0 01-2 2z"/>
+                        </svg>
                         <p class="mt-4 text-base font-medium text-slate-700">File tidak mendukung preview langsung di halaman ini.</p>
                         <p class="mt-2 text-sm text-slate-500">Gunakan tombol "Buka File" untuk melihat dokumen secara read-only di tab baru.</p>
                     </div>
