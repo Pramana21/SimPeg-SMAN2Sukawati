@@ -45,7 +45,7 @@
                         <input id="nama_pegawai" type="text" name="nama_pegawai"
                                value="{{ old('nama_pegawai', $data->nama_pegawai ?? '') }}"
                                class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                               placeholder="Contoh: Dika"
+                               placeholder="Contoh: i wayan pramana"
                                required>
                     </div>
 
@@ -54,21 +54,24 @@
                             <label for="nip" class="mb-2 block text-sm font-medium text-slate-700">NIP/NIPPK</label>
                             <input id="nip" type="text" name="nip"
                                    value="{{ old('nip', $data->nip_nippk ?? '') }}"
-                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                   placeholder="Contoh: 12345">
                         </div>
 
                         <div>
                             <label for="nik" class="mb-2 block text-sm font-medium text-slate-700">NIK</label>
                             <input id="nik" type="text" name="nik"
                                    value="{{ old('nik', $data->nik ?? '') }}"
-                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                   placeholder="Contoh: 5104...">
                         </div>
 
                         <div>
                             <label for="nuptk" class="mb-2 block text-sm font-medium text-slate-700">NUPTK</label>
                             <input id="nuptk" type="text" name="nuptk"
                                    value="{{ old('nuptk', $data->nuptk ?? '') }}"
-                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                   placeholder="Contoh: 12345">
                         </div>
                     </div>
 
