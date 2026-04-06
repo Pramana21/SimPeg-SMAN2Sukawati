@@ -23,11 +23,6 @@
             <i data-feather="bell"></i>
         </div>
 
-        <!-- SETTINGS -->
-        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
-            <i data-feather="settings"></i>
-        </div>
-
         <!-- PROFILE -->
         <img src="{{ asset('profile.jpg') }}"
              class="w-10 h-10 rounded-full object-cover border-2 border-white shadow">

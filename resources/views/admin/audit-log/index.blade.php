@@ -99,7 +99,7 @@
                                                value="{{ $log->id }}"
                                                class="rowCheckbox h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     </td>
-                                    <td class="px-4 py-4 font-medium text-slate-900">{{ $log->created_at?->format('d-m-Y') ?? '-' }}</td>
+                                    <td class="px-4 py-4 font-medium text-slate-900">{{ $log->created_at?->timezone('Asia/Makassar')->format('d-m-Y H:i') ?? '-' }}</td>
                                     <td class="px-4 py-4">{{ $log->user?->pegawai?->nama_pegawai ?? $log->user?->username ?? $log->nama_pengguna ?? '-' }}</td>
                                     <td class="px-4 py-4">{{ $log->modul }}</td>
                                     <td class="px-4 py-4">{{ $log->aktivitas }}</td>

@@ -106,7 +106,7 @@
                 <td class="p-3">{{ $log->aktivitas ?? '-' }}</td>
                 <td class="p-3">{{ $log->modul ?? '-' }}</td>
                 <td class="p-3">{{ $log->keterangan ?? '-' }}</td>
-                <td class="p-3">{{ $log->created_at ? $log->created_at->format('d-m-Y H:i') : '-' }}</td>
+                <td class="p-3">{{ $log->created_at ? $log->created_at->timezone('Asia/Makassar')->format('d-m-Y H:i') : '-' }}</td>
             </tr>
         @empty
             <tr>

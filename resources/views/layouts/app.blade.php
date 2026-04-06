@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>SIMPEG</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Tailwind -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -245,19 +246,20 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+                    <button type="button"
+                        id="notifButton"
+                        class="relative flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-600"
+                        aria-label="Buka notifikasi"
+                        aria-controls="notifPanel"
+                        aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a3 3 0 006 0"/>
                         </svg>
-                    </div>
 
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5A3.5 3.5 0 1112 8a3.5 3.5 0 010 7.5z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 .6 1.65 1.65 0 00-.33 1v.1a2 2 0 11-4 0v-.1a1.65 1.65 0 00-.33-1 1.65 1.65 0 00-1-.6 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-.6-1 1.65 1.65 0 00-1-.33h-.1a2 2 0 110-4h.1a1.65 1.65 0 001-.33 1.65 1.65 0 00.6-1 1.65 1.65 0 00-.33-1.82l-.06-.06A2 2 0 116.03 3.4l.06.06A1.65 1.65 0 008 4.6c.4 0 .78-.14 1-.4.26-.25.4-.6.4-1V3a2 2 0 114 0v.1c0 .4.14.78.4 1 .22.26.6.4 1 .4.38 0 .75-.14 1-.4l.06-.06A2 2 0 1120.6 6.03l-.06.06c-.26.26-.4.6-.4 1 0 .38.14.75.4 1 .26.25.6.4 1 .4h.1a2 2 0 110 4h-.1c-.4 0-.78.14-1 .4-.26.25-.4.6-.4 1z"/>
-                        </svg>
-                    </div>
+                        <span id="notifIndicator"
+                            class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white {{ ($notifications ?? collect())->count() > 0 ? (($hasUnread ?? false) ? 'bg-red-500' : 'bg-green-500') : 'hidden' }}"></span>
+                    </button>
 
                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -280,5 +282,106 @@
    
 
 </div>
+
+<div id="notifOverlay" class="fixed inset-0 z-40 hidden bg-black bg-opacity-30 transition-all duration-300 ease-in-out"></div>
+
+<aside id="notifPanel"
+    class="fixed top-0 right-0 z-50 flex h-full w-80 max-w-full translate-x-full transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out"
+    aria-hidden="true">
+    <div class="border-b px-5 py-4">
+        <h2 class="text-lg font-semibold text-gray-900">Notifikasi</h2>
+        <p class="mt-1 text-sm text-gray-500">Aktivitas terbaru dari Audit Log</p>
+    </div>
+
+    <div class="flex-1 space-y-3 overflow-y-auto p-4">
+        @forelse(($notifications ?? collect()) as $notif)
+            <div class="rounded-xl border border-gray-100 bg-white p-4 shadow">
+                <div class="border-b border-gray-200 pb-3 text-sm leading-relaxed text-gray-800">
+                    {{ $notif->keterangan ?: 'Aktivitas tanpa keterangan.' }}
+                </div>
+                <div class="pt-2 text-xs text-gray-400">
+                    {{ $notif->created_at ? $notif->created_at->timezone('Asia/Makassar')->format('d-m-Y H:i') : '-' }}
+                </div>
+            </div>
+        @empty
+            <div class="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500 shadow">
+                Tidak ada notifikasi
+            </div>
+        @endforelse
+    </div>
+</aside>
+
+<script>
+    const notifBtn = document.getElementById('notifButton');
+    const notifPanel = document.getElementById('notifPanel');
+    const notifOverlay = document.getElementById('notifOverlay');
+    const notifIndicator = document.getElementById('notifIndicator');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    let hasMarkedNotificationRead = false;
+
+    if (notifBtn && notifPanel && notifOverlay) {
+        const markNotificationsAsRead = async () => {
+            if (hasMarkedNotificationRead || !notifIndicator || notifIndicator.classList.contains('hidden')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('{{ route('notifications.read') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken ? csrfToken.getAttribute('content') : '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({}),
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                hasMarkedNotificationRead = true;
+                notifIndicator.classList.remove('bg-red-500');
+                notifIndicator.classList.add('bg-green-500');
+            } catch (error) {
+                console.error('Gagal menandai notifikasi sebagai dibaca.', error);
+            }
+        };
+
+        const openNotifPanel = () => {
+            notifPanel.classList.remove('translate-x-full');
+            notifOverlay.classList.remove('hidden');
+            notifBtn.setAttribute('aria-expanded', 'true');
+            notifPanel.setAttribute('aria-hidden', 'false');
+            markNotificationsAsRead();
+        };
+
+        const closeNotifPanel = () => {
+            notifPanel.classList.add('translate-x-full');
+            notifOverlay.classList.add('hidden');
+            notifBtn.setAttribute('aria-expanded', 'false');
+            notifPanel.setAttribute('aria-hidden', 'true');
+        };
+
+        notifBtn.addEventListener('click', () => {
+            const isClosed = notifPanel.classList.contains('translate-x-full');
+
+            if (isClosed) {
+                openNotifPanel();
+                return;
+            }
+
+            closeNotifPanel();
+        });
+
+        notifOverlay.addEventListener('click', closeNotifPanel);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeNotifPanel();
+            }
+        });
+    }
+</script>
 </body>
 </html>

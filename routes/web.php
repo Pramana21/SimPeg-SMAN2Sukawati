@@ -19,6 +19,7 @@ use App\Http\Controllers\PegawaiController;
 
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
 
 
 /*
@@ -42,6 +43,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::post('/notifications/read', function (Request $request) {
+        $request->user()->update([
+            'last_seen_notification' => now(),
+        ]);
+
+        return response()->json(['success' => true]);
+    })->name('notifications.read');
     
     Route::get('/roles/{id?}', [RoleController::class, 'index'])->name('roles.index');
 

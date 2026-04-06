@@ -19,12 +19,17 @@ class User extends Authenticatable
         'password_hash',
         'id_role',
         'id_pegawai',
-        'is_active'
+        'is_active',
+        'last_seen_notification',
     ];
 
     protected $hidden = [
         'password_hash',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'last_seen_notification' => 'datetime',
     ];
 
     public function getAuthPassword()
