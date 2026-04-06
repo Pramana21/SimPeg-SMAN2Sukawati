@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
+use App\Models\DokumenAdministrasi;
+use App\Models\DokumenInventaris;
+use App\Models\DokumenKeuangan;
+use App\Models\DokumenPenyuratan;
 use App\Models\User;
 use App\Models\Siswa;
 
@@ -11,7 +15,11 @@ class DashboardController extends Controller
     public function index()
     {
         $totalUser = User::count();
-        $totalDokumen = 0;
+        $totalDokumen =
+            DokumenAdministrasi::count() +
+            DokumenKeuangan::count() +
+            DokumenPenyuratan::count() +
+            DokumenInventaris::count();
         $totalStaff = User::count();
         $totalSiswa = Siswa::count();
 

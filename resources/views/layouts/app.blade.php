@@ -226,23 +226,46 @@
     <div class="flex-1">
 
         <!-- NAVBAR -->
-        <div class="bg-white px-6 py-4 flex justify-between items-center border-b">
+        <div class="flex items-center justify-between border-b bg-white px-6 py-4">
 
             <h1 class="text-xl font-semibold">Welcome Back</h1>
 
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
 
-                <!-- SEARCH -->
-                <input type="text"
-                    placeholder="Search..."
-                    class="bg-blue-500 text-white placeholder-white px-4 py-2 rounded w-80">
+                <div class="relative">
+                    <input type="text"
+                        placeholder="Search..."
+                        class="w-80 rounded bg-blue-500 py-2 pl-10 pr-4 text-white placeholder-white outline-none">
+                    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m20 20-3.5-3.5"></path>
+                        </svg>
+                    </span>
+                </div>
 
-                <!-- ICON -->
-                <div class="w-10 h-10 bg-blue-500 rounded-full"></div>
-                <div class="w-10 h-10 bg-blue-500 rounded-full"></div>
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a3 3 0 006 0"/>
+                        </svg>
+                    </div>
 
-                <!-- PROFILE -->
-                <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5A3.5 3.5 0 1112 8a3.5 3.5 0 010 7.5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 .6 1.65 1.65 0 00-.33 1v.1a2 2 0 11-4 0v-.1a1.65 1.65 0 00-.33-1 1.65 1.65 0 00-1-.6 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-.6-1 1.65 1.65 0 00-1-.33h-.1a2 2 0 110-4h.1a1.65 1.65 0 001-.33 1.65 1.65 0 00.6-1 1.65 1.65 0 00-.33-1.82l-.06-.06A2 2 0 116.03 3.4l.06.06A1.65 1.65 0 008 4.6c.4 0 .78-.14 1-.4.26-.25.4-.6.4-1V3a2 2 0 114 0v.1c0 .4.14.78.4 1 .22.26.6.4 1 .4.38 0 .75-.14 1-.4l.06-.06A2 2 0 1120.6 6.03l-.06.06c-.26.26-.4.6-.4 1 0 .38.14.75.4 1 .26.25.6.4 1 .4h.1a2 2 0 110 4h-.1c-.4 0-.78.14-1 .4-.26.25-.4.6-.4 1z"/>
+                        </svg>
+                    </div>
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 10-16 0"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                </div>
 
             </div>
 
