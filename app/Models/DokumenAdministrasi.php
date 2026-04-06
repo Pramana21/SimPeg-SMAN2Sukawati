@@ -16,6 +16,8 @@ class DokumenAdministrasi extends Model
         'id_jenis_dokumen_administrasi',
         'file_path',
         'created_by',
+        'kelas',
+        'kategori_kelas',
         'bulan',
         'tahun'
     ];

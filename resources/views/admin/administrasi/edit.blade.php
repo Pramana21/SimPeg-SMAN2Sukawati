@@ -24,10 +24,12 @@
     <form action="{{ route('administrasi.update', $data->id_dokumen_administrasi) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
+        <input type="hidden" name="selected_kategori" value="{{ $selectedKategori }}">
 
         @include('admin.administrasi.partials.form', [
             'submitLabel' => 'Update',
             'data' => $data,
+            'showClassFields' => $showClassFields ?? false,
             'jenisDokumenOptions' => $jenisDokumenOptions,
         ])
     </form>

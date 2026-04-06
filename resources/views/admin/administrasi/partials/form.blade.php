@@ -2,6 +2,15 @@
     $fileInputId = 'fileInputAdministrasi';
     $fileNameId = 'fileNameAdministrasi';
     $existingFileName = isset($data) && $data?->file_path ? basename($data->file_path) : '';
+    $existingFileUrl = isset($data) && $data?->file_path ? asset('storage/' . $data->file_path) : null;
+    $showClassFields = $showClassFields ?? false;
+    $selectedNomorKelas = old('nomor_kelas');
+
+    if (!$selectedNomorKelas && isset($data) && !empty($data->kategori_kelas)) {
+        preg_match('/(\d+)$/', $data->kategori_kelas, $matches);
+        $selectedNomorKelas = $matches[1] ?? null;
+    }
+
     $selectedJenisDokumen = old('jenis_dokumen', isset($data) && $data->jenis ? [
         'Absensi Pegawai' => 'absensi_pegawai',
         'Laporan Piket' => 'laporan_piket',
@@ -21,6 +30,31 @@
                class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                required>
     </div>
+
+    @if($showClassFields)
+        <div>
+            <label for="kelas" class="mb-2 block text-base font-medium text-slate-800">Kelas</label>
+            <select id="kelas"
+                    name="kelas"
+                    class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    required>
+                <option value="">-- Pilih Kelas --</option>
+                <option value="X" {{ old('kelas', $data->kelas ?? '') === 'X' ? 'selected' : '' }}>X</option>
+                <option value="XI" {{ old('kelas', $data->kelas ?? '') === 'XI' ? 'selected' : '' }}>XI</option>
+                <option value="XII" {{ old('kelas', $data->kelas ?? '') === 'XII' ? 'selected' : '' }}>XII</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="kategori_kelas" class="mb-2 block text-base font-medium text-slate-800">Kategori Kelas</label>
+            <select id="kategori_kelas"
+                    name="nomor_kelas"
+                    class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    required>
+                <option value="">-- Pilih Kategori Kelas --</option>
+            </select>
+        </div>
+    @endif
 
     <div class="md:col-span-2">
         <span class="mb-2 block text-base font-medium text-slate-800">Jenis Dokumen</span>
@@ -88,6 +122,15 @@
         <span class="mt-4 text-base font-medium text-slate-700">Klik untuk memilih file surat</span>
         <span class="mt-2 text-sm text-slate-400">Format: pdf, doc, docx, xls, xlsx, jpg, png. Maksimal 2 MB.</span>
         <span id="{{ $fileNameId }}" class="mt-3 text-sm font-semibold text-blue-600">{{ $existingFileName }}</span>
+
+        @if($existingFileUrl)
+            <a href="{{ $existingFileUrl }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="mt-2 text-sm font-medium text-blue-600 underline-offset-2 hover:underline">
+                Lihat File Saat Ini
+            </a>
+        @endif
     </label>
 </div>
 
@@ -103,6 +146,9 @@
         const fileInput = document.getElementById(@json($fileInputId));
         const fileName = document.getElementById(@json($fileNameId));
         const jenisInputs = document.querySelectorAll('input[name="jenis_dokumen"]');
+        const kelasSelect = document.getElementById('kelas');
+        const kategoriKelasSelect = document.getElementById('kategori_kelas');
+        const selectedNomorKelas = @json($selectedNomorKelas);
 
         if (fileInput && fileName) {
             fileInput.addEventListener('change', function (event) {
@@ -132,6 +178,40 @@
         jenisInputs.forEach((input) => {
             input.addEventListener('change', syncJenisState);
         });
+
+        function populateKategoriKelasOptions(selectedValue = null) {
+            if (!kelasSelect || !kategoriKelasSelect) {
+                return;
+            }
+
+            const kelas = kelasSelect.value;
+            const prefix = kelas === 'X' ? 'E' : (kelas === 'XI' || kelas === 'XII' ? 'F' : null);
+            kategoriKelasSelect.innerHTML = '<option value="">-- Pilih Kategori Kelas --</option>';
+
+            if (!prefix) {
+                return;
+            }
+
+            for (let i = 1; i <= 10; i++) {
+                const option = document.createElement('option');
+                option.value = String(i);
+                option.textContent = `${prefix} - ${i}`;
+
+                if (String(selectedValue) === String(i)) {
+                    option.selected = true;
+                }
+
+                kategoriKelasSelect.appendChild(option);
+            }
+        }
+
+        if (kelasSelect && kategoriKelasSelect) {
+            kelasSelect.addEventListener('change', function () {
+                populateKategoriKelasOptions();
+            });
+
+            populateKategoriKelasOptions(selectedNomorKelas);
+        }
 
         syncJenisState();
     })();

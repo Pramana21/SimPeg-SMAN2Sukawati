@@ -12,6 +12,17 @@ use Illuminate\View\View;
 
 class AdministrasiController extends Controller
 {
+    private function buildKategoriKelas(?string $kelas, ?string $nomorKelas): ?string
+    {
+        if (!$kelas || !$nomorKelas) {
+            return null;
+        }
+
+        $prefix = $kelas === 'X' ? 'E' : 'F';
+
+        return $prefix . ' - ' . $nomorKelas;
+    }
+
     public function index(Request $request): View
     {
         $selectedKategori = $request->query('kategori');
@@ -60,6 +71,7 @@ class AdministrasiController extends Controller
             ],
             'backRoute' => 'administrasi.siswa.index',
             'selectedKategori' => 'Siswa',
+            'showClassFields' => true,
         ]);
     }
 
@@ -72,10 +84,22 @@ class AdministrasiController extends Controller
             'di_upload_oleh' => 'required|string|max:255',
             'selected_kategori' => 'nullable|in:Pegawai,Siswa',
             'file_surat' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048',
+            'kelas' => 'nullable|in:X,XI,XII',
+            'nomor_kelas' => 'nullable|integer|min:1|max:10',
         ]);
+
+        if (($validated['selected_kategori'] ?? null) === 'Siswa') {
+            $request->validate([
+                'kelas' => 'required|in:X,XI,XII',
+                'nomor_kelas' => 'required|integer|min:1|max:10',
+            ]);
+        }
 
         $jenis = $this->resolveJenisDokumen($validated['jenis_dokumen']);
         $path = $request->file('file_surat')->store('administrasi', 'public');
+        $kategoriKelas = ($validated['selected_kategori'] ?? null) === 'Siswa'
+            ? $this->buildKategoriKelas($request->kelas, $request->nomor_kelas)
+            : null;
 
         $dokumen = DokumenAdministrasi::create([
             'id_user' => Auth::id(),
@@ -84,6 +108,8 @@ class AdministrasiController extends Controller
             'id_jenis_dokumen_administrasi' => $jenis->id_jenis_dokumen_administrasi,
             'file_path' => $path,
             'created_by' => $validated['di_upload_oleh'],
+            'kelas' => ($validated['selected_kategori'] ?? null) === 'Siswa' ? $request->kelas : null,
+            'kategori_kelas' => $kategoriKelas,
             'bulan' => date('m', strtotime($validated['tanggal_dokumen'])),
             'tahun' => date('Y', strtotime($validated['tanggal_dokumen'])),
         ]);
@@ -123,6 +149,7 @@ class AdministrasiController extends Controller
             'selectedKategori' => $selectedKategori,
             'backRoute' => $this->submoduleRouteName($selectedKategori),
             'storeRoute' => 'administrasi.update',
+            'showClassFields' => $selectedKategori === 'Siswa',
             'jenisDokumenOptions' => $selectedKategori === 'Siswa'
                 ? [
                     ['value' => 'absensi_siswa', 'label' => 'Absensi Siswa'],

@@ -14,6 +14,10 @@
                     <th class="px-4 py-4 text-left font-semibold text-slate-800">ID</th>
                     <th class="px-4 py-4 text-left font-semibold text-slate-800">Nama Dokumen</th>
                     <th class="px-4 py-4 text-left font-semibold text-slate-800">Kategori</th>
+                    @if(($selectedKategori ?? null) === 'Siswa')
+                        <th class="px-4 py-4 text-left font-semibold text-slate-800">Kelas</th>
+                        <th class="px-4 py-4 text-left font-semibold text-slate-800">Kategori Kelas</th>
+                    @endif
                     <th class="px-4 py-4 text-left font-semibold text-slate-800">Tanggal</th>
                     <th class="px-4 py-4 text-left font-semibold text-slate-800">Di-upload oleh</th>
                     <th class="px-4 py-4 text-center font-semibold text-slate-800">Aksi</th>
@@ -34,6 +38,10 @@
                                 {{ $item->jenis->nama_jenis ?? ($item->jenis->kategori->nama_kategori ?? '-') }}
                             </span>
                         </td>
+                        @if(($selectedKategori ?? null) === 'Siswa')
+                            <td class="px-4 py-4">{{ $item->kelas ?? '-' }}</td>
+                            <td class="px-4 py-4">{{ $item->kategori_kelas ?? '-' }}</td>
+                        @endif
                         <td class="px-4 py-4">{{ \Illuminate\Support\Carbon::parse($item->tanggal_dokumen)->format('d/m/Y') }}</td>
                         <td class="px-4 py-4">{{ $item->created_by }}</td>
                         <td class="px-4 py-4">
@@ -73,7 +81,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-4 py-12 text-center text-sm text-slate-500">
+                        <td colspan="{{ ($selectedKategori ?? null) === 'Siswa' ? 9 : 7 }}" class="px-4 py-12 text-center text-sm text-slate-500">
                             {{ $emptyMessage }}
                         </td>
                     </tr>
