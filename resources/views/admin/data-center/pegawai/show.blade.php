@@ -20,10 +20,12 @@
         <div>
             <div class="bg-white rounded-xl shadow p-4 text-center">
                 @if($pegawai->foto_path)
-                    <img src="{{ asset('storage/' . $pegawai->foto_path) }}"
-                         class="w-full h-64 object-cover rounded-lg mb-3">
+                    <div class="mx-auto mb-3 w-full max-w-[250px] aspect-square overflow-hidden rounded-lg">
+                        <img src="{{ asset('storage/' . $pegawai->foto_path) }}"
+                             class="h-full w-full object-cover object-center">
+                    </div>
                 @else
-                    <div class="w-full h-64 flex items-center justify-center bg-gray-100 rounded-lg mb-3">
+                    <div class="mx-auto mb-3 flex w-full max-w-[250px] aspect-square items-center justify-center rounded-lg bg-gray-100">
                         <span class="text-gray-400">No Image</span>
                     </div>
                 @endif

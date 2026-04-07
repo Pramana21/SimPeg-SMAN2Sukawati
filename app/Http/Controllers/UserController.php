@@ -86,7 +86,8 @@ class UserController extends Controller
 
         $user->update($payload);
 
-        return redirect()->back()->with('success', 'User berhasil diperbarui');
+        return redirect()->route('users.index')
+            ->with('success', 'User berhasil diperbarui');
     }
 
     public function toggleStatus($id)

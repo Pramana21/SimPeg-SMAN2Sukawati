@@ -28,10 +28,12 @@
             <div class="rounded-xl bg-white p-4 text-center shadow">
 
                 @if($murid->foto_path)
-                    <img src="{{ asset('storage/' . $murid->foto_path) }}"
-                         class="mb-3 h-64 w-full rounded-lg object-cover">
+                    <div class="mx-auto mb-3 w-full max-w-[250px] aspect-square overflow-hidden rounded-lg">
+                        <img src="{{ asset('storage/' . $murid->foto_path) }}"
+                             class="h-full w-full object-cover object-center">
+                    </div>
                 @else
-                    <div class="mb-3 flex h-64 w-full items-center justify-center rounded-lg bg-gray-100">
+                    <div class="mx-auto mb-3 flex w-full max-w-[250px] aspect-square items-center justify-center rounded-lg bg-gray-100">
                         <span class="text-gray-400">No Image</span>
                     </div>
                 @endif

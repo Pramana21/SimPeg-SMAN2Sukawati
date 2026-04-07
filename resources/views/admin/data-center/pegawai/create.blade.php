@@ -149,16 +149,21 @@
 
                         <label for="fotoInput"
                                class="flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white px-6 py-8 text-center transition hover:border-blue-400 hover:bg-blue-50/40">
-                            <img id="previewFoto"
-                                 src="{{ old('foto') ? '' : (isset($data) && $data?->foto_path ? asset('storage/' . $data->foto_path) : '') }}"
-                                 class="mb-4 {{ isset($data) && $data?->foto_path ? '' : 'hidden' }} h-32 w-32 rounded-xl object-cover shadow-sm">
-                            <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                </svg>
-                            </span>
-                            <p class="mt-3 text-sm font-medium text-slate-700">Klik untuk memilih foto</p>
-                            <p class="mt-1 text-xs text-slate-500">JPG, JPEG, PNG. Maksimal 2 MB.</p>
+                            <div id="previewFotoWrapper"
+                                 class="mb-4 {{ isset($data) && $data?->foto_path ? '' : 'hidden' }} h-[250px] w-[250px] max-w-full overflow-hidden rounded-xl shadow-sm">
+                                <img id="previewFoto"
+                                     src="{{ old('foto') ? '' : (isset($data) && $data?->foto_path ? asset('storage/' . $data->foto_path) : '') }}"
+                                     class="h-full w-full object-cover object-center">
+                            </div>
+                            <div id="uploadText" class="{{ isset($data) && $data?->foto_path ? 'hidden' : 'flex' }} flex-col items-center">
+                                <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                </span>
+                                <p class="mt-3 text-sm font-medium text-slate-700">Klik untuk memilih foto</p>
+                                <p class="mt-1 text-xs text-slate-500">JPG, JPEG, PNG. Maksimal 2 MB.</p>
+                            </div>
                             <p id="fotoStatus" class="mt-3 text-sm font-semibold text-blue-600">
                                 {{ isset($data) && $data?->foto_path ? basename($data->foto_path) : 'Belum ada file dipilih' }}
                             </p>
@@ -185,34 +190,50 @@
 <script>
     (function () {
         const fotoInput = document.getElementById('fotoInput');
+        const previewFotoWrapper = document.getElementById('previewFotoWrapper');
         const previewFoto = document.getElementById('previewFoto');
+        const uploadText = document.getElementById('uploadText');
         const fotoStatus = document.getElementById('fotoStatus');
+        const existingPhotoSrc = previewFoto.getAttribute('src');
 
-        if (!fotoInput || !previewFoto || !fotoStatus) {
+        if (!fotoInput || !previewFoto || !previewFotoWrapper || !uploadText || !fotoStatus) {
             return;
+        }
+
+        function showExistingPreview() {
+            if (existingPhotoSrc) {
+                previewFotoWrapper.classList.remove('hidden');
+                uploadText.classList.add('hidden');
+                return;
+            }
+
+            previewFotoWrapper.classList.add('hidden');
+            uploadText.classList.remove('hidden');
         }
 
         fotoInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
 
             if (!file) {
-                fotoStatus.textContent = 'Belum ada file dipilih';
-                previewFoto.classList.add('hidden');
-                previewFoto.removeAttribute('src');
+                fotoStatus.textContent = existingPhotoSrc ? '{{ isset($data) && $data?->foto_path ? basename($data->foto_path) : 'Belum ada file dipilih' }}' : 'Belum ada file dipilih';
+                previewFoto.src = existingPhotoSrc || '';
+                showExistingPreview();
                 return;
             }
 
             if (!file.type.startsWith('image/')) {
                 fotoStatus.textContent = 'File harus berupa gambar yang valid.';
-                previewFoto.classList.add('hidden');
-                previewFoto.removeAttribute('src');
+                showExistingPreview();
                 return;
             }
 
             fotoStatus.textContent = `File dipilih: ${file.name}`;
             previewFoto.src = URL.createObjectURL(file);
-            previewFoto.classList.remove('hidden');
+            previewFotoWrapper.classList.remove('hidden');
+            uploadText.classList.add('hidden');
         });
+
+        showExistingPreview();
     })();
 </script>
 @endsection

@@ -155,9 +155,12 @@
 
                         <label for="fotoInput"
                                class="flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white px-6 py-8 text-center transition hover:border-blue-400 hover:bg-blue-50/40">
-                            <img id="previewFoto"
-                                 src="{{ $murid->foto_path ? asset('storage/' . $murid->foto_path) : '' }}"
-                                 class="mb-4 {{ $murid->foto_path ? '' : 'hidden' }} h-32 w-32 rounded-xl object-cover shadow-sm">
+                            <div id="previewFotoWrapper"
+                                 class="mb-4 {{ $murid->foto_path ? '' : 'hidden' }} h-[250px] w-[250px] max-w-full overflow-hidden rounded-xl shadow-sm">
+                                <img id="previewFoto"
+                                     src="{{ $murid->foto_path ? asset('storage/' . $murid->foto_path) : '' }}"
+                                     class="h-full w-full object-cover object-center">
+                            </div>
                             <div id="uploadText" class="{{ $murid->foto_path ? 'hidden' : 'flex' }} flex-col items-center">
                                 <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -199,6 +202,7 @@
         const kategoriPreview = document.getElementById('kategoriPreview');
         const selectedNomorKelas = @json(old('nomor_kelas', $existingNomorKelas));
         const fotoInput = document.getElementById('fotoInput');
+        const previewFotoWrapper = document.getElementById('previewFotoWrapper');
         const previewFoto = document.getElementById('previewFoto');
         const uploadText = document.getElementById('uploadText');
         const fotoStatus = document.getElementById('fotoStatus');
@@ -250,12 +254,12 @@
 
         function showExistingPreview() {
             if (existingPhotoSrc) {
-                previewFoto.classList.remove('hidden');
+                previewFotoWrapper.classList.remove('hidden');
                 uploadText.classList.add('hidden');
                 return;
             }
 
-            previewFoto.classList.add('hidden');
+            previewFotoWrapper.classList.add('hidden');
             uploadText.classList.remove('hidden');
         }
 
@@ -275,7 +279,7 @@
             }
 
             previewFoto.src = URL.createObjectURL(file);
-            previewFoto.classList.remove('hidden');
+            previewFotoWrapper.classList.remove('hidden');
             uploadText.classList.add('hidden');
             fotoStatus.textContent = `File dipilih: ${file.name}`;
         });

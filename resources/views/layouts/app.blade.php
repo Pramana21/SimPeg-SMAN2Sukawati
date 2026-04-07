@@ -22,24 +22,24 @@
     $submenuInactiveClass = 'text-gray-600 hover:bg-gray-100 hover:text-gray-800';
 @endphp
 
-<div class="flex">
-
+<div class="flex min-h-screen bg-gray-100">
     <!-- SIDEBAR -->
-    <div class="w-64 bg-white min-h-screen p-5 border-r flex flex-col justify-between">
+    <aside class="fixed inset-y-0 left-0 z-30 overflow-y-auto border-r bg-white sidebar-scroll" style="width: 260px;">
+        <div class="flex min-h-full flex-col p-5">
+            <div class="flex-1">
+            <!-- LOGO -->
+            <div class="flex items-center gap-3 px-4 py-4 mb-2">
+                <img src="{{ asset('images/logo.png') }}"
+                     alt="Logo"
+                     class="w-10 h-10 rounded-lg object-contain">
 
-        <!-- LOGO -->
-        <div class="flex items-center gap-3 px-4 py-4 mb-2">
-            <img src="{{ asset('images/logo.png') }}"
-                 alt="Logo"
-                 class="w-10 h-10 rounded-lg object-contain">
-
-            <div class="flex flex-col leading-tight">
-                <span class="font-semibold text-sm">SMAN 2 Sukawati</span>
+                <div class="flex flex-col leading-tight">
+                    <span class="font-semibold text-sm">SMAN 2 Sukawati</span>
+                </div>
             </div>
-        </div>
 
-        <!-- NAVIGATION -->
-        <p class="text-gray-400 text-xs mb-2">Navigation</p>
+            <!-- NAVIGATION -->
+            <p class="text-gray-400 text-xs mb-2">Navigation</p>
 
         <a href="/dashboard"
            class="{{ $menuBaseClass }} {{ request()->routeIs('dashboard') ? $menuActiveClass : $menuInactiveClass }} mb-3">
@@ -201,30 +201,34 @@
 
             </div>
 
+            </div>
+
+            <!-- LOGOUT -->
+            <div class="mt-16 border-t pt-4">
+
+                <p class="text-gray-400 text-xs mb-2">Account</p>
+
+                <form method="POST" action="/logout">
+                    @csrf
+                    <button type="submit"
+                        class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-500 transition hover:bg-gray-100 hover:text-red-500">
+                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.75 5.75H7.5A2.75 2.75 0 0 0 4.75 8.5v7A2.75 2.75 0 0 0 7.5 18.25h3.25"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14 16.25 18.25 12 14 7.75M18 12H9"/>
+                        </svg>
+                        <span>log out</span>
+                    </button>
+                </form>
+
+            </div>
+
         </div>
-         <!-- LOGOUT -->
-        <div class="mt-16 border-t pt-4">
+    </aside>
 
-            <p class="text-gray-400 text-xs mb-2">Account</p>
-
-            <form method="POST" action="/logout">
-                @csrf
-                <button type="submit"
-                    class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-500 transition hover:bg-gray-100 hover:text-red-500">
-                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.75 5.75H7.5A2.75 2.75 0 0 0 4.75 8.5v7A2.75 2.75 0 0 0 7.5 18.25h3.25"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14 16.25 18.25 12 14 7.75M18 12H9"/>
-                    </svg>
-                    <span>log out</span>
-                </button>
-            </form>
-
-        </div>
-
-    </div>
+    <div class="shrink-0" style="width: 260px;"></div>
 
     <!-- MAIN -->
-    <div class="flex-1">
+    <main class="min-w-0 flex-1">
 
         <!-- NAVBAR -->
         <div class="flex items-center justify-between border-b bg-white px-6 py-4">
@@ -246,6 +250,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <div class="relative" id="notifWrapper">
                     <button type="button"
                         id="notifButton"
                         class="relative flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-600"
@@ -260,6 +265,49 @@
                         <span id="notifIndicator"
                             class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white {{ ($notifications ?? collect())->count() > 0 ? (($hasUnread ?? false) ? 'bg-red-500' : 'bg-green-500') : 'hidden' }}"></span>
                     </button>
+
+                    <aside id="notifPanel"
+                        class="fixed right-5 top-[70px] z-[9999] hidden w-[350px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl transition-all duration-200 ease-out"
+                        aria-hidden="true">
+                        <div class="border-b px-5 py-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Notifikasi</h2>
+                            <p class="mt-1 text-sm text-gray-500">Aktivitas terbaru dari Audit Log</p>
+                        </div>
+
+                        <div class="space-y-3 overflow-y-auto p-4" style="max-height: 500px;">
+                            @forelse(($notifications ?? collect()) as $notif)
+                                @php
+                                    $activityColor = match($notif->aktivitas) {
+                                        'Tambah Data' => 'text-emerald-600',
+                                        'Update Data' => 'text-blue-600',
+                                        'Hapus Data' => 'text-rose-600',
+                                        default => 'text-slate-600',
+                                    };
+
+                                    $notifUser = $notif->user->username ?? $notif->nama_pengguna ?? 'System';
+                                @endphp
+
+                                <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md">
+                                    <div class="mb-1 text-xs font-semibold uppercase tracking-wide {{ $activityColor }}">
+                                        {{ strtoupper($notif->modul ?? 'Aktivitas') }} - {{ strtoupper($notif->aktivitas ?? 'Update') }}
+                                    </div>
+                                    <div class="mb-2 text-sm leading-relaxed text-gray-700">
+                                        {{ $notif->keterangan ?: 'Aktivitas tanpa keterangan.' }}
+                                    </div>
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <span>{{ $notifUser }}</span>
+                                        <span>&bull;</span>
+                                        <span>{{ $notif->created_at ? $notif->created_at->diffForHumans() : '-' }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500 shadow">
+                                    Tidak ada notifikasi
+                                </div>
+                            @endforelse
+                        </div>
+                    </aside>
+                    </div>
 
                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -278,48 +326,24 @@
             @yield('content')
         </div>
 
-    </div>
-   
-
+    </main>
 </div>
 
-<div id="notifOverlay" class="fixed inset-0 z-40 hidden bg-black bg-opacity-30 transition-all duration-300 ease-in-out"></div>
-
-<aside id="notifPanel"
-    class="fixed top-0 right-0 z-50 flex h-full w-80 max-w-full translate-x-full transform flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out"
-    aria-hidden="true">
-    <div class="border-b px-5 py-4">
-        <h2 class="text-lg font-semibold text-gray-900">Notifikasi</h2>
-        <p class="mt-1 text-sm text-gray-500">Aktivitas terbaru dari Audit Log</p>
-    </div>
-
-    <div class="flex-1 space-y-3 overflow-y-auto p-4">
-        @forelse(($notifications ?? collect()) as $notif)
-            <div class="rounded-xl border border-gray-100 bg-white p-4 shadow">
-                <div class="border-b border-gray-200 pb-3 text-sm leading-relaxed text-gray-800">
-                    {{ $notif->keterangan ?: 'Aktivitas tanpa keterangan.' }}
-                </div>
-                <div class="pt-2 text-xs text-gray-400">
-                    {{ $notif->created_at ? $notif->created_at->timezone('Asia/Makassar')->format('d-m-Y H:i') : '-' }}
-                </div>
-            </div>
-        @empty
-            <div class="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500 shadow">
-                Tidak ada notifikasi
-            </div>
-        @endforelse
-    </div>
-</aside>
+<style>
+    .sidebar-scroll {
+        scrollbar-width: thin;
+    }
+</style>
 
 <script>
+    const notifWrapper = document.getElementById('notifWrapper');
     const notifBtn = document.getElementById('notifButton');
     const notifPanel = document.getElementById('notifPanel');
-    const notifOverlay = document.getElementById('notifOverlay');
     const notifIndicator = document.getElementById('notifIndicator');
     const csrfToken = document.querySelector('meta[name="csrf-token"]');
     let hasMarkedNotificationRead = false;
 
-    if (notifBtn && notifPanel && notifOverlay) {
+    if (notifWrapper && notifBtn && notifPanel) {
         const markNotificationsAsRead = async () => {
             if (hasMarkedNotificationRead || !notifIndicator || notifIndicator.classList.contains('hidden')) {
                 return;
@@ -348,25 +372,32 @@
             }
         };
 
+        const isNotifOpen = () => !notifPanel.classList.contains('hidden');
+
         const openNotifPanel = () => {
-            notifPanel.classList.remove('translate-x-full');
-            notifOverlay.classList.remove('hidden');
+            notifPanel.classList.remove('hidden', 'opacity-0', '-translate-y-2');
+            notifPanel.classList.add('opacity-100', 'translate-y-0');
             notifBtn.setAttribute('aria-expanded', 'true');
             notifPanel.setAttribute('aria-hidden', 'false');
             markNotificationsAsRead();
         };
 
         const closeNotifPanel = () => {
-            notifPanel.classList.add('translate-x-full');
-            notifOverlay.classList.add('hidden');
+            notifPanel.classList.add('opacity-0', '-translate-y-2');
+            notifPanel.classList.remove('opacity-100', 'translate-y-0');
+            window.setTimeout(() => {
+                if (notifBtn.getAttribute('aria-expanded') === 'false') {
+                    notifPanel.classList.add('hidden');
+                }
+            }, 200);
             notifBtn.setAttribute('aria-expanded', 'false');
             notifPanel.setAttribute('aria-hidden', 'true');
         };
 
-        notifBtn.addEventListener('click', () => {
-            const isClosed = notifPanel.classList.contains('translate-x-full');
+        notifBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
 
-            if (isClosed) {
+            if (!isNotifOpen()) {
                 openNotifPanel();
                 return;
             }
@@ -374,13 +405,23 @@
             closeNotifPanel();
         });
 
-        notifOverlay.addEventListener('click', closeNotifPanel);
+        notifPanel.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!notifWrapper.contains(event.target)) {
+                closeNotifPanel();
+            }
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
                 closeNotifPanel();
             }
         });
+
+        notifPanel.classList.add('opacity-0', '-translate-y-2');
     }
 </script>
 </body>
