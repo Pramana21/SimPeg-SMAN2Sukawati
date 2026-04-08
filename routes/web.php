@@ -42,7 +42,9 @@ Route::get('/logout',[LoginController::class,'logout']);
 Route::middleware(['auth'])->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('permission:dashboard')
+        ->name('dashboard');
 
     Route::post('/notifications/read', function (Request $request) {
         $request->user()->update([
@@ -52,15 +54,21 @@ Route::middleware(['auth'])->group(function () {
         return response()->json(['success' => true]);
     })->name('notifications.read');
     
-    Route::get('/roles/{id?}', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/{id?}', [RoleController::class, 'index'])
+        ->middleware('permission:role_akses')
+        ->name('roles.index');
 
-    Route::get('/audit-log', [AuditLogController::class, 'index']);
+    Route::get('/audit-log', [AuditLogController::class, 'index'])
+        ->middleware('permission:audit_log.view')
+        ->name('audit-log.index');
 
-    Route::get('/audit-log/export', [AuditLogController::class, 'export']);
+    Route::get('/audit-log/export', [AuditLogController::class, 'export'])
+        ->middleware('permission:audit_log.view')
+        ->name('audit-log.export');
 
     Route::delete('/audit-log/bulk-delete', [AuditLogController::class, 'bulkDelete'])
         ->name('audit-log.bulk-delete')
-        ->middleware('permission:user,view');
+        ->middleware('permission:audit_log.view');
 
     // Route::get('/users', [UserManagementController::class, 'index']);
 
@@ -71,10 +79,10 @@ Route::middleware(['auth'])->group(function () {
     */
 
     Route::resource('role', RoleController::class)
-        ->middleware('permission:role,view');
+        ->middleware('permission:role_akses');
 
     Route::prefix('user')
-        ->middleware('permission:user,view')
+        ->middleware('permission:manajemen_user')
         ->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::post('/', [UserController::class, 'store'])->name('users.store');
@@ -86,11 +94,6 @@ Route::middleware(['auth'])->group(function () {
             Route::patch('/{id}/toggle-status', [UserController::class, 'toggleStatus'])->whereNumber('id')->name('users.toggle-status');
         });
 
-    Route::resource('audit-log', AuditLogController::class)
-        ->middleware('permission:user,view');
-
-
-
     /*
     |--------------------------------------------------------------------------
     | PEGAWAI & DATA
@@ -101,12 +104,12 @@ Route::middleware(['auth'])->group(function () {
     // Guard them so route registration and diagnostics stay healthy.
     if (class_exists(\App\Http\Controllers\SiswaController::class)) {
         Route::resource('siswa', \App\Http\Controllers\SiswaController::class)
-            ->middleware('permission:siswa,view');
+            ->middleware('permission:administrasi_umum_siswa');
     }
 
     if (class_exists(\App\Http\Controllers\KelasController::class)) {
         Route::resource('kelas', \App\Http\Controllers\KelasController::class)
-            ->middleware('permission:kelas,view');
+            ->middleware('permission:data_center');
     }
 
 
@@ -118,16 +121,16 @@ Route::middleware(['auth'])->group(function () {
     //penyuratan
     Route::get('/penyuratan/export/pdf', [SuratController::class, 'exportPdf'])
         ->name('penyuratan.export.pdf')
-        ->middleware('permission:penyuratan,view');
+        ->middleware('permission:penyuratan');
     Route::post('/penyuratan/bulk-delete', [SuratController::class, 'bulkDelete'])
         ->name('penyuratan.bulk-delete')
-        ->middleware('permission:penyuratan,view');
+        ->middleware('permission:penyuratan');
     Route::resource('penyuratan', SuratController::class)
-        ->middleware('permission:penyuratan,view');
+        ->middleware('permission:penyuratan');
 
     // KEUANGAN
     Route::prefix('keuangan')
-        ->middleware('permission:keuangan,view')
+        ->middleware('permission:keuangan')
         ->group(function () {
 
         Route::get('/', [KeuanganController::class, 'index'])->name('keuangan.index');
@@ -151,12 +154,14 @@ Route::middleware(['auth'])->group(function () {
     //inventaris
     Route::post('/inventaris/bulk-delete', [InventarisController::class, 'bulkDelete'])
         ->name('inventaris.bulk-delete')
-        ->middleware('permission:inventaris,view');
+        ->middleware('permission:inventaris');
     Route::resource('inventaris', InventarisController::class)
-        ->middleware('permission:inventaris,view');
+        ->middleware('permission:inventaris');
 
     //Data Center 
-    Route::prefix('data-center')->group(function () {
+    Route::prefix('data-center')
+        ->middleware('permission:data_center')
+        ->group(function () {
 
     // 🔥 DASHBOARD DATA CENTER
     Route::get('/', [DataCenterController::class, 'index'])
@@ -176,50 +181,50 @@ Route::middleware(['auth'])->group(function () {
         ->name('administrasi.')
         ->group(function () {
             Route::get('/', [AdministrasiController::class, 'index'])
-                ->middleware('permission:administrasi,view')
+                ->middleware('permission:administrasi_umum')
                 ->name('index');
 
             Route::post('/bulk-delete', [AdministrasiController::class, 'bulkDelete'])
-                ->middleware('permission:administrasi,delete')
+                ->middleware('permission:administrasi_umum')
                 ->name('bulk-delete');
 
             Route::get('/pegawai', [AdministrasiController::class, 'pegawai'])
-                ->middleware('permission:administrasi,view')
+                ->middleware('permission:administrasi_umum_pegawai')
                 ->name('pegawai.index');
 
             Route::get('/siswa', [AdministrasiController::class, 'siswa'])
-                ->middleware('permission:administrasi,view')
+                ->middleware('permission:administrasi_umum_siswa')
                 ->name('siswa.index');
 
             Route::get('/pegawai/create', [AdministrasiController::class, 'createPegawai'])
-                ->middleware('permission:administrasi,create')
+                ->middleware('permission:administrasi_umum_pegawai')
                 ->name('pegawai.create');
 
             Route::get('/siswa/create', [AdministrasiController::class, 'createSiswa'])
-                ->middleware('permission:administrasi,create')
+                ->middleware('permission:administrasi_umum_siswa')
                 ->name('siswa.create');
 
             Route::post('/store', [AdministrasiController::class, 'store'])
-                ->middleware('permission:administrasi,create')
+                ->middleware('permission:administrasi_umum')
                 ->name('store');
 
             Route::get('/{id}', [AdministrasiController::class, 'show'])
-                ->middleware('permission:administrasi,view')
+                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('show');
 
             Route::get('/{id}/edit', [AdministrasiController::class, 'edit'])
-                ->middleware('permission:administrasi,edit')
+                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('edit');
 
             Route::put('/{id}', [AdministrasiController::class, 'update'])
-                ->middleware('permission:administrasi,edit')
+                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('update');
 
             Route::delete('/{id}', [AdministrasiController::class, 'destroy'])
-                ->middleware('permission:administrasi,delete')
+                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('destroy');
         });

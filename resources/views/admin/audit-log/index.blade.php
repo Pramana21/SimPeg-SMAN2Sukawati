@@ -53,18 +53,20 @@
                 </button>
             </form>
 
-            <div class="flex items-center">
-                <button type="submit"
-                        id="deleteSelectedButton"
-                        form="auditLogBulkDeleteForm"
-                        onclick="return confirm('Apakah Anda yakin ingin menghapus data yang dipilih?')"
-                        class="self-center inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12M9 7V4h6v3m-7 0v13m4-13v13m4-13v13M5 7h14" />
-                    </svg>
-                    <span>Hapus</span>
-                </button>
-            </div>
+            @can('audit_log.delete')
+                <div class="flex items-center">
+                    <button type="submit"
+                            id="deleteSelectedButton"
+                            form="auditLogBulkDeleteForm"
+                            onclick="return confirm('Apakah Anda yakin ingin menghapus data yang dipilih?')"
+                            class="self-center inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12M9 7V4h6v3m-7 0v13m4-13v13m4-13v13M5 7h14" />
+                        </svg>
+                        <span>Hapus</span>
+                    </button>
+                </div>
+            @endcan
         </div>
 
         <form method="POST" action="{{ route('audit-log.bulk-delete') }}" id="auditLogBulkDeleteForm">
@@ -81,7 +83,9 @@
                         <thead class="bg-slate-50">
                             <tr>
                                 <th class="px-4 py-4 text-left font-semibold text-slate-800">
-                                    <input type="checkbox" id="checkAll" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    @can('audit_log.delete')
+                                        <input type="checkbox" id="checkAll" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    @endcan
                                 </th>
                                 <th class="px-4 py-4 text-left font-semibold text-slate-800">Waktu</th>
                                 <th class="px-4 py-4 text-left font-semibold text-slate-800">Pengguna</th>
@@ -94,10 +98,12 @@
                             @forelse($logs as $log)
                                 <tr class="transition hover:bg-slate-50">
                                     <td class="px-4 py-4 align-top">
-                                        <input type="checkbox"
-                                               name="selected_ids[]"
-                                               value="{{ $log->id }}"
-                                               class="rowCheckbox h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                        @can('audit_log.delete')
+                                            <input type="checkbox"
+                                                   name="selected_ids[]"
+                                                   value="{{ $log->id }}"
+                                                   class="rowCheckbox h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                        @endcan
                                     </td>
                                     <td class="px-4 py-4 font-medium text-slate-900">{{ $log->created_at?->timezone('Asia/Makassar')->format('d-m-Y H:i') ?? '-' }}</td>
                                     <td class="px-4 py-4">{{ $log->user?->pegawai?->nama_pegawai ?? $log->user?->username ?? $log->nama_pengguna ?? '-' }}</td>

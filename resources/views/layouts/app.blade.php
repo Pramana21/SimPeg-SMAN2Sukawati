@@ -20,6 +20,14 @@
     $submenuBaseClass = 'block rounded-lg px-3 py-2 text-sm transition';
     $submenuActiveClass = 'bg-blue-50 font-semibold text-blue-600';
     $submenuInactiveClass = 'text-gray-600 hover:bg-gray-100 hover:text-gray-800';
+    $canAccessAdministrasi = auth()->check() && (
+        auth()->user()->can('administrasi_umum.view')
+        || auth()->user()->can('administrasi_umum_pegawai.view')
+        || auth()->user()->can('administrasi_umum_siswa.view')
+    );
+    $administrasiLandingRoute = auth()->check() && auth()->user()->can('administrasi_umum.view')
+        ? route('administrasi.index')
+        : route('administrasi.siswa.index');
 @endphp
 
 <div class="flex min-h-screen bg-gray-100">
@@ -41,6 +49,7 @@
             <!-- NAVIGATION -->
             <p class="text-gray-400 text-xs mb-2">Navigation</p>
 
+        @can('dashboard.view')
         <a href="/dashboard"
            class="{{ $menuBaseClass }} {{ request()->routeIs('dashboard') ? $menuActiveClass : $menuInactiveClass }} mb-3">
             <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -48,12 +57,14 @@
             </svg>
             <span>Dashboard</span>
         </a>
+        @endcan
 
         <!-- MANAJEMEN SISTEM -->
         <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Sistem</p>
 
         <div class="space-y-2 text-gray-700">
 
+            @can('role_akses.view')
             <a href="{{ url('/roles') }}"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('roles.*') || request()->is('roles*') ? $menuActiveClass : $menuInactiveClass }}">
                     <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -62,7 +73,9 @@
                     </svg>
                     <span>Role Akses</span>
             </a>
+            @endcan
 
+            @can('manajemen_user.view')
             <a href="{{ route('users.index') }}"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('users.*') || request()->routeIs('user.*') ? $menuActiveClass : $menuInactiveClass }}">
                 <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -71,7 +84,9 @@
                 </svg>
                 <span>Manajemen User</span>
             </a>
+            @endcan
 
+            @can('audit_log.view')
             <a href="{{ url('/audit-log') }}"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('audit.*') || request()->is('audit-log*') ? $menuActiveClass : $menuInactiveClass }}">
                     <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -81,6 +96,7 @@
                     </svg>
                     <span>Audit Log</span>
             </a>
+            @endcan
 
         </div>
 
@@ -90,6 +106,7 @@
         <div class="space-y-2 text-gray-700">
 
             <!-- Penyuratan --> 
+            @can('penyuratan.view')
             <a href="{{ url('/penyuratan') }}"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('penyuratan.*') || request()->is('penyuratan*') ? $menuActiveClass : $menuInactiveClass }}">
                 <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -98,8 +115,10 @@
                 </svg>
                 <span>Penyuratan</span>
             </a>
+            @endcan
 
             <!-- Keuangan -->
+            @can('keuangan.view')
             <div x-data="{ open: {{ request()->routeIs('keuangan.*') || request()->is('keuangan*') ? 'true' : 'false' }} }">
 
                 <button @click="open = !open"
@@ -145,8 +164,10 @@
                 </div>
 
             </div>
+            @endcan
 
             <!-- Inventaris -->
+            @can('inventaris.view')
             <a href="/inventaris"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('inventaris.*') || request()->is('inventaris*') ? $menuActiveClass : $menuInactiveClass }}">
                     <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -154,8 +175,10 @@
                     </svg>
                     <span>Inventaris</span>
             </a>
+            @endcan
 
             <!-- Data Center -->
+            @can('data_center.view')
             <a href="{{ route('data-center.index') }}"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('data-center.*') || request()->is('data-center*') ? $menuActiveClass : $menuInactiveClass }}">
                 <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -164,12 +187,14 @@
                 </svg>
                 <span>Data Center</span>
             </a>
+            @endcan
 
             <!-- Administrasi Umum -->
+            @if($canAccessAdministrasi)
             <div x-data="{ open: {{ request()->routeIs('administrasi.*') || request()->is('administrasi*') ? 'true' : 'false' }} }">
 
                 <div class="{{ request()->routeIs('administrasi.*') || request()->is('administrasi*') ? $menuActiveClass : $menuInactiveClass }} flex items-center rounded-lg">
-                    <a href="{{ route('administrasi.index') }}"
+                    <a href="{{ $administrasiLandingRoute }}"
                        class="flex flex-1 items-center gap-3 px-4 py-2 text-sm font-medium">
                         <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <rect x="4.75" y="4.75" width="14.5" height="14.5" rx="2.25" stroke-width="1.8"/>
@@ -187,19 +212,24 @@
                 </div>
 
                 <div x-show="open" class="ml-6 mt-2 flex flex-col gap-1">
+                    @can('administrasi_umum_pegawai.view')
                     <a href="{{ route('administrasi.pegawai.index') }}"
                     class="{{ $submenuBaseClass }} {{ request()->routeIs('administrasi.pegawai.*') ? $submenuActiveClass : $submenuInactiveClass }}">
                         Pegawai
                     </a>
+                    @endcan
 
+                    @can('administrasi_umum_siswa.view')
                     <a href="{{ route('administrasi.siswa.index') }}"
                     class="{{ $submenuBaseClass }} {{ request()->routeIs('administrasi.siswa.*') ? $submenuActiveClass : $submenuInactiveClass }}">
                         Siswa
                     </a>
+                    @endcan
 
                 </div>
 
             </div>
+            @endif
 
             </div>
 

@@ -28,6 +28,7 @@
     @endif
 
     <div class="rounded-[28px] border border-slate-200 bg-white/90 p-5 shadow-sm">
+        @can('manajemen_user.create')
         <div class="mb-5">
             <button type="button"
                     @click="openModal = true"
@@ -38,6 +39,7 @@
                 Tambah Pengguna
             </button>
         </div>
+        @endcan
 
         <div class="overflow-hidden rounded-[24px] border border-slate-200">
             <div class="overflow-x-auto">
@@ -68,6 +70,7 @@
                                 </td>
                                 <td class="px-5 py-4">
                                     <div class="flex flex-wrap items-center gap-2">
+                                        @can('manajemen_user.edit')
                                         <a href="{{ route('users.edit', $user->id_user) }}"
                                            class="inline-flex items-center gap-1.5 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition hover:bg-blue-600">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -76,7 +79,9 @@
                                             </svg>
                                             Edit
                                         </a>
+                                        @endcan
 
+                                        @can('manajemen_user.edit')
                                         <form method="POST" action="{{ route('users.toggle-status', $user->id_user) }}">
                                             @csrf
                                             @method('PATCH')
@@ -94,6 +99,7 @@
                                                 {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>
@@ -110,6 +116,7 @@
         </div>
     </div>
 
+    @can('manajemen_user.create')
     <div x-cloak
          x-show="openModal"
          x-transition.opacity
@@ -235,6 +242,7 @@
             </form>
         </div>
     </div>
+    @endcan
 </div>
 
 <style>

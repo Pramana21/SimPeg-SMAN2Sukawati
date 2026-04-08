@@ -2,82 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Role;
 
 class RoleController extends Controller
 {
-        public function index($id = null)
-        {
-            $roles = Role::all();
+    public function index($id = null)
+    {
+        $roles = Role::with('permissions')->orderBy('role_name')->get();
 
-            $selectedRole = $id 
-                ? Role::find($id) 
-                : $roles->first();
+        $selectedRole = $id
+            ? $roles->firstWhere('id_role', (int) $id)
+            : $roles->first();
 
-            // 🔥 DATA BERBEDA TIAP ROLE
-            $rolePermissions = [];
+        abort_if(!$selectedRole, 404);
 
-            if ($selectedRole->role_name == 'Super Admin') {
+        $moduleLabels = [
+            'dashboard' => 'Dashboard',
+            'role_akses' => 'Role Akses',
+            'manajemen_user' => 'Manajemen User',
+            'audit_log' => 'Audit Log',
+            'penyuratan' => 'Penyuratan',
+            'keuangan' => 'Keuangan',
+            'inventaris' => 'Inventaris',
+            'data_center' => 'Data Center',
+            'administrasi_umum' => 'Administrasi Umum',
+            'administrasi_umum_pegawai' => 'Administrasi Umum - Pegawai',
+            'administrasi_umum_siswa' => 'Administrasi Umum - Siswa',
+        ];
 
-                $rolePermissions = [
-                    'modules' => [
-                        'Dashboard','Role Akses','Manajemen User','Audit Log',
-                        'Penyuratan','Keuangan','Inventaris','Data Center','Administrasi Umum'
-                    ],
-                    'actions' => [
-                        'Kelola data (Tambah/Ubah/Hapus)',
-                        'Lihat detail',
-                        'Unduh dokumen'
-                    ]
-                ];
+        $actionLabels = [
+            'view' => 'Lihat data',
+            'create' => 'Tambah data',
+            'edit' => 'Ubah data',
+            'delete' => 'Hapus data',
+        ];
 
-            } elseif ($selectedRole->role_name == 'Admin Kepegawaian') {
+        $rolePermissions = [
+            'modules' => $selectedRole->permissions
+                ->pluck('module')
+                ->unique()
+                ->map(fn ($module) => $moduleLabels[$module] ?? str($module)->replace('_', ' ')->title()->toString())
+                ->values()
+                ->all(),
+            'actions' => $selectedRole->permissions
+                ->pluck('action')
+                ->unique()
+                ->map(fn ($action) => $actionLabels[$action] ?? str($action)->replace('_', ' ')->title()->toString())
+                ->values()
+                ->all(),
+        ];
 
-                $rolePermissions = [
-                    'modules' => [
-                        'Dashboard','Penyuratan','Keuangan','Inventaris','Data Center','Administrasi Umum'
-                    ],
-                    'actions' => [
-                        'Kelola data (Tambah/Ubah/Hapus)',
-                        'Lihat detail',
-                        'Unduh dokumen'
-                    ]
-                ];
-
-            } elseif ($selectedRole->role_name == 'Tamu') {
-
-                $rolePermissions = [
-                    'modules' => [
-                        'Dashboard','Penyuratan','Keuangan','Inventaris','Data Center','Administrasi Umum'
-                    ],
-                    'actions' => [
-                        'Lihat detail'
-                    ]
-                ];
-
-            } elseif ($selectedRole->role_name == 'Siswa') {
-
-                $rolePermissions = [
-                    'modules' => [
-                        'Administrasi Umum'
-                    ],
-                    'actions' => [
-                        'Kelola data (Tambah/Ubah/Hapus)',
-                        'Lihat detail',
-                        'Unduh dokumen'
-                    ]
-                ];
-            }
-
-            return view('admin.roles.index', compact(
-                'roles',
-                'selectedRole',
-                'rolePermissions'
-            ));
-        }
+        return view('admin.roles.index', compact(
+            'roles',
+            'selectedRole',
+            'rolePermissions'
+        ));
+    }
 }
-
-
-
-

@@ -9,30 +9,21 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        $modules = [
-            'pegawai',
-            'siswa',
-            'penyuratan',
-            'keuangan',
-            'inventaris',
-            'administrasi',
-            'user',
-            'role'
+        $permissionMap = [
+            'dashboard' => ['view'],
+            'role_akses' => ['view', 'create', 'edit', 'delete'],
+            'manajemen_user' => ['view', 'create', 'edit', 'delete'],
+            'audit_log' => ['view'],
+            'penyuratan' => ['view', 'create', 'edit', 'delete'],
+            'keuangan' => ['view', 'create', 'edit', 'delete'],
+            'inventaris' => ['view', 'create', 'edit', 'delete'],
+            'data_center' => ['view', 'create', 'edit', 'delete'],
+            'administrasi_umum' => ['view', 'create', 'edit', 'delete'],
+            'administrasi_umum_pegawai' => ['view', 'create', 'edit', 'delete'],
+            'administrasi_umum_siswa' => ['view', 'create', 'edit', 'delete'],
         ];
 
-        $actions = [
-            'view',
-            'create',
-            'edit',
-            'delete',
-            'export',
-            'approve',
-            'reject',
-            'upload',
-            'download'
-        ];
-
-        foreach ($modules as $module) {
+        foreach ($permissionMap as $module => $actions) {
             foreach ($actions as $action) {
                 DB::table('permissions')->updateOrInsert(
                     [
