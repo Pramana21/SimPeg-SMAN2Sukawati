@@ -75,6 +75,23 @@ class User extends Authenticatable
         return strcasecmp((string) optional($this->role)->role_name, $roleName) === 0;
     }
 
+    public function dashboardRouteName(): string
+    {
+        if ($this->hasRole('Admin Kepegawaian')) {
+            return 'dashboard.admin';
+        }
+
+        if ($this->hasRole('Tamu')) {
+            return 'dashboard.tamu';
+        }
+
+        if ($this->hasRole('Siswa')) {
+            return 'dashboard.siswa';
+        }
+
+        return 'dashboard';
+    }
+
     public function hasPermission(string $module, ?string $action = null): bool
     {
         if ($action === null && str_contains($module, '.')) {

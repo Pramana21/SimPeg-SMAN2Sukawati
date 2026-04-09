@@ -43,8 +43,24 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->middleware('permission:dashboard')
+        ->middleware('permission:dashboard.view')
         ->name('dashboard');
+
+    Route::get('/dashboard/super-admin', [DashboardController::class, 'superAdmin'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard.super-admin');
+
+    Route::get('/dashboard/admin', [DashboardController::class, 'admin'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard.admin');
+
+    Route::get('/dashboard/tamu', [DashboardController::class, 'tamu'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard.tamu');
+
+    Route::get('/dashboard/siswa', [DashboardController::class, 'siswa'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard.siswa');
 
     Route::post('/notifications/read', function (Request $request) {
         $request->user()->update([
