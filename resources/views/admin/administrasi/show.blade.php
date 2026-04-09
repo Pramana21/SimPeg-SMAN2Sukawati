@@ -17,13 +17,15 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('administrasi.edit', $data->id_dokumen_administrasi) }}"
-               class="inline-flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M17.414 2.586a2 2 0 010 2.828l-8.5 8.5a2 2 0 01-.878.497l-3 1a1 1 0 01-1.265-1.265l1-3a2 2 0 01.497-.878l8.5-8.5a2 2 0 012.828 0zm-9.62 8.206L5.91 12.676l-.38 1.14 1.14-.38 1.884-1.883-1.06-1.061z"/>
-                </svg>
-                Edit
-            </a>
+            @can((($data->jenis->kategori->nama_kategori ?? 'Pegawai') === 'Siswa' ? 'administrasi_umum_siswa' : 'administrasi_umum_pegawai') . '.edit')
+                <a href="{{ route('administrasi.edit', $data->id_dokumen_administrasi) }}"
+                   class="inline-flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path d="M17.414 2.586a2 2 0 010 2.828l-8.5 8.5a2 2 0 01-.878.497l-3 1a1 1 0 01-1.265-1.265l1-3a2 2 0 01.497-.878l8.5-8.5a2 2 0 012.828 0zm-9.62 8.206L5.91 12.676l-.38 1.14 1.14-.38 1.884-1.883-1.06-1.061z"/>
+                    </svg>
+                    Edit
+                </a>
+            @endcan
 
             @if($fileUrl)
                 <a href="{{ $fileUrl }}" target="_blank"

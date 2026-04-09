@@ -42,16 +42,22 @@ class AdministrasiController extends Controller
 
     public function pegawai(Request $request): View
     {
+        $this->authorizeKategoriAccess('Pegawai', 'view');
+
         return $this->renderSubmodulePage($request, 'Pegawai');
     }
 
     public function siswa(Request $request): View
     {
+        $this->authorizeKategoriAccess('Siswa', 'view');
+
         return $this->renderSubmodulePage($request, 'Siswa');
     }
 
     public function createPegawai(): View
     {
+        $this->authorizeKategoriAccess('Pegawai', 'create');
+
         return view('admin.administrasi.create-pegawai', [
             'jenisDokumenOptions' => [
                 ['value' => 'absensi_pegawai', 'label' => 'Absensi Pegawai'],
@@ -64,6 +70,8 @@ class AdministrasiController extends Controller
 
     public function createSiswa(): View
     {
+        $this->authorizeKategoriAccess('Siswa', 'create');
+
         return view('admin.administrasi.create-siswa', [
             'jenisDokumenOptions' => [
                 ['value' => 'absensi_siswa', 'label' => 'Absensi Siswa'],
@@ -88,7 +96,10 @@ class AdministrasiController extends Controller
             'nomor_kelas' => 'nullable|integer|min:1|max:10',
         ]);
 
-        if (($validated['selected_kategori'] ?? null) === 'Siswa') {
+        $selectedKategori = $validated['selected_kategori'] ?? 'Pegawai';
+        $this->authorizeKategoriAccess($selectedKategori, 'create');
+
+        if ($selectedKategori === 'Siswa') {
             $request->validate([
                 'kelas' => 'required|in:X,XI,XII',
                 'nomor_kelas' => 'required|integer|min:1|max:10',
@@ -97,7 +108,7 @@ class AdministrasiController extends Controller
 
         $jenis = $this->resolveJenisDokumen($validated['jenis_dokumen']);
         $path = $request->file('file_surat')->store('administrasi', 'public');
-        $kategoriKelas = ($validated['selected_kategori'] ?? null) === 'Siswa'
+        $kategoriKelas = $selectedKategori === 'Siswa'
             ? $this->buildKategoriKelas($request->kelas, $request->nomor_kelas)
             : null;
 
@@ -108,7 +119,7 @@ class AdministrasiController extends Controller
             'id_jenis_dokumen_administrasi' => $jenis->id_jenis_dokumen_administrasi,
             'file_path' => $path,
             'created_by' => $validated['di_upload_oleh'],
-            'kelas' => ($validated['selected_kategori'] ?? null) === 'Siswa' ? $request->kelas : null,
+            'kelas' => $selectedKategori === 'Siswa' ? $request->kelas : null,
             'kategori_kelas' => $kategoriKelas,
             'bulan' => date('m', strtotime($validated['tanggal_dokumen'])),
             'tahun' => date('Y', strtotime($validated['tanggal_dokumen'])),
@@ -121,13 +132,14 @@ class AdministrasiController extends Controller
         );
 
         return redirect()
-            ->route($this->submoduleRouteName($validated['selected_kategori'] ?? ($jenis->kategori->nama_kategori ?? 'Pegawai')))
+            ->route($this->submoduleRouteName($selectedKategori ?: ($jenis->kategori->nama_kategori ?? 'Pegawai')))
             ->with('success', 'Dokumen administrasi berhasil ditambahkan.');
     }
 
     public function show($id): View
     {
         $data = DokumenAdministrasi::with('jenis.kategori')->findOrFail($id);
+        $this->authorizeDocumentAccess($data, 'view');
         $extension = strtolower(pathinfo($data->file_path ?? '', PATHINFO_EXTENSION));
         $previewableExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
 
@@ -142,6 +154,7 @@ class AdministrasiController extends Controller
     public function edit($id): View
     {
         $data = DokumenAdministrasi::with('jenis.kategori')->findOrFail($id);
+        $this->authorizeDocumentAccess($data, 'edit');
         $selectedKategori = $data->jenis->kategori->nama_kategori ?? 'Pegawai';
 
         return view('admin.administrasi.edit', [
@@ -165,6 +178,8 @@ class AdministrasiController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $data = DokumenAdministrasi::findOrFail($id);
+        $this->authorizeDocumentAccess($data, 'edit');
+
         $validated = $request->validate([
             'nama_dokumen' => 'required|string|max:150',
             'tanggal_dokumen' => 'required|date',
@@ -205,6 +220,7 @@ class AdministrasiController extends Controller
     public function destroy($id): RedirectResponse
     {
         $data = DokumenAdministrasi::findOrFail($id);
+        $this->authorizeDocumentAccess($data, 'delete');
         $namaDokumen = $data->nama_dokumen;
 
         if ($data->file_path && Storage::disk('public')->exists($data->file_path)) {
@@ -232,6 +248,8 @@ class AdministrasiController extends Controller
         $documents = DokumenAdministrasi::whereIn('id_dokumen_administrasi', $validated['ids'])->get();
 
         foreach ($documents as $document) {
+            $this->authorizeDocumentAccess($document, 'delete');
+
             if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
                 Storage::disk('public')->delete($document->file_path);
             }
@@ -363,5 +381,21 @@ class AdministrasiController extends Controller
         return $kategori === 'Siswa'
             ? 'administrasi.siswa.index'
             : 'administrasi.pegawai.index';
+    }
+
+    private function authorizeKategoriAccess(string $kategori, string $action): void
+    {
+        $permissionModule = $kategori === 'Siswa'
+            ? 'administrasi_umum_siswa'
+            : 'administrasi_umum_pegawai';
+
+        abort_unless(Auth::user()?->hasPermission($permissionModule, $action), 403, 'Tidak memiliki akses');
+    }
+
+    private function authorizeDocumentAccess(DokumenAdministrasi $document, string $action): void
+    {
+        $kategori = $document->jenis?->kategori?->nama_kategori ?? 'Pegawai';
+
+        $this->authorizeKategoriAccess($kategori, $action);
     }
 }

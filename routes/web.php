@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\AgendaController;
 
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\KeuanganController;
@@ -69,6 +70,8 @@ Route::middleware(['auth'])->group(function () {
 
         return response()->json(['success' => true]);
     })->name('notifications.read');
+
+    Route::resource('agenda', AgendaController::class);
     
     Route::get('/roles/{id?}', [RoleController::class, 'index'])
         ->middleware('permission:role_akses')
@@ -205,19 +208,19 @@ Route::middleware(['auth'])->group(function () {
                 ->name('bulk-delete');
 
             Route::get('/pegawai', [AdministrasiController::class, 'pegawai'])
-                ->middleware('permission:administrasi_umum_pegawai')
+                ->middleware('permission:administrasi_umum_pegawai.view')
                 ->name('pegawai.index');
 
             Route::get('/siswa', [AdministrasiController::class, 'siswa'])
-                ->middleware('permission:administrasi_umum_siswa')
+                ->middleware('permission:administrasi_umum_siswa.view')
                 ->name('siswa.index');
 
             Route::get('/pegawai/create', [AdministrasiController::class, 'createPegawai'])
-                ->middleware('permission:administrasi_umum_pegawai')
+                ->middleware('permission:administrasi_umum_pegawai.create')
                 ->name('pegawai.create');
 
             Route::get('/siswa/create', [AdministrasiController::class, 'createSiswa'])
-                ->middleware('permission:administrasi_umum_siswa')
+                ->middleware('permission:administrasi_umum_siswa.create')
                 ->name('siswa.create');
 
             Route::post('/store', [AdministrasiController::class, 'store'])

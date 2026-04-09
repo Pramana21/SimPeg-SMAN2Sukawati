@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use App\Models\AuditLog;
 use App\Models\DokumenAdministrasi;
 use App\Models\DokumenInventaris;
@@ -11,8 +12,10 @@ use App\Models\Pegawai;
 use App\Models\Siswa;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -63,11 +66,12 @@ class DashboardController extends Controller
         ));
     }
 
-    public function admin(): View
+    public function admin(Request $request): View
     {
         abort_unless(auth()->user()?->hasRole('Admin Kepegawaian'), 403, 'Tidak memiliki akses');
 
         return view('dashboard.admin', $this->buildRoleDashboardPayload(
+            request: $request,
             title: 'Dashboard Admin Kepegawaian',
             subtitle: 'Ringkasan dokumen dan aktivitas utama untuk pengelolaan kepegawaian.',
             stats: [
@@ -94,16 +98,17 @@ class DashboardController extends Controller
             ],
             roleBadge: 'Admin',
             recentDocuments: $this->recentDocuments(['penyuratan', 'keuangan', 'inventaris', 'administrasi']),
-            agendaItems: $this->agendaFromDocuments(['penyuratan', 'keuangan', 'inventaris', 'administrasi']),
+            agendaItems: $this->dashboardAgendas(),
             sectionTitle: 'Dokumen Terbaru'
         ));
     }
 
-    public function tamu(): View
+    public function tamu(Request $request): View
     {
         abort_unless(auth()->user()?->hasRole('Tamu'), 403, 'Tidak memiliki akses');
 
         return view('dashboard.tamu', $this->buildRoleDashboardPayload(
+            request: $request,
             title: 'Dashboard Tamu',
             subtitle: 'Tampilan read-only untuk memantau data penting tanpa akses perubahan.',
             stats: [
@@ -130,16 +135,17 @@ class DashboardController extends Controller
             ],
             roleBadge: 'Read Only',
             recentDocuments: $this->recentDocuments(['penyuratan', 'keuangan', 'inventaris', 'administrasi']),
-            agendaItems: $this->agendaFromDocuments(['penyuratan', 'keuangan', 'inventaris']),
+            agendaItems: $this->dashboardAgendas(),
             sectionTitle: 'Dokumen yang Bisa Dipantau'
         ));
     }
 
-    public function siswa(): View
+    public function siswa(Request $request): View
     {
         abort_unless(auth()->user()?->hasRole('Siswa'), 403, 'Tidak memiliki akses');
 
         return view('dashboard.siswa', $this->buildRoleDashboardPayload(
+            request: $request,
             title: 'Dashboard Siswa',
             subtitle: 'Akses terbatas untuk melihat informasi umum dan dokumen administrasi yang relevan.',
             stats: [
@@ -166,12 +172,13 @@ class DashboardController extends Controller
             ],
             roleBadge: 'Siswa',
             recentDocuments: $this->recentDocuments(['administrasi']),
-            agendaItems: $this->agendaFromDocuments(['administrasi']),
+            agendaItems: $this->dashboardAgendas(),
             sectionTitle: 'Dokumen Administrasi Terbaru'
         ));
     }
 
     private function buildRoleDashboardPayload(
+        Request $request,
         string $title,
         string $subtitle,
         array $stats,
@@ -180,17 +187,35 @@ class DashboardController extends Controller
         Collection $agendaItems,
         string $sectionTitle
     ): array {
+        $calendarDate = $this->resolveCalendarDate($request);
+
         return [
             'dashboardTitle' => $title,
             'dashboardSubtitle' => $subtitle,
             'stats' => $stats,
             'roleBadge' => $roleBadge,
-            'calendar' => $this->buildCalendar(now()),
+            'calendar' => $this->buildCalendar($calendarDate),
+            'calendarMonths' => $this->calendarMonths(),
+            'calendarYears' => $this->calendarYears($calendarDate->year),
+            'agendaCalendarMap' => $this->agendaCalendarMap($calendarDate->month, $calendarDate->year),
             'studentComposition' => $this->studentComposition(),
             'recentDocuments' => $recentDocuments,
             'agendaItems' => $agendaItems,
             'sectionTitle' => $sectionTitle,
+            'agendaCrudEnabled' => auth()->user()?->hasRole('Admin Kepegawaian') || auth()->user()?->hasRole('Tamu'),
         ];
+    }
+
+    private function resolveCalendarDate(Request $request): Carbon
+    {
+        $now = Carbon::now();
+        $month = (int) $request->integer('month', $now->month);
+        $year = (int) $request->integer('year', $now->year);
+
+        $month = min(max($month, 1), 12);
+        $year = min(max($year, $now->year - 5), $now->year + 5);
+
+        return Carbon::create($year, $month, 1);
     }
 
     private function totalDocuments(): int
@@ -236,6 +261,7 @@ class DashboardController extends Controller
             for ($i = 0; $i < 7; $i++) {
                 $week[] = [
                     'day' => $cursor->day,
+                    'date' => $cursor->format('Y-m-d'),
                     'isCurrentMonth' => $cursor->month === $date->month,
                     'isToday' => $cursor->isSameDay(now()),
                 ];
@@ -247,11 +273,28 @@ class DashboardController extends Controller
         }
 
         return [
+            'month' => $date->month,
             'monthLabel' => $date->translatedFormat('F'),
             'year' => $date->year,
             'weekdays' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
             'weeks' => $weeks,
         ];
+    }
+
+    private function calendarMonths(): array
+    {
+        $months = [];
+
+        foreach (range(1, 12) as $month) {
+            $months[$month] = Carbon::create(null, $month, 1)->translatedFormat('F');
+        }
+
+        return $months;
+    }
+
+    private function calendarYears(int $selectedYear): array
+    {
+        return range($selectedYear - 5, $selectedYear + 5);
     }
 
     private function studentComposition(): array
@@ -271,85 +314,111 @@ class DashboardController extends Controller
 
     private function recentDocuments(array $modules): Collection
     {
-        $documents = collect();
+        $queries = [];
 
         if (in_array('penyuratan', $modules, true)) {
-            $documents = $documents->merge(
-                DokumenPenyuratan::with('jenis')
-                    ->latest('tanggal_dokumen')
-                    ->take(5)
-                    ->get()
-                    ->map(fn (DokumenPenyuratan $document) => [
-                        'code' => $document->no_surat,
-                        'name' => $document->nama_dokumen,
-                        'category' => $document->jenis?->nama_jenis_surat ?? 'Penyuratan',
-                        'date' => Carbon::parse($document->tanggal_dokumen),
-                        'module' => 'Penyuratan',
-                    ])
-            );
+            $queries[] = DB::table('dokumen_penyuratan as penyuratan')
+                ->leftJoin('jenis_surat as jenis_surat', 'jenis_surat.id_jenis_surat', '=', 'penyuratan.id_jenis_surat')
+                ->selectRaw("
+                    penyuratan.no_surat as code,
+                    penyuratan.nama_dokumen as name,
+                    COALESCE(jenis_surat.nama_jenis_surat, 'Penyuratan') as category,
+                    penyuratan.created_at as created_at,
+                    'Penyuratan' as module
+                ");
         }
 
         if (in_array('keuangan', $modules, true)) {
-            $documents = $documents->merge(
-                DokumenKeuangan::with('kategori')
-                    ->latest('tanggal_dokumen')
-                    ->take(5)
-                    ->get()
-                    ->map(fn (DokumenKeuangan $document) => [
-                        'code' => 'KEU-' . $document->id_dokumen_keuangan,
-                        'name' => $document->nama_dokumen,
-                        'category' => $document->kategori?->nama_kategori ?? 'Keuangan',
-                        'date' => Carbon::parse($document->tanggal_dokumen),
-                        'module' => 'Keuangan',
-                    ])
-            );
+            $queries[] = DB::table('dokumen_keuangan as keuangan')
+                ->leftJoin('kategori_keuangan as kategori_keuangan', 'kategori_keuangan.id_kategori_keuangan', '=', 'keuangan.id_kategori_keuangan')
+                ->selectRaw("
+                    CAST(keuangan.id_dokumen_keuangan as char) as code,
+                    keuangan.nama_dokumen as name,
+                    COALESCE(kategori_keuangan.nama_kategori, 'Keuangan') as category,
+                    keuangan.created_at as created_at,
+                    'Keuangan' as module
+                ");
         }
 
         if (in_array('inventaris', $modules, true)) {
-            $documents = $documents->merge(
-                DokumenInventaris::latest('tanggal_dokumen')
-                    ->take(5)
-                    ->get()
-                    ->map(fn (DokumenInventaris $document) => [
-                        'code' => 'INV-' . $document->id_dokumen_inventaris,
-                        'name' => $document->nama_dokumen,
-                        'category' => 'Inventaris',
-                        'date' => Carbon::parse($document->tanggal_dokumen),
-                        'module' => 'Inventaris',
-                    ])
-            );
+            $queries[] = DB::table('dokumen_inventaris as inventaris')
+                ->selectRaw("
+                    CAST(inventaris.id_dokumen_inventaris as char) as code,
+                    inventaris.nama_dokumen as name,
+                    'Inventaris' as category,
+                    inventaris.created_at as created_at,
+                    'Inventaris' as module
+                ");
         }
 
         if (in_array('administrasi', $modules, true)) {
-            $documents = $documents->merge(
-                DokumenAdministrasi::with('jenis')
-                    ->latest('tanggal_dokumen')
-                    ->take(5)
-                    ->get()
-                    ->map(fn (DokumenAdministrasi $document) => [
-                        'code' => 'ADM-' . $document->id_dokumen_administrasi,
-                        'name' => $document->nama_dokumen,
-                        'category' => $document->jenis?->nama_jenis ?? 'Administrasi',
-                        'date' => Carbon::parse($document->tanggal_dokumen),
-                        'module' => 'Administrasi',
-                    ])
-            );
+            $queries[] = DB::table('dokumen_administrasi as administrasi')
+                ->leftJoin('jenis_dokumen_administrasi as jenis_administrasi', 'jenis_administrasi.id_jenis_dokumen_administrasi', '=', 'administrasi.id_jenis_dokumen_administrasi')
+                ->selectRaw("
+                    CAST(administrasi.id_dokumen_administrasi as char) as code,
+                    administrasi.nama_dokumen as name,
+                    COALESCE(jenis_administrasi.nama_jenis, 'Administrasi Umum') as category,
+                    administrasi.created_at as created_at,
+                    'Administrasi Umum' as module
+                ");
         }
 
-        return $documents
-            ->sortByDesc(fn (array $item) => $item['date']->timestamp)
+        if ($queries === []) {
+            return collect();
+        }
+
+        $documents = array_shift($queries);
+
+        foreach ($queries as $query) {
+            $documents->unionAll($query);
+        }
+
+        return DB::query()
+            ->fromSub($documents, 'docs')
+            ->orderByDesc('created_at')
             ->take(5)
+            ->get()
+            ->map(fn ($document) => [
+                'code' => $document->code,
+                'name' => $document->name,
+                'category' => $document->category,
+                'date' => Carbon::parse($document->created_at),
+                'module' => $document->module,
+            ])
             ->values();
     }
 
-    private function agendaFromDocuments(array $modules): Collection
+    private function dashboardAgendas(): Collection
     {
-        return $this->recentDocuments($modules)
-            ->map(fn (array $document) => [
-                'dateLabel' => $document['date']->translatedFormat('d M Y'),
-                'title' => $document['name'],
-                'subtitle' => $document['module'] . ' • ' . $document['category'],
+        return Agenda::query()
+            ->whereDate('tanggal', '>=', now()->toDateString())
+            ->orderBy('tanggal')
+            ->orderBy('created_at')
+            ->take(5)
+            ->get()
+            ->map(fn (Agenda $agenda) => [
+                'id' => $agenda->id,
+                'tanggal' => optional($agenda->tanggal)->format('Y-m-d'),
+                'tanggal_label' => optional($agenda->tanggal)->translatedFormat('d M Y'),
+                'title' => $agenda->title,
+                'subtitle' => collect([$agenda->waktu_kegiatan, $agenda->lokasi])->filter()->implode(' • '),
+                'waktu_kegiatan' => $agenda->waktu_kegiatan,
+                'lokasi' => $agenda->lokasi,
+                'deskripsi' => $agenda->deskripsi,
+                'dibuat_oleh' => $agenda->dibuat_oleh,
             ])
             ->values();
+    }
+
+    private function agendaCalendarMap(int $month, int $year): array
+    {
+        return Agenda::query()
+            ->select('tanggal')
+            ->whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $month)
+            ->get()
+            ->groupBy(fn (Agenda $agenda) => optional($agenda->tanggal)->format('Y-m-d'))
+            ->map(fn (Collection $items) => $items->count())
+            ->all();
     }
 }
