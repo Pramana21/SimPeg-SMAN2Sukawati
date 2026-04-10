@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\SearchController;
 
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\KeuanganController;
@@ -31,7 +32,7 @@ use Illuminate\Http\Request;
 
 Route::get('/login',[LoginController::class,'showLogin'])->name('login');
 Route::post('/login',[LoginController::class,'login']);
-Route::get('/logout',[LoginController::class,'logout']);
+Route::post('/logout',[LoginController::class,'logout'])->name('logout');
 
 
 /*
@@ -70,6 +71,10 @@ Route::middleware(['auth'])->group(function () {
 
         return response()->json(['success' => true]);
     })->name('notifications.read');
+
+    Route::post('/search', [SearchController::class, 'search'])
+        ->middleware('role:Super Admin,Admin Kepegawaian')
+        ->name('search');
 
     Route::resource('agenda', AgendaController::class);
     

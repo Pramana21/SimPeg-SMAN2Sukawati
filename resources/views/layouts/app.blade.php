@@ -238,7 +238,7 @@
 
                 <p class="text-gray-400 text-xs mb-2">Account</p>
 
-                <form method="POST" action="/logout">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
                         class="flex items-center gap-3 rounded-lg px-4 py-2 text-gray-500 transition hover:bg-gray-100 hover:text-red-500">
@@ -267,9 +267,14 @@
 
             <div class="flex items-center gap-3">
 
-                <div class="relative">
+                @if(auth()->user()?->hasRole('Super Admin') || auth()->user()?->hasRole('Admin Kepegawaian'))
+                <form action="{{ route('search') }}" method="POST" class="relative">
+                    @csrf
                     <input type="text"
+                        name="q"
+                        value="{{ old('q') }}"
                         placeholder="Search..."
+                        required
                         class="w-80 rounded bg-blue-500 py-2 pl-10 pr-4 text-white placeholder-white outline-none">
                     <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -277,7 +282,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="m20 20-3.5-3.5"></path>
                         </svg>
                     </span>
-                </div>
+                </form>
+                @endif
 
                 <div class="flex items-center gap-3">
                     <div class="relative" id="notifWrapper">
@@ -353,6 +359,12 @@
 
         <!-- CONTENT -->
         <div class="p-6">
+            @if(session('error'))
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             @yield('content')
         </div>
 
