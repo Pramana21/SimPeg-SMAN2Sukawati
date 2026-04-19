@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>SIMPEG SMAN 2 Sukawati</title>
+<title>{{ config('app.name') }} SMAN 2 Sukawati</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -17,7 +17,7 @@
 
 <div class="col-md-2 bg-light min-vh-100">
 
-<h4 class="mt-3">SIMPEG</h4>
+<h4 class="mt-3">{{ config('app.name') }}</h4>
 
 <ul class="nav flex-column mt-4">
 
