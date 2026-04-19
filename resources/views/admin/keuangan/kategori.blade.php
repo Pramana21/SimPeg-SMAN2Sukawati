@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@php($isTamu = auth()->user()?->hasRole('Tamu'))
 <div class="space-y-6">
     <div>
         <h1 class="text-4xl font-semibold text-slate-900">{{ $kategori->nama_kategori }}</h1>
@@ -70,6 +71,7 @@
 
             <div class="flex flex-wrap items-center gap-3 xl:justify-end">
                 @can('keuangan.delete')
+                @unless($isTamu)
                     <form id="bulkDeleteKeuanganForm" action="{{ route('keuangan.bulk-delete') }}" method="POST" class="hidden">
                         @csrf
                     </form>
@@ -82,6 +84,7 @@
                         </svg>
                         Hapus Terpilih
                     </button>
+                @endunless
                 @endcan
 
                 @can('keuangan.create')

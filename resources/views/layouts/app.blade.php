@@ -28,6 +28,7 @@
     $administrasiLandingRoute = auth()->check() && auth()->user()->can('administrasi_umum.view')
         ? route('administrasi.index')
         : route('administrasi.siswa.index');
+    $isTamu = auth()->user()?->hasRole('Tamu');
 @endphp
 
 <div class="flex min-h-screen bg-gray-100">
@@ -51,7 +52,7 @@
 
         @can('dashboard.view')
         <a href="/dashboard"
-           class="{{ $menuBaseClass }} {{ request()->routeIs('dashboard') ? $menuActiveClass : $menuInactiveClass }} mb-3">
+           class="{{ $menuBaseClass }} {{ request()->routeIs('dashboard*') || request()->is('dashboard*') ? $menuActiveClass : $menuInactiveClass }} mb-3">
             <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.75 4.75h6.5v6.5h-6.5zm8 0h6.5v6.5h-6.5zm-8 8h6.5v6.5h-6.5zm8 0h6.5v6.5h-6.5z"/>
             </svg>
@@ -60,10 +61,13 @@
         @endcan
 
         <!-- MANAJEMEN SISTEM -->
+        @if(!auth()->user()?->hasRole('Admin Kepegawaian') && !$isTamu)
         <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Sistem</p>
+        @endif
 
         <div class="space-y-2 text-gray-700">
 
+            @if(!$isTamu)
             @can('role_akses.view')
             <a href="{{ url('/roles') }}"
                 class="{{ $menuBaseClass }} {{ request()->routeIs('roles.*') || request()->is('roles*') ? $menuActiveClass : $menuInactiveClass }}">
@@ -97,6 +101,7 @@
                     <span>Audit Log</span>
             </a>
             @endcan
+            @endif
 
         </div>
 
@@ -121,27 +126,26 @@
             @can('keuangan.view')
             <div x-data="{ open: {{ request()->routeIs('keuangan.*') || request()->is('keuangan*') ? 'true' : 'false' }} }">
 
-                <button @click="open = !open"
-                    class="w-full {{ $menuBaseClass }} justify-between {{ request()->routeIs('keuangan.*') || request()->is('keuangan*') ? $menuActiveClass : $menuInactiveClass }}">
-
-                    <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('keuangan.index') }}"
+                        class="flex-1 {{ $menuBaseClass }} {{ request()->routeIs('keuangan.*') || request()->is('keuangan*') ? $menuActiveClass : $menuInactiveClass }}">
                         <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3.75v16.5M15.5 7.25a3.5 3.5 0 0 0-3.5-1.5c-1.93 0-3.5 1.23-3.5 2.75s1.57 2.75 3.5 2.75 3.5 1.23 3.5 2.75-1.57 2.75-3.5 2.75a3.9 3.9 0 0 1-3.75-1.75"/>
                         </svg>
                         <span>Keuangan</span>
-                    </div>
-
-                    <svg class="h-5 w-5 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" :class="{ 'rotate-180': open }">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m6.75 9.75 5.25 5.25 5.25-5.25"/>
-                    </svg>
-                </button>
-
-                <div x-show="open" class="ml-6 mt-2 flex flex-col gap-1">
-                    <a href="{{ route('keuangan.index') }}"
-                        class="{{ $submenuBaseClass }} {{ request()->routeIs('keuangan.index') ? $submenuActiveClass : $submenuInactiveClass }}">
-                        Dashboard Keuangan
                     </a>
 
+                    <button type="button" @click="open = !open"
+                        class="flex h-10 w-10 items-center justify-center rounded-lg transition {{ request()->routeIs('keuangan.*') || request()->is('keuangan*') ? 'text-blue-600 hover:bg-blue-50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700' }}"
+                        :aria-expanded="open.toString()"
+                        aria-controls="submenu-keuangan">
+                        <svg class="h-5 w-5 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" :class="{ 'rotate-180': open }">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m6.75 9.75 5.25 5.25 5.25-5.25"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div x-show="open" id="submenu-keuangan" class="ml-6 mt-2 flex flex-col gap-1">
                     <a href="{{ route('keuangan.kategori', 'laporan') }}"
                         class="{{ $submenuBaseClass }} {{ request()->is('keuangan/laporan*') ? $submenuActiveClass : $submenuInactiveClass }}">
                         Laporan Keuangan
@@ -193,9 +197,9 @@
             @if($canAccessAdministrasi)
             <div x-data="{ open: {{ request()->routeIs('administrasi.*') || request()->is('administrasi*') ? 'true' : 'false' }} }">
 
-                <div class="{{ request()->routeIs('administrasi.*') || request()->is('administrasi*') ? $menuActiveClass : $menuInactiveClass }} flex items-center rounded-lg">
+                <div class="flex items-center gap-2">
                     <a href="{{ $administrasiLandingRoute }}"
-                       class="flex flex-1 items-center gap-3 px-4 py-2 text-sm font-medium">
+                       class="flex-1 {{ $menuBaseClass }} {{ request()->routeIs('administrasi.*') || request()->is('administrasi*') ? $menuActiveClass : $menuInactiveClass }}">
                         <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <rect x="4.75" y="4.75" width="14.5" height="14.5" rx="2.25" stroke-width="1.8"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m8.75 12 2.25 2.25 4.25-4.5"/>
@@ -203,15 +207,17 @@
                         <span>Administrasi Umum</span>
                     </a>
 
-                    <button @click="open = !open"
-                        class="px-3 py-2">
+                    <button type="button" @click="open = !open"
+                        class="flex h-10 w-10 items-center justify-center rounded-lg transition {{ request()->routeIs('administrasi.*') || request()->is('administrasi*') ? 'text-blue-600 hover:bg-blue-50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700' }}"
+                        :aria-expanded="open.toString()"
+                        aria-controls="submenu-administrasi">
                         <svg class="h-5 w-5 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" :class="{ 'rotate-180': open }">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m6.75 9.75 5.25 5.25 5.25-5.25"/>
                         </svg>
                     </button>
                 </div>
 
-                <div x-show="open" class="ml-6 mt-2 flex flex-col gap-1">
+                <div x-show="open" id="submenu-administrasi" class="ml-6 mt-2 flex flex-col gap-1">
                     @can('administrasi_umum_pegawai.view')
                     <a href="{{ route('administrasi.pegawai.index') }}"
                     class="{{ $submenuBaseClass }} {{ request()->routeIs('administrasi.pegawai.*') ? $submenuActiveClass : $submenuInactiveClass }}">
@@ -258,10 +264,10 @@
     <div class="shrink-0" style="width: 260px;"></div>
 
     <!-- MAIN -->
-    <main class="min-w-0 flex-1">
+    <main class="min-w-0 flex-1 overflow-visible">
 
         <!-- NAVBAR -->
-        <div class="flex items-center justify-between border-b bg-white px-6 py-4">
+        <div class="relative z-40 overflow-visible flex items-center justify-between border-b bg-white px-6 py-4">
 
             <h1 class="text-xl font-semibold">Welcome Back</h1>
 
@@ -286,7 +292,7 @@
                 @endif
 
                 <div class="flex items-center gap-3">
-                    <div class="relative" id="notifWrapper">
+                    <div class="relative z-50" id="notifWrapper">
                     <button type="button"
                         id="notifButton"
                         class="relative flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-600"
@@ -303,14 +309,14 @@
                     </button>
 
                     <aside id="notifPanel"
-                        class="fixed right-5 top-[70px] z-[9999] hidden w-[350px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl transition-all duration-200 ease-out"
+                        class="fixed z-[1000] hidden w-[350px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl ring-1 ring-black/5 transition-all duration-200 ease-out"
                         aria-hidden="true">
                         <div class="border-b px-5 py-4">
                             <h2 class="text-lg font-semibold text-gray-900">Notifikasi</h2>
                             <p class="mt-1 text-sm text-gray-500">Aktivitas terbaru dari Audit Log</p>
                         </div>
 
-                        <div class="space-y-3 overflow-y-auto p-4" style="max-height: 500px;">
+                        <div class="space-y-3 overflow-y-auto bg-white p-4" style="max-height: min(32rem, calc(100vh - 6rem));">
                             @forelse(($notifications ?? collect()) as $notif)
                                 @php
                                     $activityColor = match($notif->aktivitas) {
@@ -358,7 +364,7 @@
         </div>
 
         <!-- CONTENT -->
-        <div class="p-6">
+        <div class="relative z-0 overflow-visible p-6">
             @if(session('error'))
                 <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
                     {{ session('error') }}
@@ -386,6 +392,20 @@
     let hasMarkedNotificationRead = false;
 
     if (notifWrapper && notifBtn && notifPanel) {
+        const positionNotifPanel = () => {
+            const buttonRect = notifBtn.getBoundingClientRect();
+            const panelWidth = Math.min(350, window.innerWidth - 32);
+            const top = buttonRect.bottom + 12;
+            const left = Math.min(
+                Math.max(16, buttonRect.right - panelWidth),
+                window.innerWidth - panelWidth - 16
+            );
+
+            notifPanel.style.top = `${top}px`;
+            notifPanel.style.left = `${left}px`;
+            notifPanel.style.right = 'auto';
+        };
+
         const markNotificationsAsRead = async () => {
             if (hasMarkedNotificationRead || !notifIndicator || notifIndicator.classList.contains('hidden')) {
                 return;
@@ -417,6 +437,7 @@
         const isNotifOpen = () => !notifPanel.classList.contains('hidden');
 
         const openNotifPanel = () => {
+            positionNotifPanel();
             notifPanel.classList.remove('hidden', 'opacity-0', '-translate-y-2');
             notifPanel.classList.add('opacity-100', 'translate-y-0');
             notifBtn.setAttribute('aria-expanded', 'true');
@@ -462,6 +483,18 @@
                 closeNotifPanel();
             }
         });
+
+        window.addEventListener('resize', () => {
+            if (isNotifOpen()) {
+                positionNotifPanel();
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            if (isNotifOpen()) {
+                positionNotifPanel();
+            }
+        }, true);
 
         notifPanel.classList.add('opacity-0', '-translate-y-2');
     }

@@ -8,7 +8,24 @@ class RoleController extends Controller
 {
     public function index($id = null)
     {
-        $roles = Role::with('permissions')->orderBy('role_name')->get();
+        $roleOrder = [
+            'Super Admin',
+            'Admin Kepegawaian',
+            'Tamu',
+            'Siswa',
+        ];
+
+        $roles = Role::with('permissions')
+            ->get()
+            ->sortBy(function ($role) use ($roleOrder) {
+                $position = array_search($role->role_name, $roleOrder, true);
+
+                return [
+                    $position === false ? count($roleOrder) : $position,
+                    $role->role_name,
+                ];
+            })
+            ->values();
 
         $selectedRole = $id
             ? $roles->firstWhere('id_role', (int) $id)

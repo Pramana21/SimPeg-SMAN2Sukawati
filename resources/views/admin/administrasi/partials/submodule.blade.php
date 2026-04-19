@@ -1,5 +1,6 @@
 <div class="space-y-6">
     @php($permissionPrefix = ($selectedKategori ?? null) === 'Siswa' ? 'administrasi_umum_siswa' : 'administrasi_umum_pegawai')
+    @php($isTamu = auth()->user()?->hasRole('Tamu'))
 
     <div>
         <h1 class="text-4xl font-semibold text-slate-900">{{ $title }}</h1>
@@ -69,6 +70,7 @@
 
             <div class="flex flex-wrap items-center gap-3 xl:justify-end">
                 @can($permissionPrefix . '.delete')
+                @unless($isTamu)
                     <form id="bulkDeleteAdministrasiForm" action="{{ route('administrasi.bulk-delete') }}" method="POST" class="hidden">
                         @csrf
                     </form>
@@ -81,6 +83,7 @@
                         </svg>
                         Hapus Terpilih
                     </button>
+                @endunless
                 @endcan
 
                 @can($permissionPrefix . '.create')
