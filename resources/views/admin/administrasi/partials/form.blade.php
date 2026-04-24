@@ -185,14 +185,14 @@
             }
 
             const kelas = kelasSelect.value;
-            const prefix = kelas === 'X' ? 'E' : (kelas === 'XI' || kelas === 'XII' ? 'F' : null);
+            const prefix = kelas === 'X' ? 'E' : (kelas === 'XI' || kelas === 'XII' ? 'F.P' : null);
             kategoriKelasSelect.innerHTML = '<option value="">-- Pilih Kategori Kelas --</option>';
 
             if (!prefix) {
                 return;
             }
 
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= 15; i++) {
                 const option = document.createElement('option');
                 option.value = String(i);
                 option.textContent = `${prefix} - ${i}`;

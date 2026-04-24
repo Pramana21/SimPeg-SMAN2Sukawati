@@ -192,9 +192,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('data-center.index');
 
     // 🔥 MURID (FULL CRUD)
+    Route::post('murid/bulk-delete', [MuridController::class, 'bulkDelete'])->name('murid.bulk-delete');
     Route::resource('murid', MuridController::class);
 
     // 🔥 PEGAWAI (FULL CRUD)
+    Route::post('pegawai/bulk-delete', [PegawaiController::class, 'bulkDelete'])->name('pegawai.bulk-delete');
     Route::resource('pegawai', PegawaiController::class);
 
 });

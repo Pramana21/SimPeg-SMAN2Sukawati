@@ -18,7 +18,7 @@ class AdministrasiController extends Controller
             return null;
         }
 
-        $prefix = $kelas === 'X' ? 'E' : 'F';
+        $prefix = $kelas === 'X' ? 'E' : 'F.P';
 
         return $prefix . ' - ' . $nomorKelas;
     }
@@ -93,7 +93,7 @@ class AdministrasiController extends Controller
             'selected_kategori' => 'nullable|in:Pegawai,Siswa',
             'file_surat' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048',
             'kelas' => 'nullable|in:X,XI,XII',
-            'nomor_kelas' => 'nullable|integer|min:1|max:10',
+            'nomor_kelas' => 'nullable|integer|min:1|max:15',
         ]);
 
         $selectedKategori = $validated['selected_kategori'] ?? 'Pegawai';
@@ -102,7 +102,7 @@ class AdministrasiController extends Controller
         if ($selectedKategori === 'Siswa') {
             $request->validate([
                 'kelas' => 'required|in:X,XI,XII',
-                'nomor_kelas' => 'required|integer|min:1|max:10',
+                'nomor_kelas' => 'required|integer|min:1|max:15',
             ]);
         }
 

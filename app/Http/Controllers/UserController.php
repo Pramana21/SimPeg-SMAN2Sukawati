@@ -107,9 +107,18 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
 
-        return redirect()->back()->with('success', 'User berhasil dihapus');
+        if ($user->is_active) {
+            return redirect()->back()->with('error', 'User aktif tidak dapat dihapus');
+        }
+
+        try {
+            $user->delete();
+
+            return redirect()->back()->with('success', 'User berhasil dihapus');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'User gagal dihapus');
+        }
     }
 
     private function normalizeStatus($status): bool

@@ -68,11 +68,11 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-4">
-                                    <div class="flex flex-wrap items-center gap-2">
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-2 flex-nowrap">
                                         @can('manajemen_user.edit')
                                         <a href="{{ route('users.edit', $user->id_user) }}"
-                                           class="inline-flex items-center gap-1.5 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition hover:bg-blue-600">
+                                           class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition hover:bg-blue-600">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path d="M5 13.75V16h2.25l6.28-6.28-2.25-2.25L5 13.75z" />
                                                 <path d="M14.71 6.04a1 1 0 000-1.41L13.37 3.3a1 1 0 00-1.41 0l-.88.88 2.25 2.25.88-.39z" />
@@ -82,11 +82,13 @@
                                         @endcan
 
                                         @can('manajemen_user.edit')
-                                        <form method="POST" action="{{ route('users.toggle-status', $user->id_user) }}">
+                                        <form method="POST"
+                                              action="{{ route('users.toggle-status', $user->id_user) }}"
+                                              class="inline-flex shrink-0 m-0">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit"
-                                                    class="inline-flex items-center gap-1.5 rounded-lg {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600' }} px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition">
+                                                    class="inline-flex shrink-0 items-center gap-1.5 rounded-lg {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600' }} px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition">
                                                 @if($user->is_active)
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.03-10.97a.75.75 0 10-1.06-1.06L10 7.94 8.03 5.97a.75.75 0 10-1.06 1.06L8.94 9l-1.97 1.97a.75.75 0 101.06 1.06L10 10.06l1.97 1.97a.75.75 0 001.06-1.06L11.06 9l1.97-1.97z" clip-rule="evenodd" />
@@ -100,6 +102,26 @@
                                             </button>
                                         </form>
                                         @endcan
+
+                                        @if(!$user->is_active)
+                                            @can('manajemen_user.delete')
+                                            <form method="POST"
+                                                  action="{{ route('users.destroy', $user->id_user) }}"
+                                                  class="inline-flex shrink-0 m-0"
+                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini secara permanen?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition hover:bg-red-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M6 7a1 1 0 011-1h6a1 1 0 011 1v7a2 2 0 01-2 2H8a2 2 0 01-2-2V7zm3-3a1 1 0 00-1 1v1h4V5a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                                        <path d="M4 7.75A.75.75 0 014.75 7h10.5a.75.75 0 010 1.5H14v5.25A3.25 3.25 0 0110.75 17h-1.5A3.25 3.25 0 016 13.75V8.5H4.75A.75.75 0 014 7.75z" />
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                            @endcan
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

@@ -14,7 +14,7 @@ class MuridController extends Controller
             return null;
         }
 
-        $prefix = $kelas === 'X' ? 'E' : 'F';
+        $prefix = $kelas === 'X' ? 'E' : 'F.P';
 
         return $prefix . ' - ' . $nomorKelas;
     }
@@ -137,5 +137,31 @@ class MuridController extends Controller
         );
 
         return redirect()->route('murid.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:siswa,id_siswa'],
+        ]);
+
+        $muridList = Siswa::whereIn('id_siswa', $validated['ids'])->get();
+
+        foreach ($muridList as $murid) {
+            if ($murid->foto_path && Storage::disk('public')->exists($murid->foto_path)) {
+                Storage::disk('public')->delete($murid->foto_path);
+            }
+
+            $murid->delete();
+        }
+
+        $this->logActivity(
+            'Murid',
+            'Hapus Data',
+            'Menghapus ' . count($validated['ids']) . ' data murid sekaligus'
+        );
+
+        return redirect()->back()->with('success', count($validated['ids']) . ' data murid berhasil dihapus');
     }
 }

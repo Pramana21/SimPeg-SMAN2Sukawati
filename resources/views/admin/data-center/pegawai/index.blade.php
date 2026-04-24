@@ -36,13 +36,28 @@
             </div>
 
             @unless($isTamu)
-                <a href="{{ route('pegawai.create') }}"
-                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Tambah
-                </a>
+                <form id="bulkDeletePegawaiForm" action="{{ route('pegawai.bulk-delete') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
+
+                <div class="d-flex justify-content-end flex-wrap gap-3 xl:ml-auto xl:justify-end">
+                    <button type="button"
+                            id="bulkDeletePegawaiButton"
+                            class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M6 4a2 2 0 012-2h4a2 2 0 012 2h3a1 1 0 110 2h-1v9a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 010-2h3zm2-1a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1H8zm-1 5a1 1 0 012 0v6a1 1 0 11-2 0V8zm4-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Hapus Terpilih
+                    </button>
+
+                    <a href="{{ route('pegawai.create') }}"
+                       class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Tambah
+                    </a>
+                </div>
             @endunless
         </div>
 
@@ -69,7 +84,10 @@
                             <tr class="transition hover:bg-slate-50">
                                 @unless($isTamu)
                                     <td class="px-4 py-4">
-                                        <input type="checkbox" name="selected_ids[]" value="{{ $item->id_pegawai }}" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                        <input type="checkbox"
+                                               name="ids[]"
+                                               value="{{ $item->id_pegawai }}"
+                                               class="row-checkbox-pegawai h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     </td>
                                 @endunless
                                 <td class="px-4 py-4 font-medium text-slate-900">{{ $item->nip_nippk ?: '-' }}</td>
@@ -137,17 +155,63 @@
 </div>
 <script>
     (function () {
+        const bulkDeletePegawaiForm = document.getElementById('bulkDeletePegawaiForm');
+        const bulkDeletePegawaiButton = document.getElementById('bulkDeletePegawaiButton');
         const selectAll = document.getElementById('selectAllPegawai');
+        const pegawaiCheckboxes = Array.from(document.querySelectorAll('.row-checkbox-pegawai'));
 
         if (!selectAll) {
             return;
         }
 
-        selectAll.onclick = function () {
-            document.querySelectorAll('input[name="selected_ids[]"]').forEach((cb) => {
-                cb.checked = this.checked;
+        function syncPegawaiHeaderCheckbox() {
+            const checkedCount = pegawaiCheckboxes.filter((checkbox) => checkbox.checked).length;
+            selectAll.checked = pegawaiCheckboxes.length > 0 && checkedCount === pegawaiCheckboxes.length;
+            selectAll.indeterminate = checkedCount > 0 && checkedCount < pegawaiCheckboxes.length;
+        }
+
+        selectAll.addEventListener('change', function () {
+            pegawaiCheckboxes.forEach((checkbox) => {
+                checkbox.checked = this.checked;
             });
-        };
+
+            syncPegawaiHeaderCheckbox();
+        });
+
+        pegawaiCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', syncPegawaiHeaderCheckbox);
+        });
+
+        if (bulkDeletePegawaiButton && bulkDeletePegawaiForm) {
+            bulkDeletePegawaiButton.addEventListener('click', function () {
+                const selectedIds = pegawaiCheckboxes
+                    .filter((checkbox) => checkbox.checked)
+                    .map((checkbox) => checkbox.value);
+
+                if (selectedIds.length === 0) {
+                    alert('Pilih minimal satu data pegawai untuk dihapus.');
+                    return;
+                }
+
+                if (!confirm('Yakin ingin menghapus data pegawai yang dipilih?')) {
+                    return;
+                }
+
+                bulkDeletePegawaiForm.querySelectorAll('input[name="ids[]"]').forEach((input) => input.remove());
+
+                selectedIds.forEach((id) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    bulkDeletePegawaiForm.appendChild(input);
+                });
+
+                bulkDeletePegawaiForm.submit();
+            });
+        }
+
+        syncPegawaiHeaderCheckbox();
     })();
 </script>
 @endsection

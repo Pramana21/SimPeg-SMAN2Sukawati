@@ -22,7 +22,7 @@
             return null;
         }
 
-        if (preg_match('/^([A-Z])\s*-\s*(\d+)$/', $item->kategori_kelas, $matches)) {
+        if (preg_match('/^([A-Z](?:\.[A-Z])?)\s*-\s*(\d+)$/', $item->kategori_kelas, $matches)) {
             return [
                 'prefix' => $matches[1],
                 'nomor' => $matches[2],
@@ -87,7 +87,14 @@
 
     <div class="rounded-[28px] border border-slate-200 bg-white/90 p-5 shadow-sm">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <form method="GET" class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
+                @unless($isTamu)
+                    <form id="bulkDeleteMuridForm" action="{{ route('murid.bulk-delete') }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+                @endunless
+
+                <form method="GET" class="flex flex-wrap items-center gap-3">
                 <div class="relative">
                     <select name="kelas"
                             class="min-w-[150px] appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
@@ -108,7 +115,7 @@
                             class="min-w-[170px] appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                         <option value="">Semua Kategori</option>
                         <option value="E" {{ $selectedKategori === 'E' ? 'selected' : '' }}>Kelas E (X)</option>
-                        <option value="F" {{ $selectedKategori === 'F' ? 'selected' : '' }}>Kelas F (XI & XII)</option>
+                        <option value="F.P" {{ $selectedKategori === 'F.P' ? 'selected' : '' }}>Kelas F.P (XI & XII)</option>
                     </select>
                     <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -122,9 +129,9 @@
                             id="nomorKelasFilter"
                             class="min-w-[150px] appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                         <option value="">Semua Nomor</option>
-                        @for($nomor = 1; $nomor <= 10; $nomor++)
+                        @for($nomor = 1; $nomor <= 15; $nomor++)
                             <option value="{{ $nomor }}" {{ (string) $selectedNomorKelas === (string) $nomor ? 'selected' : '' }}>
-                                {{ ($selectedKelas === 'X' ? 'E' : (($selectedKelas === 'XI' || $selectedKelas === 'XII') ? 'F' : 'Kategori')) . ' - ' . $nomor }}
+                                {{ ($selectedKelas === 'X' ? 'E' : (($selectedKelas === 'XI' || $selectedKelas === 'XII') ? 'F.P' : 'Kategori')) . ' - ' . $nomor }}
                             </option>
                         @endfor
                     </select>
@@ -149,16 +156,28 @@
                         Reset
                     </a>
                 @endif
-            </form>
+                </form>
+            </div>
 
             @unless($isTamu)
-                <a href="{{ route('murid.create') }}"
-                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Tambah
-                </a>
+                <div class="d-flex justify-content-end flex-wrap gap-3 xl:ml-auto xl:justify-end">
+                    <button type="button"
+                            id="bulkDeleteMuridButton"
+                            class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M6 4a2 2 0 012-2h4a2 2 0 012 2h3a1 1 0 110 2h-1v9a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 010-2h3zm2-1a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1H8zm-1 5a1 1 0 012 0v6a1 1 0 11-2 0V8zm4-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Hapus Terpilih
+                    </button>
+
+                    <a href="{{ route('murid.create') }}"
+                       class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Tambah
+                    </a>
+                </div>
             @endunless
         </div>
 
@@ -169,7 +188,7 @@
                         <tr>
                             @unless($isTamu)
                                 <th class="px-4 py-4 text-left font-semibold text-slate-800">
-                                    <input type="checkbox" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <input type="checkbox" id="selectAllMurid" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                 </th>
                             @endunless
                             <th class="px-4 py-4 text-left font-semibold text-slate-800">NIS</th>
@@ -186,7 +205,10 @@
                             <tr class="transition hover:bg-slate-50">
                                 @unless($isTamu)
                                     <td class="px-4 py-4">
-                                        <input type="checkbox" class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                        <input type="checkbox"
+                                               name="ids[]"
+                                               value="{{ $item->id_siswa }}"
+                                               class="row-checkbox-murid h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     </td>
                                 @endunless
                                 <td class="px-4 py-4 font-medium text-slate-900">{{ $item->nis }}</td>
@@ -264,6 +286,10 @@
         const kelasFilter = document.querySelector('select[name="kelas"]');
         const kategoriFilter = document.querySelector('select[name="kategori"]');
         const nomorFilter = document.getElementById('nomorKelasFilter');
+        const bulkDeleteMuridForm = document.getElementById('bulkDeleteMuridForm');
+        const bulkDeleteMuridButton = document.getElementById('bulkDeleteMuridButton');
+        const selectAllMurid = document.getElementById('selectAllMurid');
+        const muridCheckboxes = Array.from(document.querySelectorAll('.row-checkbox-murid'));
 
         function syncKategoriFilter() {
             if (!kelasFilter || !kategoriFilter) {
@@ -273,7 +299,7 @@
             if (kelasFilter.value === 'X') {
                 kategoriFilter.value = 'E';
             } else if (kelasFilter.value === 'XI' || kelasFilter.value === 'XII') {
-                kategoriFilter.value = 'F';
+                kategoriFilter.value = 'F.P';
             }
         }
 
@@ -282,7 +308,7 @@
                 return;
             }
 
-            const prefix = kelasFilter.value === 'X' ? 'E' : ((kelasFilter.value === 'XI' || kelasFilter.value === 'XII') ? 'F' : 'Kategori');
+            const prefix = kelasFilter.value === 'X' ? 'E' : ((kelasFilter.value === 'XI' || kelasFilter.value === 'XII') ? 'F.P' : 'Kategori');
 
             Array.from(nomorFilter.options).forEach((option, index) => {
                 if (index === 0) {
@@ -294,6 +320,16 @@
             });
         }
 
+        function syncMuridHeaderCheckbox() {
+            if (!selectAllMurid) {
+                return;
+            }
+
+            const checkedCount = muridCheckboxes.filter((checkbox) => checkbox.checked).length;
+            selectAllMurid.checked = muridCheckboxes.length > 0 && checkedCount === muridCheckboxes.length;
+            selectAllMurid.indeterminate = checkedCount > 0 && checkedCount < muridCheckboxes.length;
+        }
+
         if (kelasFilter) {
             kelasFilter.addEventListener('change', function () {
                 syncKategoriFilter();
@@ -301,7 +337,51 @@
             });
         }
 
+        if (selectAllMurid) {
+            selectAllMurid.addEventListener('change', function () {
+                muridCheckboxes.forEach((checkbox) => {
+                    checkbox.checked = this.checked;
+                });
+
+                syncMuridHeaderCheckbox();
+            });
+        }
+
+        muridCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', syncMuridHeaderCheckbox);
+        });
+
+        if (bulkDeleteMuridButton && bulkDeleteMuridForm) {
+            bulkDeleteMuridButton.addEventListener('click', function () {
+                const selectedIds = muridCheckboxes
+                    .filter((checkbox) => checkbox.checked)
+                    .map((checkbox) => checkbox.value);
+
+                if (selectedIds.length === 0) {
+                    alert('Pilih minimal satu data murid untuk dihapus.');
+                    return;
+                }
+
+                if (!confirm('Yakin ingin menghapus data murid yang dipilih?')) {
+                    return;
+                }
+
+                bulkDeleteMuridForm.querySelectorAll('input[name="ids[]"]').forEach((input) => input.remove());
+
+                selectedIds.forEach((id) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    bulkDeleteMuridForm.appendChild(input);
+                });
+
+                bulkDeleteMuridForm.submit();
+            });
+        }
+
         syncNomorLabels();
+        syncMuridHeaderCheckbox();
     })();
 </script>
 @endsection

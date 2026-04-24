@@ -217,7 +217,7 @@
                 return;
             }
 
-            const prefix = kelas === 'X' ? 'E' : 'F';
+            const prefix = kelas === 'X' ? 'E' : 'F.P';
             kategoriPreview.innerText = `Kategori otomatis: ${prefix} - ${nomor}`;
         }
 
@@ -229,7 +229,7 @@
                 jenisLabel.innerText = 'Kelas E';
                 jenisKelasWrapper.classList.remove('hidden');
             } else if (value === 'XI' || value === 'XII') {
-                jenisLabel.innerText = 'Kelas F';
+                jenisLabel.innerText = 'Kelas F.P';
                 jenisKelasWrapper.classList.remove('hidden');
             } else {
                 jenisKelasWrapper.classList.add('hidden');
@@ -237,7 +237,7 @@
                 return;
             }
 
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= 15; i++) {
                 const option = document.createElement('option');
                 option.value = i;
                 option.textContent = `Nomor ${i}`;

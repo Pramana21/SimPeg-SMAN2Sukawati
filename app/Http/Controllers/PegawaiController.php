@@ -161,4 +161,30 @@ class PegawaiController extends Controller
 
         return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil dihapus');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:pegawai,id_pegawai'],
+        ]);
+
+        $pegawaiList = Pegawai::whereIn('id_pegawai', $validated['ids'])->get();
+
+        foreach ($pegawaiList as $pegawai) {
+            if ($pegawai->foto_path && Storage::disk('public')->exists($pegawai->foto_path)) {
+                Storage::disk('public')->delete($pegawai->foto_path);
+            }
+
+            $pegawai->delete();
+        }
+
+        $this->logActivity(
+            'Pegawai',
+            'Hapus Data',
+            'Menghapus ' . count($validated['ids']) . ' data pegawai sekaligus'
+        );
+
+        return redirect()->back()->with('success', count($validated['ids']) . ' data pegawai berhasil dihapus');
+    }
 }
