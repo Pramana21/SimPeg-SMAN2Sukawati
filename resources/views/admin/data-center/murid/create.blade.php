@@ -39,7 +39,8 @@
                         <input id="nama_siswa" type="text" name="nama_siswa"
                                value="{{ old('nama_siswa') }}"
                                class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                               placeholder="Contoh: I wayan pramana">
+                               placeholder="Contoh: I wayan pramana"
+                               required>
                     </div>
 
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -48,7 +49,8 @@
                             <input id="nis" type="text" name="nis"
                                    value="{{ old('nis') }}"
                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                   placeholder="Contoh: 12345">
+                                   placeholder="Contoh: 12345"
+                                   required>
                         </div>
 
                         <div>
@@ -56,7 +58,8 @@
                             <input id="nik" type="text" name="nik"
                                    value="{{ old('nik') }}"
                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                   placeholder="Contoh: 5104...">
+                                   placeholder="Contoh: 5104..."
+                                   required>
                         </div>
 
                         <div>
@@ -64,7 +67,8 @@
                             <input id="nisn" type="text" name="nisn"
                                    value="{{ old('nisn') }}"
                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                   placeholder="Contoh: 9988...">
+                                   placeholder="Contoh: 9988..."
+                                   required>
                         </div>
                     </div>
 
@@ -73,13 +77,15 @@
                             <label for="tanggal_lahir" class="mb-2 block text-sm font-medium text-slate-700">Tanggal Lahir</label>
                             <input id="tanggal_lahir" type="date" name="tanggal_lahir"
                                    value="{{ old('tanggal_lahir') }}"
-                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                   required>
                         </div>
 
                         <div>
                             <label for="jenis_kelamin" class="mb-2 block text-sm font-medium text-slate-700">Gender</label>
                             <select id="jenis_kelamin" name="jenis_kelamin"
-                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                    required>
                                 <option value="">-- Pilih --</option>
                                 <option value="Laki-laki" {{ old('jenis_kelamin') === 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                                 <option value="Perempuan" {{ old('jenis_kelamin') === 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -89,7 +95,8 @@
                         <div>
                             <label for="kelas" class="mb-2 block text-sm font-medium text-slate-700">Kelas</label>
                             <select id="kelas" name="kelas"
-                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                    required>
                                 <option value="">-- Pilih --</option>
                                 <option value="X" {{ old('kelas') === 'X' ? 'selected' : '' }}>X</option>
                                 <option value="XI" {{ old('kelas') === 'XI' ? 'selected' : '' }}>XI</option>

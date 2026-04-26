@@ -54,7 +54,7 @@
                 <input id="created_by"
                        type="text"
                        name="created_by"
-                       value="{{ old('created_by', auth()->user()->username ?? '') }}"
+                       value="{{ old('created_by') }}"
                        placeholder="Contoh: Budi"
                        class="w-full rounded-xl border border-blue-100 bg-white px-5 py-4 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
             </div>

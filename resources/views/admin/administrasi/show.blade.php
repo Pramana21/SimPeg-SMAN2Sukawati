@@ -17,7 +17,10 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
-            @can((($data->jenis->kategori->nama_kategori ?? 'Pegawai') === 'Siswa' ? 'administrasi_umum_siswa' : 'administrasi_umum_pegawai') . '.edit')
+            @if(
+                auth()->user()?->can((($data->jenis->kategori->nama_kategori ?? 'Pegawai') === 'Siswa' ? 'administrasi_umum_siswa' : 'administrasi_umum_pegawai') . '.edit')
+                || (auth()->user()?->hasRole('Siswa') && (($data->jenis->kategori->nama_kategori ?? 'Pegawai') === 'Siswa'))
+            )
                 <a href="{{ route('administrasi.edit', $data->id_dokumen_administrasi) }}"
                    class="inline-flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -25,7 +28,7 @@
                     </svg>
                     Edit
                 </a>
-            @endcan
+            @endif
 
             @if($fileUrl)
                 <a href="{{ $fileUrl }}" target="_blank"

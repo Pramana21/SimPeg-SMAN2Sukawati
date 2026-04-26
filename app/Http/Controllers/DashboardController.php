@@ -70,7 +70,7 @@ class DashboardController extends Controller
     {
         abort_unless(auth()->user()?->hasRole('Admin Kepegawaian'), 403, 'Tidak memiliki akses');
 
-        return view('dashboard.admin', $this->buildRoleDashboardPayload(
+        return view('dashboard.dashboard-admin', $this->buildRoleDashboardPayload(
             request: $request,
             title: 'Dashboard Admin Kepegawaian',
             subtitle: 'Ringkasan dokumen dan aktivitas utama untuk pengelolaan kepegawaian.',
@@ -107,7 +107,7 @@ class DashboardController extends Controller
     {
         abort_unless(auth()->user()?->hasRole('Tamu'), 403, 'Tidak memiliki akses');
 
-        return view('dashboard.tamu', $this->buildRoleDashboardPayload(
+        return view('dashboard.dashboard-tamu', $this->buildRoleDashboardPayload(
             request: $request,
             title: 'Dashboard Tamu',
             subtitle: 'Tampilan read-only untuk memantau data penting tanpa akses perubahan.',
@@ -144,7 +144,7 @@ class DashboardController extends Controller
     {
         abort_unless(auth()->user()?->hasRole('Siswa'), 403, 'Tidak memiliki akses');
 
-        return view('dashboard.siswa', $this->buildRoleDashboardPayload(
+        return view('dashboard.dashboard-siswa', $this->buildRoleDashboardPayload(
             request: $request,
             title: 'Dashboard Siswa',
             subtitle: 'Akses terbatas untuk melihat informasi umum dan dokumen administrasi yang relevan.',

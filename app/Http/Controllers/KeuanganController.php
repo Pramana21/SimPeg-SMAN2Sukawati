@@ -250,16 +250,16 @@ class KeuanganController extends Controller
 
     private function rules(bool $requireFile = true): array
     {
-        $fileRules = ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png', 'max:5120'];
+        $fileRules = ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png', 'max:2048'];
 
         if ($requireFile) {
             $fileRules[0] = 'required';
         }
 
         return [
-            'nama_dokumen' => ['required', 'string', 'max:150'],
+            'nama_dokumen' => ['required', 'string', 'max:255'],
             'tanggal_dokumen' => ['required', 'date'],
-            'created_by' => ['nullable', 'string', 'max:100'],
+            'created_by' => ['required', 'string', 'max:255'],
             'file' => $fileRules,
         ];
     }

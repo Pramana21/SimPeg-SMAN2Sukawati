@@ -63,7 +63,8 @@
                             <input id="nik" type="text" name="nik"
                                    value="{{ old('nik', $data->nik ?? '') }}"
                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                   placeholder="Contoh: 5104...">
+                                   placeholder="Contoh: 5104..."
+                                   required>
                         </div>
 
                         <div>
@@ -80,13 +81,15 @@
                             <label for="tanggal_lahir" class="mb-2 block text-sm font-medium text-slate-700">Tanggal Lahir</label>
                             <input id="tanggal_lahir" type="date" name="tanggal_lahir"
                                    value="{{ old('tanggal_lahir', $data->tanggal_lahir ?? '') }}"
-                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                   class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                   required>
                         </div>
 
                         <div>
                             <label for="jenis_kelamin" class="mb-2 block text-sm font-medium text-slate-700">Gender</label>
                             <select id="jenis_kelamin" name="jenis_kelamin"
-                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                    required>
                                 <option value="">-- Pilih --</option>
                                 <option value="Laki-laki" {{ old('jenis_kelamin', $data->jenis_kelamin ?? '') === 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                                 <option value="Perempuan" {{ old('jenis_kelamin', $data->jenis_kelamin ?? '') === 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -96,7 +99,8 @@
                         <div>
                             <label for="status_pegawai" class="mb-2 block text-sm font-medium text-slate-700">Status Pegawai</label>
                             <select id="status_pegawai" name="status_pegawai"
-                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    class="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                    required>
                                 <option value="">-- Pilih --</option>
                                 @foreach(['Honor','PNS','PKKK','Kontrak Provinsi','OJTM'] as $status)
                                     <option value="{{ $status }}" {{ old('status_pegawai', $data->status_pegawai ?? '') === $status ? 'selected' : '' }}>

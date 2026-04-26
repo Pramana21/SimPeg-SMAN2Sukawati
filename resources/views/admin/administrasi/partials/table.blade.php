@@ -2,8 +2,9 @@
     $tableId = $tableId ?? 'administrasiTable';
     $emptyMessage = $emptyMessage ?? 'Belum ada data.';
     $permissionPrefix = ($selectedKategori ?? null) === 'Siswa' ? 'administrasi_umum_siswa' : 'administrasi_umum_pegawai';
-    $canDelete = auth()->user()?->can($permissionPrefix . '.delete');
-    $canEdit = auth()->user()?->can($permissionPrefix . '.edit');
+    $isSiswaCrud = auth()->user()?->hasRole('Siswa') && ($selectedKategori ?? null) === 'Siswa';
+    $canDelete = auth()->user()?->can($permissionPrefix . '.delete') || $isSiswaCrud;
+    $canEdit = auth()->user()?->can($permissionPrefix . '.edit') || $isSiswaCrud;
     $canView = auth()->user()?->can($permissionPrefix . '.view');
 @endphp
 

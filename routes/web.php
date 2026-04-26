@@ -211,7 +211,6 @@ Route::middleware(['auth'])->group(function () {
                 ->name('index');
 
             Route::post('/bulk-delete', [AdministrasiController::class, 'bulkDelete'])
-                ->middleware('permission:administrasi_umum')
                 ->name('bulk-delete');
 
             Route::get('/pegawai', [AdministrasiController::class, 'pegawai'])
@@ -227,30 +226,24 @@ Route::middleware(['auth'])->group(function () {
                 ->name('pegawai.create');
 
             Route::get('/siswa/create', [AdministrasiController::class, 'createSiswa'])
-                ->middleware('permission:administrasi_umum_siswa.create')
                 ->name('siswa.create');
 
             Route::post('/store', [AdministrasiController::class, 'store'])
-                ->middleware('permission:administrasi_umum')
                 ->name('store');
 
             Route::get('/{id}', [AdministrasiController::class, 'show'])
-                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('show');
 
             Route::get('/{id}/edit', [AdministrasiController::class, 'edit'])
-                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('edit');
 
             Route::put('/{id}', [AdministrasiController::class, 'update'])
-                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('update');
 
             Route::delete('/{id}', [AdministrasiController::class, 'destroy'])
-                ->middleware('permission:administrasi_umum')
                 ->whereNumber('id')
                 ->name('destroy');
         });

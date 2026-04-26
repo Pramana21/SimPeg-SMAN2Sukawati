@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
 <div class="space-y-6">
     <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
@@ -80,8 +83,7 @@
         @endforeach
     </div>
 
-    @if(auth()->user()->role !== 'tamu')
-        <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
             <div class="mb-5 flex items-center justify-between">
                 <div>
                     <h2 class="text-2xl font-semibold text-slate-900">Kalender Kegiatan</h2>
@@ -138,9 +140,9 @@
                     @endforeach
                 @endforeach
             </div>
-        </div>
+    </div>
 
-        <div class="rounded-[28px] border border-slate-200 bg-white shadow-sm">
+    <div class="rounded-[28px] border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-200 px-6 py-5">
                 <h2 class="text-2xl font-semibold text-slate-900">Agenda Terdekat</h2>
             </div>
@@ -169,7 +171,6 @@
                 @endforelse
             </div>
         </div>
-    @endif
 
     <div class="rounded-[28px] border border-slate-200 bg-white shadow-sm">
         <div class="border-b border-slate-200 px-6 py-5">
@@ -769,3 +770,4 @@
         highlightSelectedDate(calendarButtons.find((button) => button.dataset.isToday === '1')?.dataset.date || calendarButtons.find((button) => button.dataset.isCurrentMonth === '1')?.dataset.date || null);
     })();
 </script>
+@endsection

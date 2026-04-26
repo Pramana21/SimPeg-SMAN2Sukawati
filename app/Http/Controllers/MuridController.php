@@ -33,6 +33,20 @@ class MuridController extends Controller
     public function store(Request $request)
     {
         try {
+            $request->validate([
+                'nama_siswa' => ['required', 'string', 'max:255'],
+                'nis' => ['required', 'string', 'max:50'],
+                'nik' => ['required', 'string', 'max:50'],
+                'nisn' => ['required', 'string', 'max:50'],
+                'tanggal_lahir' => ['required', 'date'],
+                'jenis_kelamin' => ['required', 'string'],
+                'kelas' => ['required', 'string'],
+                'alamat' => ['nullable', 'string'],
+                'email' => ['nullable', 'email'],
+                'no_hp' => ['nullable', 'string', 'max:20'],
+                'nama_ibu_kandung' => ['nullable', 'string', 'max:255'],
+            ]);
+
             $kategoriKelas = $this->buildKategoriKelas($request->kelas, $request->nomor_kelas);
 
             $fotoPath = null;
@@ -85,6 +99,19 @@ class MuridController extends Controller
     public function update(Request $request, $id)
     {
         $murid = Siswa::findOrFail($id);
+        $request->validate([
+            'nama_siswa' => ['required', 'string', 'max:255'],
+            'nis' => ['required', 'string', 'max:50'],
+            'nik' => ['required', 'string', 'max:50'],
+            'nisn' => ['required', 'string', 'max:50'],
+            'tanggal_lahir' => ['required', 'date'],
+            'jenis_kelamin' => ['required', 'string'],
+            'kelas' => ['required', 'string'],
+            'alamat' => ['nullable', 'string'],
+            'email' => ['nullable', 'email'],
+            'no_hp' => ['nullable', 'string', 'max:20'],
+            'nama_ibu_kandung' => ['nullable', 'string', 'max:255'],
+        ]);
         $kategoriKelas = $this->buildKategoriKelas($request->kelas, $request->nomor_kelas);
 
         // upload foto baru (optional)

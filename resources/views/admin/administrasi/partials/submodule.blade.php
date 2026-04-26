@@ -1,6 +1,7 @@
 <div class="space-y-6">
     @php($permissionPrefix = ($selectedKategori ?? null) === 'Siswa' ? 'administrasi_umum_siswa' : 'administrasi_umum_pegawai')
     @php($isTamu = auth()->user()?->hasRole('Tamu'))
+    @php($isSiswaCrud = auth()->user()?->hasRole('Siswa') && ($selectedKategori ?? null) === 'Siswa')
 
     <div>
         <h1 class="text-4xl font-semibold text-slate-900">{{ $title }}</h1>
@@ -69,8 +70,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-3 xl:justify-end">
-                @can($permissionPrefix . '.delete')
-                @unless($isTamu)
+                @if((auth()->user()?->can($permissionPrefix . '.delete') || $isSiswaCrud) && !$isTamu)
                     <form id="bulkDeleteAdministrasiForm" action="{{ route('administrasi.bulk-delete') }}" method="POST" class="hidden">
                         @csrf
                     </form>
@@ -83,10 +83,9 @@
                         </svg>
                         Hapus Terpilih
                     </button>
-                @endunless
-                @endcan
+                @endif
 
-                @can($permissionPrefix . '.create')
+                @if(auth()->user()?->can($permissionPrefix . '.create') || $isSiswaCrud)
                     <a href="{{ route($createRoute) }}"
                        class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -94,7 +93,7 @@
                         </svg>
                         Tambah
                     </a>
-                @endcan
+                @endif
             </div>
         </div>
 

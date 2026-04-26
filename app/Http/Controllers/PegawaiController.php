@@ -25,17 +25,17 @@ class PegawaiController extends Controller
     {
         try {
             $validated = $request->validate([
-                'nama_pegawai' => ['required', 'string', 'max:120'],
-                'nip' => ['nullable', 'string', 'max:40'],
-                'nik' => ['nullable', 'string', 'max:30'],
-                'nuptk' => ['nullable', 'string', 'max:40'],
-                'tanggal_lahir' => ['nullable', 'date'],
-                'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan'],
-                'status_pegawai' => ['required', 'in:Honor,PNS,PKKK,Kontrak Provinsi,OJTM'],
-                'pendidikan_terakhir' => ['nullable', 'string', 'max:120'],
-                'alamat' => ['nullable', 'string', 'max:255'],
-                'email' => ['nullable', 'email', 'max:120'],
-                'no_hp' => ['nullable', 'string', 'max:30'],
+                'nama_pegawai' => ['required', 'string', 'max:255'],
+                'nip' => ['nullable', 'string', 'max:50'],
+                'nik' => ['required', 'string', 'max:50'],
+                'nuptk' => ['nullable', 'string', 'max:50'],
+                'tanggal_lahir' => ['required', 'date'],
+                'jenis_kelamin' => ['required', 'string'],
+                'status_pegawai' => ['required', 'string'],
+                'pendidikan_terakhir' => ['nullable', 'string', 'max:255'],
+                'alamat' => ['nullable', 'string'],
+                'email' => ['nullable', 'email'],
+                'no_hp' => ['nullable', 'string', 'max:20'],
                 'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             ]);
 
@@ -91,17 +91,17 @@ class PegawaiController extends Controller
     {
         $pegawai = Pegawai::findOrFail($id);
         $validated = $request->validate([
-            'nama_pegawai' => ['required', 'string', 'max:120'],
-            'nip' => ['nullable', 'string', 'max:40'],
-            'nik' => ['nullable', 'string', 'max:30'],
-            'nuptk' => ['nullable', 'string', 'max:40'],
-            'tanggal_lahir' => ['nullable', 'date'],
-            'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan'],
-            'status_pegawai' => ['required', 'in:Honor,PNS,PKKK,Kontrak Provinsi,OJTM'],
-            'pendidikan_terakhir' => ['nullable', 'string', 'max:120'],
-            'alamat' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:120'],
-            'no_hp' => ['nullable', 'string', 'max:30'],
+            'nama_pegawai' => ['required', 'string', 'max:255'],
+            'nip' => ['nullable', 'string', 'max:50'],
+            'nik' => ['required', 'string', 'max:50'],
+            'nuptk' => ['nullable', 'string', 'max:50'],
+            'tanggal_lahir' => ['required', 'date'],
+            'jenis_kelamin' => ['required', 'string'],
+            'status_pegawai' => ['required', 'string'],
+            'pendidikan_terakhir' => ['nullable', 'string', 'max:255'],
+            'alamat' => ['nullable', 'string'],
+            'email' => ['nullable', 'email'],
+            'no_hp' => ['nullable', 'string', 'max:20'],
             'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 

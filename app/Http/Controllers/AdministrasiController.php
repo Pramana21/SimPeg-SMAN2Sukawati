@@ -385,6 +385,10 @@ class AdministrasiController extends Controller
 
     private function authorizeKategoriAccess(string $kategori, string $action): void
     {
+        if (Auth::user()?->hasRole('Siswa') && $kategori === 'Siswa') {
+            return;
+        }
+
         $permissionModule = $kategori === 'Siswa'
             ? 'administrasi_umum_siswa'
             : 'administrasi_umum_pegawai';

@@ -60,50 +60,48 @@
         </a>
         @endcan
 
-        <!-- MANAJEMEN SISTEM -->
-        @if(!auth()->user()?->hasRole('Admin Kepegawaian') && !$isTamu)
-        <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Sistem</p>
+        @if(auth()->user()?->hasRole('Super Admin') || auth()->user()?->hasRole('Admin Kepegawaian'))
+            <!-- MANAJEMEN SISTEM -->
+            <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Sistem</p>
+
+            <div class="space-y-2 text-gray-700">
+
+                @can('role_akses.view')
+                <a href="{{ url('/roles') }}"
+                    class="{{ $menuBaseClass }} {{ request()->routeIs('roles.*') || request()->is('roles*') ? $menuActiveClass : $menuInactiveClass }}">
+                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3.75l6.75 2.5v5.1c0 4.25-2.73 8.22-6.75 9.9-4.02-1.68-6.75-5.65-6.75-9.9v-5.1z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.75 12l1.5 1.5 3-3"/>
+                        </svg>
+                        <span>Role Akses</span>
+                </a>
+                @endcan
+
+                @can('manajemen_user.view')
+                <a href="{{ route('users.index') }}"
+                    class="{{ $menuBaseClass }} {{ request()->routeIs('users.*') || request()->routeIs('user.*') ? $menuActiveClass : $menuInactiveClass }}">
+                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16.25 20.25v-1.5a3.75 3.75 0 0 0-3.75-3.75h-3A3.75 3.75 0 0 0 5.75 18.75v1.5"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11 11.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5zm8 9v-1a3.25 3.25 0 0 0-2.44-3.15m-1.06-10.1a3.25 3.25 0 0 1 0 6.3"/>
+                    </svg>
+                    <span>Manajemen User</span>
+                </a>
+                @endcan
+
+                @can('audit_log.view')
+                <a href="{{ url('/audit-log') }}"
+                    class="{{ $menuBaseClass }} {{ request()->routeIs('audit.*') || request()->is('audit-log*') ? $menuActiveClass : $menuInactiveClass }}">
+                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.75 12a7.25 7.25 0 1 0 2.12-5.13"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.75 5.75v4.5h4.5"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8.5v4l2.75 1.75"/>
+                        </svg>
+                        <span>Audit Log</span>
+                </a>
+                @endcan
+
+            </div>
         @endif
-
-        <div class="space-y-2 text-gray-700">
-
-            @if(!$isTamu)
-            @can('role_akses.view')
-            <a href="{{ url('/roles') }}"
-                class="{{ $menuBaseClass }} {{ request()->routeIs('roles.*') || request()->is('roles*') ? $menuActiveClass : $menuInactiveClass }}">
-                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3.75l6.75 2.5v5.1c0 4.25-2.73 8.22-6.75 9.9-4.02-1.68-6.75-5.65-6.75-9.9v-5.1z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.75 12l1.5 1.5 3-3"/>
-                    </svg>
-                    <span>Role Akses</span>
-            </a>
-            @endcan
-
-            @can('manajemen_user.view')
-            <a href="{{ route('users.index') }}"
-                class="{{ $menuBaseClass }} {{ request()->routeIs('users.*') || request()->routeIs('user.*') ? $menuActiveClass : $menuInactiveClass }}">
-                <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16.25 20.25v-1.5a3.75 3.75 0 0 0-3.75-3.75h-3A3.75 3.75 0 0 0 5.75 18.75v1.5"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11 11.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5zm8 9v-1a3.25 3.25 0 0 0-2.44-3.15m-1.06-10.1a3.25 3.25 0 0 1 0 6.3"/>
-                </svg>
-                <span>Manajemen User</span>
-            </a>
-            @endcan
-
-            @can('audit_log.view')
-            <a href="{{ url('/audit-log') }}"
-                class="{{ $menuBaseClass }} {{ request()->routeIs('audit.*') || request()->is('audit-log*') ? $menuActiveClass : $menuInactiveClass }}">
-                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.75 12a7.25 7.25 0 1 0 2.12-5.13"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.75 5.75v4.5h4.5"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8.5v4l2.75 1.75"/>
-                    </svg>
-                    <span>Audit Log</span>
-            </a>
-            @endcan
-            @endif
-
-        </div>
 
         <!-- MANAJEMEN KEPEGAWAIAN -->
         <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Kepegawaian</p>
