@@ -102,14 +102,13 @@ Script tersebut akan menjalankan:
 ```bash
 php artisan serve
 php artisan queue:listen
-php artisan pail
 npm run dev
 ```
 
-## Seeder (Optional)
+## Migrations database dan seed
 
 ```bash
-php artisan db:seed
+php artisan migrate --seed
 ```
 
 ## User Roles

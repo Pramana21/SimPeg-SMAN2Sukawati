@@ -29,7 +29,7 @@ use Illuminate\Http\Request;
 | AUTH
 |--------------------------------------------------------------------------
 */
-
+Route::redirect('/', '/login');
 Route::get('/login',[LoginController::class,'showLogin'])->name('login');
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/logout',[LoginController::class,'logout'])->name('logout');
