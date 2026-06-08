@@ -61,8 +61,10 @@
         @endcan
 
         @if(auth()->user()?->hasRole('Super Admin') || auth()->user()?->hasRole('Admin Kepegawaian'))
-            <!-- MANAJEMEN SISTEM -->
-            <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Sistem</p>
+            @if(! auth()->user()?->hasRole('Admin Kepegawaian'))
+                <!-- MANAJEMEN SISTEM -->
+                <p class="text-gray-400 text-xs mt-6 mb-2">Manajemen Sistem</p>
+            @endif
 
             <div class="space-y-2 text-gray-700">
 

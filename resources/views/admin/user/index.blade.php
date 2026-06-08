@@ -88,7 +88,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit"
-                                                    class="inline-flex shrink-0 items-center gap-1.5 rounded-lg {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600' }} px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition">
+                                                    class="inline-flex shrink-0 items-center gap-1.5 rounded-lg {{ $user->is_active ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }} px-3 py-1.5 text-xs font-semibold leading-none text-white shadow-sm transition">
                                                 @if($user->is_active)
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.03-10.97a.75.75 0 10-1.06-1.06L10 7.94 8.03 5.97a.75.75 0 10-1.06 1.06L8.94 9l-1.97 1.97a.75.75 0 101.06 1.06L10 10.06l1.97 1.97a.75.75 0 001.06-1.06L11.06 9l1.97-1.97z" clip-rule="evenodd" />
